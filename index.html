@@ -68,7 +68,8 @@
                 </p>
                 
                 <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                    <a href="#" class="bg-brand-accent hover:bg-brand-hover text-white font-bold py-3.5 px-8 rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(5,150,105,0.4)] hover:shadow-[0_0_30px_rgba(5,150,105,0.6)] hover:-translate-y-1 text-lg flex items-center gap-2">
+                    <!-- ENLACE AL BOTÓN PRINCIPAL ACTUALIZADO -->
+                    <a href="huella-carbono.html" target="_blank" class="bg-brand-accent hover:bg-brand-hover text-white font-bold py-3.5 px-8 rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(5,150,105,0.4)] hover:shadow-[0_0_30px_rgba(5,150,105,0.6)] hover:-translate-y-1 text-lg flex items-center gap-2">
                         Usar Calculadora
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -127,7 +128,7 @@
         </div>
     </section>
 
-    <!-- 3. Cuadrícula de Herramientas (TODAS ACTIVADAS) -->
+    <!-- 3. Cuadrícula de Herramientas -->
     <section id="herramientas" class="py-20 bg-brand-light">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
@@ -137,8 +138,8 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 
-                <!-- Tarjeta 1 -->
-                <a href="#" class="group bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:-translate-y-1.5 hover:shadow-xl hover:border-brand-accent/30 transition-all duration-300 relative overflow-hidden flex flex-col h-full">
+                <!-- Tarjeta 1: Reciclaje (ACTIVA) -->
+                <a href="https://calculadorareciclaje.org/" target="_blank" class="group bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:-translate-y-1.5 hover:shadow-xl hover:border-brand-accent/30 transition-all duration-300 relative overflow-hidden flex flex-col h-full">
                     <div class="absolute top-0 left-0 w-full h-1 bg-brand-accent transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
                     <div class="w-12 h-12 bg-emerald-50 text-brand-accent rounded-xl flex items-center justify-center mb-5 text-xl group-hover:scale-110 transition-transform">♻️</div>
                     <h3 class="text-lg font-bold text-brand-dark mb-2">Emisiones de Reciclaje</h3>
@@ -148,38 +149,36 @@
                     </div>
                 </a>
 
-                <!-- Tarjeta 2 -->
-                <a href="#" class="group bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:-translate-y-1.5 hover:shadow-xl hover:border-brand-accent/30 transition-all duration-300 relative overflow-hidden flex flex-col h-full">
+                <!-- Tarjeta 2: Huella de Carbono (ACTIVA) -->
+                <a href="huella-carbono.html" target="_blank" class="group bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:-translate-y-1.5 hover:shadow-xl hover:border-brand-accent/30 transition-all duration-300 relative overflow-hidden flex flex-col h-full">
                     <div class="absolute top-0 left-0 w-full h-1 bg-brand-accent transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-                    <div class="w-12 h-12 bg-gray-50 text-gray-500 rounded-xl flex items-center justify-center mb-5 text-xl group-hover:scale-110 transition-transform">👣</div>
+                    <div class="w-12 h-12 bg-emerald-50 text-brand-accent rounded-xl flex items-center justify-center mb-5 text-xl group-hover:scale-110 transition-transform">👣</div>
                     <h3 class="text-lg font-bold text-brand-dark mb-2">Huella de Carbono</h3>
                     <p class="text-gray-500 text-sm mb-6 flex-grow">Mide tus emisiones con factores de emisión de la red eléctrica nacional y combustibles locales.</p>
                     <div class="mt-auto">
-                        <span class="inline-block bg-gray-100 text-gray-600 text-xs px-2.5 py-1 rounded-md font-bold uppercase tracking-wider group-hover:bg-emerald-50 group-hover:text-brand-accent transition-colors">Acceder</span>
+                        <span class="inline-block bg-emerald-50 text-brand-accent text-xs px-2.5 py-1 rounded-md font-bold uppercase tracking-wider transition-colors">Acceder</span>
                     </div>
                 </a>
 
-                <!-- Tarjeta 3 -->
-                <a href="#" class="group bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:-translate-y-1.5 hover:shadow-xl hover:border-brand-accent/30 transition-all duration-300 relative overflow-hidden flex flex-col h-full">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-brand-accent transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-                    <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center mb-5 text-xl group-hover:scale-110 transition-transform">💧</div>
-                    <h3 class="text-lg font-bold text-brand-dark mb-2">Simulador Hídrico</h3>
+                <!-- Tarjeta 3: Simulador Hídrico (BLOQUEADA) -->
+                <div class="bg-gray-50 rounded-2xl shadow-sm border border-gray-200 p-6 relative overflow-hidden flex flex-col h-full opacity-60 cursor-not-allowed grayscale-[50%]">
+                    <div class="w-12 h-12 bg-gray-200 text-gray-500 rounded-xl flex items-center justify-center mb-5 text-xl">💧</div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-2">Simulador Hídrico</h3>
                     <p class="text-gray-500 text-sm mb-6 flex-grow">Calcula la captación de lluvia y dimensionamiento de cisternas según datos históricos de tu municipio.</p>
                     <div class="mt-auto">
-                        <span class="inline-block bg-blue-50 text-blue-600 text-xs px-2.5 py-1 rounded-md font-bold uppercase tracking-wider group-hover:bg-emerald-50 group-hover:text-brand-accent transition-colors">Acceder</span>
+                        <span class="inline-block bg-gray-200 text-gray-500 text-xs px-2.5 py-1 rounded-md font-bold uppercase tracking-wider">Próximamente</span>
                     </div>
-                </a>
+                </div>
 
-                <!-- Tarjeta 4 -->
-                <a href="#" class="group bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:-translate-y-1.5 hover:shadow-xl hover:border-brand-accent/30 transition-all duration-300 relative overflow-hidden flex flex-col h-full">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-brand-accent transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-                    <div class="w-12 h-12 bg-orange-50 text-orange-500 rounded-xl flex items-center justify-center mb-5 text-xl group-hover:scale-110 transition-transform">⚙️</div>
-                    <h3 class="text-lg font-bold text-brand-dark mb-2">Diagnóstico OBD2</h3>
+                <!-- Tarjeta 4: Diagnóstico OBD2 (BLOQUEADA) -->
+                <div class="bg-gray-50 rounded-2xl shadow-sm border border-gray-200 p-6 relative overflow-hidden flex flex-col h-full opacity-60 cursor-not-allowed grayscale-[50%]">
+                    <div class="w-12 h-12 bg-gray-200 text-gray-500 rounded-xl flex items-center justify-center mb-5 text-xl">⚙️</div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-2">Diagnóstico OBD2</h3>
                     <p class="text-gray-500 text-sm mb-6 flex-grow">Traductor ciudadano de códigos de falla para mantenimiento preventivo vehicular y flotillas.</p>
                     <div class="mt-auto">
-                        <span class="inline-block bg-orange-50 text-orange-600 text-xs px-2.5 py-1 rounded-md font-bold uppercase tracking-wider group-hover:bg-emerald-50 group-hover:text-brand-accent transition-colors">Acceder</span>
+                        <span class="inline-block bg-gray-200 text-gray-500 text-xs px-2.5 py-1 rounded-md font-bold uppercase tracking-wider">Próximamente</span>
                     </div>
-                </a>
+                </div>
 
             </div>
         </div>
@@ -202,11 +201,11 @@
         </div>
     </section>
 
-<!-- 5. Footer -->
+    <!-- 5. Footer -->
     <footer class="bg-brand-dark text-gray-400 py-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
             <div class="mb-4 md:mb-0">
-                <span class="font-logo font-extrabold text-3xl text-brand-white tracking-tighter">Ruta<span class="text-brand-accent">Sustentable</span></span>
+                <span class="font-logo font-extrabold text-3xl text-brand-white tracking-tighter text-white">Ruta<span class="text-brand-accent">Sustentable</span></span>
                 <p class="text-sm mt-1">© 2026. Todos los derechos reservados.</p>
             </div>
             <div class="flex space-x-6">
@@ -218,4 +217,5 @@
     </footer>
 
 </body>
+</html>
 </html>
