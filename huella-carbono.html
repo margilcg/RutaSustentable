@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Huella de Carbono | Ruta Sustentable</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            /* Patrón de puntos sutil para un aspecto moderno/tech */
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        
+        /* Animaciones de entrada inicial */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        /* Animación exclusiva para los iconos de los títulos */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-4px); }
+            100% { transform: translateY(0px); }
+        }
+        .title-icon {
+            display: inline-block;
+        }
+        .module-card:hover .title-icon {
+            animation: float 1.5s ease-in-out infinite;
+        }
+
+        /* Resplandores (glow) para botones sin movimiento vertical */
+        .glow-green:hover { box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+        .glow-yellow:hover { box-shadow: 0 0 20px rgba(234, 179, 8, 0.4); }
+        .glow-blue:hover { box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
+        .glow-cyan:hover { box-shadow: 0 0 20px rgba(6, 182, 212, 0.4); }
+        
+        .glow-master {
+            background-size: 200% auto;
+            transition: 0.5s;
+        }
+        .glow-master:hover {
+            background-position: right center;
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
+        }
+
+        /* Transición suave para las tarjetas (solo sombras y bordes, sin saltos) */
+        .module-card {
+            transition: box-shadow 0.4s ease, border-color 0.4s ease;
+        }
+        .module-card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: #e2e8f0;
+        }
+        
+        /* Scrollbar personalizada para la lista de aparatos */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="p-4 sm:p-8 text-slate-800">
+
+    <div class="max-w-4xl mx-auto space-y-10">
+        
+        <!-- ENCABEZADO PRINCIPAL -->
+        <div class="text-center space-y-3 mb-12 animate-fade-in-up" style="animation-delay: 0.1s; opacity: 0;">
+            <div class="inline-block p-3 bg-white rounded-2xl shadow-sm border border-slate-200 mb-2">
+                <span class="text-4xl">🌍</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-blue-600 tracking-tight">Mi Huella de Carbono</h1>
+            <p class="text-slate-500 font-semibold tracking-wide uppercase text-sm">Motor de cálculo auditable | Estándares SEMARNAT, SEN, IMTA e IPCC</p>
+        </div>
+
+        <!-- MÓDULO 1: COMBUSTIBLES Y MOVILIDAD -->
+        <div class="module-card bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden animate-fade-in-up" style="animation-delay: 0.2s; opacity: 0;">
+            <div class="bg-gradient-to-r from-slate-900 to-slate-800 px-8 py-5 flex items-center justify-between">
+                <h2 class="text-2xl font-extrabold text-white flex items-center gap-3">
+                    <span class="text-3xl drop-shadow-md title-icon">🔥</span> Combustibles
+                </h2>
+                <span class="px-3 py-1 bg-slate-800 rounded-full text-xs font-semibold text-emerald-400 border border-slate-700 shadow-inner">RENE - SEMARNAT 2015/2026</span>
+            </div>
+
+            <div class="p-8 space-y-8">
+                <!-- SECCIÓN: HOGAR (GAS) -->
+                <div class="p-6 bg-slate-50/50 rounded-2xl border border-slate-100">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm">1</span> 
+                        Uso Doméstico (Gas)
+                    </h3>
+                    <div class="flex flex-wrap gap-2 mb-5 bg-slate-200/50 p-1.5 rounded-xl w-max shadow-inner">
+                        <button onclick="switchTab('gas', 'cilindro')" id="tab-cilindro" class="px-5 py-2.5 text-sm font-bold rounded-lg bg-white shadow-sm text-slate-800 transition-colors duration-300">Cilindro (kg)</button>
+                        <button onclick="switchTab('gas', 'estacionario')" id="tab-estacionario" class="px-5 py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors duration-300">Estacionario (L)</button>
+                        <button onclick="switchTab('gas', 'natural')" id="tab-natural" class="px-5 py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors duration-300">Natural (m³)</button>
+                    </div>
+
+                    <div id="input-cilindro" class="flex gap-4 items-end transition-opacity duration-300">
+                        <div class="flex-1">
+                            <label class="block text-sm font-semibold text-slate-600 mb-2">Tamaño del cilindro al mes</label>
+                            <select id="gas-kg" class="w-full sm:w-1/2 border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-colors duration-300 hover:border-emerald-300 cursor-pointer">
+                                <option value="0">No uso cilindro</option>
+                                <option value="20">20 kg</option>
+                                <option value="30">30 kg</option>
+                                <option value="45">45 kg</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="input-estacionario" class="hidden flex gap-4 items-end">
+                        <div class="flex-1">
+                            <label class="block text-sm font-semibold text-slate-600 mb-2">Litros cargados al mes</label>
+                            <input type="number" id="gas-l" placeholder="Ej. 50" class="w-full sm:w-1/2 border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-colors duration-300 hover:border-emerald-300">
+                        </div>
+                    </div>
+                    <div id="input-natural" class="hidden flex gap-4 items-end">
+                        <div class="flex-1">
+                            <label class="block text-sm font-semibold text-slate-600 mb-2">Consumo en recibo (m³)</label>
+                            <input type="number" id="gas-m3" placeholder="Ej. 15" class="w-full sm:w-1/2 border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-colors duration-300 hover:border-emerald-300">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN: MOVILIDAD -->
+                <div class="p-6 bg-slate-50/50 rounded-2xl border border-slate-100">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm">2</span> 
+                        Movilidad
+                    </h3>
+                    <div class="flex flex-wrap gap-2 mb-5 bg-slate-200/50 p-1.5 rounded-xl w-max shadow-inner">
+                        <button onclick="switchTab('movilidad', 'litros')" id="tab-litros" class="px-5 py-2.5 text-sm font-bold rounded-lg bg-white shadow-sm text-slate-800 transition-colors duration-300">Por Litros</button>
+                        <button onclick="switchTab('movilidad', 'gasto')" id="tab-gasto" class="px-5 py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors duration-300">Por Gasto ($)</button>
+                        <button onclick="switchTab('movilidad', 'km')" id="tab-km" class="px-5 py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors duration-300">Por Kilometraje</button>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="block text-sm font-semibold text-slate-600 mb-2">Tipo de Motor</label>
+                        <select id="tipo-combustible" class="w-full sm:w-1/2 border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-colors duration-300 hover:border-emerald-300 cursor-pointer">
+                            <option value="gasolina">Gasolina (Magna/Premium)</option>
+                            <option value="diesel">Diésel (Tractores/Carga)</option>
+                        </select>
+                    </div>
+
+                    <div id="input-litros" class="flex gap-4 items-end">
+                        <div class="flex-1">
+                            <label class="block text-sm font-semibold text-slate-600 mb-2">Litros cargados al mes</label>
+                            <input type="number" id="mov-litros" placeholder="Ej. 120" class="w-full sm:w-1/2 border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-colors duration-300 hover:border-emerald-300">
+                        </div>
+                    </div>
+                    <div id="input-gasto" class="hidden flex gap-4 items-end">
+                        <div class="flex-1">
+                            <label class="block text-sm font-semibold text-slate-600 mb-2">Gasto mensual ($ MXN)</label>
+                            <input type="number" id="mov-pesos" placeholder="Ej. 2500" class="w-full sm:w-1/2 border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-colors duration-300 hover:border-emerald-300">
+                        </div>
+                    </div>
+                    <div id="input-km" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-5 items-end">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-600 mb-2">Kilómetros al mes</label>
+                            <input type="number" id="mov-km" placeholder="Ej. 800" class="w-full border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-colors duration-300 hover:border-emerald-300">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-600 mb-2">Rendimiento Vehicular</label>
+                            <select id="mov-rendimiento" class="w-full border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-colors duration-300 hover:border-emerald-300 cursor-pointer">
+                                <option value="15">Compacto / Sedán (15 km/l)</option>
+                                <option value="9">SUV Mediana (Ej. V6, 9 km/l)</option>
+                                <option value="6">Pick-up pesada (6 km/l)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-2 border-t border-slate-100">
+                    <button onclick="calcularEmisiones(false)" class="w-full glow-green bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-extrabold text-lg py-4 px-6 rounded-xl transition-all duration-300 active:scale-95 shadow-md">
+                        Calcular Combustibles
+                    </button>
+                    <div id="resultado-combustibles" class="hidden mt-5 bg-slate-900 rounded-2xl p-5 text-center shadow-inner relative overflow-hidden">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500 rounded-full mix-blend-screen filter blur-3xl opacity-20"></div>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1 relative z-10">Huella Parcial</p>
+                        <p class="text-4xl font-black text-emerald-400 relative z-10"><span id="total-co2-combustible">0.00</span> <span class="text-base text-slate-300 font-medium">kg CO₂e</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÓDULO 2: ENERGÍA ELÉCTRICA -->
+        <div class="module-card bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden animate-fade-in-up" style="animation-delay: 0.3s; opacity: 0;">
+            <div class="bg-gradient-to-r from-slate-900 to-slate-800 px-8 py-5 flex items-center justify-between">
+                <h2 class="text-2xl font-extrabold text-white flex items-center gap-3">
+                    <span class="text-3xl drop-shadow-md title-icon">⚡</span> Electricidad
+                </h2>
+                <span class="px-3 py-1 bg-slate-800 rounded-full text-xs font-semibold text-yellow-400 border border-slate-700 shadow-inner">Factor SEN (SEMARNAT)</span>
+            </div>
+
+            <div class="p-8">
+                <div class="flex flex-wrap gap-2 mb-6 bg-slate-200/50 p-1.5 rounded-xl w-max shadow-inner">
+                    <button onclick="switchTabElec('recibo')" id="tab-recibo" class="px-5 py-2.5 text-sm font-bold rounded-lg bg-white shadow-sm text-slate-800 transition-colors duration-300">Tengo mi recibo CFE</button>
+                    <button onclick="switchTabElec('aparatos')" id="tab-aparatos" class="px-5 py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors duration-300">Calcular por aparatos</button>
+                </div>
+
+                <div id="input-recibo" class="space-y-4">
+                    <label class="block text-sm font-semibold text-slate-600 mb-2">Consumo mensual en kWh (Aparece en tu recibo)</label>
+                    <input type="number" id="elec-kwh" placeholder="Ej. 250" class="w-full sm:w-1/2 border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 outline-none transition-colors duration-300 hover:border-yellow-300">
+                </div>
+
+                <div id="input-aparatos" class="hidden space-y-4">
+                    <p class="text-sm text-slate-500 mb-4 font-medium">Ingresa la cantidad de aparatos que tienes y las horas promedio que se usan al día.</p>
+                    <div id="lista-aparatos" class="space-y-3 max-h-80 overflow-y-auto pr-3 custom-scrollbar">
+                        <!-- JS Inject -->
+                    </div>
+                </div>
+
+                <div class="pt-6 mt-8 border-t border-slate-100">
+                    <button onclick="calcularElectricidad(false)" class="w-full glow-yellow bg-gradient-to-r from-yellow-500 to-amber-500 text-white font-extrabold text-lg py-4 px-6 rounded-xl transition-all duration-300 active:scale-95 shadow-md">
+                        Calcular Electricidad
+                    </button>
+                    <div id="resultado-elec" class="hidden mt-5 bg-slate-900 rounded-2xl p-5 text-center shadow-inner relative overflow-hidden">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-yellow-500 rounded-full mix-blend-screen filter blur-3xl opacity-20"></div>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1 relative z-10">Huella Parcial</p>
+                        <p class="text-4xl font-black text-yellow-400 relative z-10"><span id="total-co2-elec">0.00</span> <span class="text-base text-slate-300 font-medium">kg CO₂e</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÓDULO 3: RESIDUOS SÓLIDOS -->
+        <div class="module-card bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden animate-fade-in-up" style="animation-delay: 0.4s; opacity: 0;">
+            <div class="bg-gradient-to-r from-slate-900 to-slate-800 px-8 py-5 flex items-center justify-between">
+                <h2 class="text-2xl font-extrabold text-white flex items-center gap-3">
+                    <span class="text-3xl drop-shadow-md title-icon">♻️</span> Residuos Sólidos
+                </h2>
+                <span class="px-3 py-1 bg-slate-800 rounded-full text-xs font-semibold text-blue-400 border border-slate-700 shadow-inner">DBGIR 2026 / IPCC</span>
+            </div>
+
+            <div class="p-8 space-y-8">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-600 mb-2">¿Cuántas personas viven en tu hogar?</label>
+                    <input type="number" id="res-habitantes" placeholder="Ej. 4" class="w-full sm:w-1/2 border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-colors duration-300 hover:border-blue-300">
+                </div>
+
+                <div class="p-5 bg-blue-50/70 rounded-2xl border border-blue-100 transition-colors duration-300 hover:bg-blue-50 shadow-sm">
+                    <label class="flex items-center gap-3 cursor-pointer mb-2">
+                        <input type="checkbox" id="chk-usa-calculadora" onchange="toggleCalculadoraExterna()" class="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500 transition-colors duration-300">
+                        <span class="text-base font-extrabold text-blue-900">Tengo mi dato exacto de reciclaje</span>
+                    </label>
+                    <p class="text-sm text-blue-700/80 mb-4 ml-8">Si ya usaste nuestra <a href="https://calculadorareciclaje.org/" target="_blank" class="font-black text-blue-800 underline hover:text-blue-600 transition-colors">Calculadora de Reciclaje</a>, ingresa tu resultado para un crédito exacto.</p>
+                    
+                    <div id="input-co2-externo" class="hidden ml-8 mt-2">
+                        <label class="block text-xs font-bold text-blue-800 mb-1 uppercase tracking-wide">CO₂e evitado (kg)</label>
+                        <input type="number" id="val-co2-externo" placeholder="Ej. 15.5" class="w-full sm:w-1/2 border-blue-200 rounded-xl p-3 text-sm bg-white shadow-inner outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors duration-300">
+                    </div>
+                </div>
+
+                <div id="contenedor-casillas-genericas" class="transition-opacity duration-300 p-6 bg-slate-50/50 rounded-2xl border border-slate-100">
+                    <h3 class="text-base font-bold text-slate-800 mb-2">¿Separas y entregas al camión estos materiales?</h3>
+                    <p class="text-sm text-slate-500 mb-5">Si no tienes el dato exacto arriba, aplicaremos los promedios del DBGIR a tu huella.</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <label class="flex items-center gap-3 p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-blue-300 cursor-pointer transition-all duration-300">
+                            <input type="checkbox" id="chk-plastico" class="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500 casillas-reciclaje">
+                            <span class="text-sm font-bold text-slate-700">Plásticos (PET, Rígidos)</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-blue-300 cursor-pointer transition-all duration-300">
+                            <input type="checkbox" id="chk-carton" class="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500 casillas-reciclaje">
+                            <span class="text-sm font-bold text-slate-700">Cartón</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-blue-300 cursor-pointer transition-all duration-300">
+                            <input type="checkbox" id="chk-papel" class="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500 casillas-reciclaje">
+                            <span class="text-sm font-bold text-slate-700">Papel</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-blue-300 cursor-pointer transition-all duration-300">
+                            <input type="checkbox" id="chk-vidrio" class="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500 casillas-reciclaje">
+                            <span class="text-sm font-bold text-slate-700">Vidrio</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-blue-300 cursor-pointer transition-all duration-300">
+                            <input type="checkbox" id="chk-lata" class="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500 casillas-reciclaje">
+                            <span class="text-sm font-bold text-slate-700">Metales (Latas)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="pt-2 border-t border-slate-100">
+                    <button onclick="calcularResiduos(false)" class="w-full glow-blue bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-extrabold text-lg py-4 px-6 rounded-xl transition-all duration-300 active:scale-95 shadow-md">
+                        Calcular Residuos
+                    </button>
+                    
+                    <div id="resultado-residuos" class="hidden mt-5 bg-slate-900 rounded-2xl p-5 text-center shadow-inner relative overflow-hidden">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-500 rounded-full mix-blend-screen filter blur-3xl opacity-20"></div>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1 relative z-10">Huella Parcial (Neta)</p>
+                        <p class="text-4xl font-black text-blue-400 relative z-10"><span id="total-co2-residuos">0.00</span> <span class="text-base text-slate-300 font-medium">kg CO₂e</span></p>
+                        
+                        <div id="mensaje-carbono-negativo" class="hidden mt-4 px-4 py-2 bg-emerald-900/40 text-emerald-400 text-xs font-black uppercase tracking-wider rounded-full w-max mx-auto border border-emerald-700/50 shadow-[0_0_10px_rgba(16,185,129,0.2)] relative z-10">
+                            🌟 Eres Carbono Negativo en Residuos
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÓDULO 4: AGUA (OPCIONAL) -->
+        <div class="module-card bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden animate-fade-in-up" style="animation-delay: 0.5s; opacity: 0;">
+            <div class="bg-gradient-to-r from-slate-900 to-slate-800 px-8 py-5 flex items-center justify-between">
+                <h2 class="text-2xl font-extrabold text-white flex items-center gap-3">
+                    <span class="text-3xl drop-shadow-md title-icon">💧</span> Agua Potable
+                </h2>
+                <span class="px-3 py-1 bg-slate-800 rounded-full text-xs font-semibold text-cyan-400 border border-slate-700 shadow-inner">IMTA Nacional</span>
+            </div>
+
+            <div class="p-8 space-y-8">
+                <div class="p-5 bg-cyan-50/50 rounded-2xl border border-cyan-100 transition-colors duration-300 hover:bg-cyan-50 shadow-sm">
+                    <div class="flex items-start gap-4">
+                        <div class="flex items-center h-5 mt-1">
+                            <input type="checkbox" id="chk-agua-opcional" onchange="toggleAgua()" class="w-5 h-5 text-cyan-600 rounded border-slate-300 focus:ring-cyan-500 cursor-pointer transition-colors duration-300">
+                        </div>
+                        <div>
+                            <label for="chk-agua-opcional" class="text-base font-extrabold text-cyan-900 cursor-pointer">Calcular huella hídrica indirecta (Opcional)</label>
+                            <p class="text-sm text-cyan-700/80 mt-1 font-medium">Si no cuentas con recibo medido en m³, déjalo sin marcar para omitir.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="input-agua" class="hidden space-y-4">
+                    <label class="block text-sm font-semibold text-slate-600 mb-2">Consumo mensual (m³)</label>
+                    <input type="number" id="agua-m3" placeholder="Ej. 20" class="w-full sm:w-1/2 border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 outline-none transition-colors duration-300 hover:border-cyan-300">
+                </div>
+
+                <div class="pt-2 border-t border-slate-100">
+                    <button onclick="calcularAgua(false)" id="btn-calc-agua" class="w-full glow-cyan bg-gradient-to-r from-cyan-500 to-sky-500 text-white font-extrabold text-lg py-4 px-6 rounded-xl transition-all duration-300 active:scale-95 shadow-md opacity-50 cursor-not-allowed" disabled>
+                        Calcular Agua
+                    </button>
+                    <div id="resultado-agua" class="hidden mt-5 bg-slate-900 rounded-2xl p-5 text-center shadow-inner relative overflow-hidden">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-cyan-500 rounded-full mix-blend-screen filter blur-3xl opacity-20"></div>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1 relative z-10">Huella Parcial</p>
+                        <p class="text-4xl font-black text-cyan-400 relative z-10"><span id="total-co2-agua">0.00</span> <span class="text-base text-slate-300 font-medium">kg CO₂e</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÓDULO MAESTRO: CÁLCULO TOTAL -->
+        <div class="pt-10 pb-20 animate-fade-in-up" style="animation-delay: 0.6s; opacity: 0;">
+            <button onclick="calcularHuellaTotal()" class="w-full glow-master bg-gradient-to-r from-emerald-600 via-teal-500 to-blue-600 text-white font-black text-2xl py-6 px-8 rounded-3xl transition-all duration-500 active:scale-95 shadow-2xl border-b-4 border-emerald-800 flex items-center justify-center gap-3">
+                <span class="title-icon">🌍</span> CALCULAR IMPACTO TOTAL
+            </button>
+
+            <!-- Resultados Gran Total -->
+            <div id="caja-gran-total" class="hidden mt-10 bg-slate-900 rounded-[2rem] p-10 shadow-2xl border border-slate-700/50 text-center relative overflow-hidden">
+                <!-- Decoración de fondo luminosa -->
+                <div class="absolute -top-20 -right-20 w-64 h-64 bg-emerald-500 rounded-full mix-blend-screen filter blur-[80px] opacity-30"></div>
+                <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-blue-500 rounded-full mix-blend-screen filter blur-[80px] opacity-30"></div>
+                
+                <h3 class="text-slate-400 font-bold uppercase tracking-[0.3em] text-sm mb-4 relative z-10">Tu Impacto Ambiental Mensual</h3>
+                <div class="text-7xl sm:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-br from-emerald-300 via-teal-300 to-cyan-300 py-3 relative z-10 drop-shadow-lg">
+                    <span id="gran-total-co2">0.00</span>
+                </div>
+                <p class="text-xl sm:text-2xl text-slate-300 font-medium mb-12 relative z-10">Kilogramos de CO₂ equivalentes</p>
+
+                <!-- Desglose Visual Estilo Analítica -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 relative z-10">
+                    <div class="bg-slate-800/80 backdrop-blur-sm p-5 rounded-2xl border border-slate-700">
+                        <span class="block text-3xl mb-2 drop-shadow-md">🔥</span>
+                        <p class="text-[10px] text-slate-400 uppercase font-black tracking-wider">Combustibles</p>
+                        <p class="text-2xl font-bold text-emerald-400 mt-1"><span id="res-sum-combustibles">0</span> <span class="text-xs font-medium text-slate-500">kg</span></p>
+                    </div>
+                    <div class="bg-slate-800/80 backdrop-blur-sm p-5 rounded-2xl border border-slate-700">
+                        <span class="block text-3xl mb-2 drop-shadow-md">⚡</span>
+                        <p class="text-[10px] text-slate-400 uppercase font-black tracking-wider">Electricidad</p>
+                        <p class="text-2xl font-bold text-yellow-400 mt-1"><span id="res-sum-elec">0</span> <span class="text-xs font-medium text-slate-500">kg</span></p>
+                    </div>
+                    <div class="bg-slate-800/80 backdrop-blur-sm p-5 rounded-2xl border border-slate-700">
+                        <span class="block text-3xl mb-2 drop-shadow-md">♻️</span>
+                        <p class="text-[10px] text-slate-400 uppercase font-black tracking-wider">Residuos</p>
+                        <p class="text-2xl font-bold text-blue-400 mt-1"><span id="res-sum-residuos">0</span> <span class="text-xs font-medium text-slate-500">kg</span></p>
+                    </div>
+                    <div class="bg-slate-800/80 backdrop-blur-sm p-5 rounded-2xl border border-slate-700">
+                        <span class="block text-3xl mb-2 drop-shadow-md">💧</span>
+                        <p class="text-[10px] text-slate-400 uppercase font-black tracking-wider">Agua</p>
+                        <p class="text-2xl font-bold text-cyan-400 mt-1"><span id="res-sum-agua">0</span> <span class="text-xs font-medium text-slate-500">kg</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- EL MOTOR CENTRAL (JAVASCRIPT) -->
+<!-- ==========================================
+             FOOTER Y AVISOS LEGALES
+        ========================================== -->
+        <footer class="mt-16 pt-8 pb-12 border-t border-slate-200 animate-fade-in-up" style="animation-delay: 0.7s; opacity: 0;">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 px-4 sm:px-0">
+                
+                <!-- Disclaimer de Datos -->
+                <div class="md:col-span-2 space-y-3">
+                    <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                        <span>⚖️</span> Nota Metodológica y Legal
+                    </h4>
+                    <p class="text-xs text-slate-500 leading-relaxed text-justify">
+                        Esta herramienta estima la huella de carbono domiciliaria utilizando factores de emisión oficiales publicados por la <strong>SEMARNAT, CONUEE, IMTA y metodologías del IPCC vigentes a 2026</strong>. Los resultados arrojados tienen un propósito estrictamente educativo y de concientización ciudadana. Este cálculo no constituye una auditoría oficial de emisiones ni genera reportes con validez legal, técnica o regulatoria para el cumplimiento normativo empresarial.
+                    </p>
+                </div>
+
+                <!-- Contacto -->
+                <div class="space-y-3">
+                    <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                        <span>✉️</span> Contacto
+                    </h4>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        ¿Tienes dudas sobre los cálculos, la metodología o deseas implementar una versión corporativa para tu empresa o municipio?
+                    </p>
+                    <a href="mailto:contacto@rutasustentable.com" class="inline-block text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors">
+                        contacto@rutasustentable.com
+                    </a>
+                </div>
+            </div>
+
+            <!-- Copyright y Enlaces -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold text-slate-400 px-4 sm:px-0 bg-slate-100/50 p-4 rounded-xl border border-slate-100">
+                <p>© 2026 Ruta Sustentable. Todos los derechos reservados.</p>
+                <div class="flex gap-4 sm:gap-6">
+            
+                </div>
+            </div>
+        </footer>
+    <script>
+        // ==========================================
+        // CONSTANTES Y BASES DE DATOS OFICIALES
+        // ==========================================
+        const FACTORES_COMB = { gas_kg: 3.0523, gas_l: 1.6482, gas_m3: 2.1925, gasolina_l: 2.4466, diesel_l: 2.8267 };
+        const PRECIO_GASOLINA = 23.50; 
+        const FACTOR_SEN = 0.4440; 
+        const APARATOS = [
+            { id: 'foco', nombre: 'Foco LED', watts: 10 }, { id: 'tv', nombre: 'Pantalla TV LED', watts: 65 },
+            { id: 'pc', nombre: 'Computadora', watts: 60 }, { id: 'refri', nombre: 'Refrigerador', watts: 400 },
+            { id: 'licuadora', nombre: 'Licuadora', watts: 350 }, { id: 'microondas', nombre: 'Microondas', watts: 1200 },
+            { id: 'horno_elec', nombre: 'Horno Eléctrico', watts: 1000 }, { id: 'cafetera', nombre: 'Cafetera', watts: 850 },
+            { id: 'parrilla', nombre: 'Parrilla Eléctrica', watts: 1000 }, { id: 'lavadora', nombre: 'Lavadora', watts: 395 },
+            { id: 'secadora_ropa', nombre: 'Secadora Ropa', watts: 1270 }, { id: 'plancha', nombre: 'Plancha', watts: 1000 },
+            { id: 'aspiradora', nombre: 'Aspiradora', watts: 1500 }, { id: 'secadora_pelo', nombre: 'Secadora Cabello', watts: 1800 },
+            { id: 'mini_1', nombre: 'Minisplit (1 Ton)', watts: 1100 }, { id: 'mini_2', nombre: 'Minisplit (2 Ton)', watts: 2200 },
+            { id: 'aire_ven', nombre: 'A/C Ventana (1 Ton)', watts: 1800 }
+        ];
+        const GENERACION_DOMESTICA = 0.7460; 
+        const FACTOR_EMISION_RESIDUOS = 0.6048; 
+        const PORC_PLASTICO = 0.07691, PORC_CARTON = 0.06698, PORC_PAPEL = 0.05364, PORC_VIDRIO = 0.05689, PORC_METALES = 0.01654;
+        const FACTOR_EMISION_AGUA = 0.4662; 
+
+        // ==========================================
+        // INICIALIZACIÓN DE LA INTERFAZ
+        // ==========================================
+        let modoGas = 'cilindro', modoMovilidad = 'litros', modoElec = 'recibo';
+
+        const listaHTML = document.getElementById('lista-aparatos');
+        APARATOS.forEach(app => {
+            listaHTML.innerHTML += `
+                <div class="flex items-center gap-3 bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm hover:border-yellow-300 hover:shadow-md transition-colors duration-300">
+                    <div class="w-1/2 text-sm font-bold text-slate-700">${app.nombre} <span class="text-xs font-semibold text-slate-400 block mt-0.5">${app.watts} W</span></div>
+                    <input type="number" id="qty-${app.id}" placeholder="Cant." class="w-1/4 text-sm font-semibold border-slate-200 rounded-lg p-2.5 outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 border transition-colors bg-slate-50 focus:bg-white text-center">
+                    <input type="number" id="hrs-${app.id}" placeholder="Hrs/día" class="w-1/4 text-sm font-semibold border-slate-200 rounded-lg p-2.5 outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 border transition-colors bg-slate-50 focus:bg-white text-center">
+                </div>
+            `;
+        });
+
+        function switchTab(categoria, tab) {
+            let activeClass = "px-5 py-2.5 text-sm font-bold rounded-lg bg-white shadow-sm text-slate-800 transition-colors duration-300 transform scale-100";
+            let inactiveClass = "px-5 py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors duration-300";
+            
+            if(categoria === 'gas') {
+                modoGas = tab;
+                ['cilindro', 'estacionario', 'natural'].forEach(t => {
+                    document.getElementById(`input-${t}`).classList.add('hidden');
+                    document.getElementById(`tab-${t}`).className = inactiveClass;
+                });
+                document.getElementById(`input-${tab}`).classList.remove('hidden');
+                document.getElementById(`tab-${tab}`).className = activeClass;
+            }
+            if(categoria === 'movilidad') {
+                modoMovilidad = tab;
+                ['litros', 'gasto', 'km'].forEach(t => {
+                    document.getElementById(`input-${t}`).classList.add('hidden');
+                    document.getElementById(`tab-${t}`).className = inactiveClass;
+                });
+                document.getElementById(`input-${tab}`).classList.remove('hidden');
+                document.getElementById(`tab-${tab}`).className = activeClass;
+            }
+        }
+
+        function switchTabElec(tab) {
+            modoElec = tab;
+            let activeClass = "px-5 py-2.5 text-sm font-bold rounded-lg bg-white shadow-sm text-slate-800 transition-colors duration-300 transform scale-100";
+            let inactiveClass = "px-5 py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors duration-300";
+            
+            ['recibo', 'aparatos'].forEach(t => {
+                document.getElementById(`input-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).className = inactiveClass;
+            });
+            document.getElementById(`input-${tab}`).classList.remove('hidden');
+            document.getElementById(`tab-${tab}`).className = activeClass;
+        }
+
+        function toggleCalculadoraExterna() {
+            let isChecked = document.getElementById('chk-usa-calculadora').checked;
+            let casillas = document.querySelectorAll('.casillas-reciclaje');
+            let contenedor = document.getElementById('contenedor-casillas-genericas');
+            let inputExterno = document.getElementById('input-co2-externo');
+
+            if (isChecked) {
+                inputExterno.classList.remove('hidden');
+                contenedor.classList.add('opacity-30', 'pointer-events-none', 'grayscale');
+                casillas.forEach(c => { c.checked = false; c.disabled = true; });
+            } else {
+                inputExterno.classList.add('hidden');
+                contenedor.classList.remove('opacity-30', 'pointer-events-none', 'grayscale');
+                document.getElementById('val-co2-externo').value = '';
+                casillas.forEach(c => c.disabled = false);
+            }
+        }
+
+        function toggleAgua() {
+            let isChecked = document.getElementById('chk-agua-opcional').checked;
+            let btnCalc = document.getElementById('btn-calc-agua');
+            if (isChecked) {
+                document.getElementById('input-agua').classList.remove('hidden');
+                btnCalc.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnCalc.disabled = false;
+            } else {
+                document.getElementById('input-agua').classList.add('hidden');
+                btnCalc.classList.add('opacity-50', 'cursor-not-allowed');
+                btnCalc.disabled = true;
+                document.getElementById('agua-m3').value = '';
+                document.getElementById('resultado-agua').classList.add('hidden');
+            }
+        }
+
+        // ==========================================
+        // MOTORES DE CÁLCULO
+        // ==========================================
+        function calcularEmisiones(returnOnly = false) {
+            let totalGas = 0, totalMov = 0;
+            // Gas
+            if (modoGas === 'cilindro') totalGas = (parseFloat(document.getElementById('gas-kg').value) || 0) * FACTORES_COMB.gas_kg;
+            else if (modoGas === 'estacionario') totalGas = (parseFloat(document.getElementById('gas-l').value) || 0) * FACTORES_COMB.gas_l;
+            else if (modoGas === 'natural') totalGas = (parseFloat(document.getElementById('gas-m3').value) || 0) * FACTORES_COMB.gas_m3;
+            // Movilidad
+            let tipoMotor = document.getElementById('tipo-combustible').value;
+            let factorMotor = tipoMotor === 'gasolina' ? FACTORES_COMB.gasolina_l : FACTORES_COMB.diesel_l;
+            let lts = 0;
+            if (modoMovilidad === 'litros') lts = parseFloat(document.getElementById('mov-litros').value) || 0;
+            else if (modoMovilidad === 'gasto') lts = (parseFloat(document.getElementById('mov-pesos').value) || 0) / PRECIO_GASOLINA;
+            else if (modoMovilidad === 'km') lts = (parseFloat(document.getElementById('mov-km').value) || 0) / (parseFloat(document.getElementById('mov-rendimiento').value) || 15);
+            totalMov = lts * factorMotor;
+            
+            let total = totalGas + totalMov;
+            if(returnOnly) return total;
+            document.getElementById('total-co2-combustible').innerText = total.toFixed(2);
+            document.getElementById('resultado-combustibles').classList.remove('hidden');
+            return total;
+        }
+
+        function calcularElectricidad(returnOnly = false) {
+            let kwhMes = 0;
+            if (modoElec === 'recibo') kwhMes = parseFloat(document.getElementById('elec-kwh').value) || 0;
+            else {
+                APARATOS.forEach(app => {
+                    let q = parseFloat(document.getElementById(`qty-${app.id}`).value) || 0;
+                    let h = parseFloat(document.getElementById(`hrs-${app.id}`).value) || 0;
+                    kwhMes += (q * app.watts * h * 30) / 1000;
+                });
+            }
+            let total = kwhMes * FACTOR_SEN;
+            if(returnOnly) return total;
+            document.getElementById('total-co2-elec').innerText = total.toFixed(2);
+            document.getElementById('resultado-elec').classList.remove('hidden');
+            return total;
+        }
+
+        function calcularResiduos(returnOnly = false) {
+            let hab = parseFloat(document.getElementById('res-habitantes').value) || 0;
+            let genBruta = hab * GENERACION_DOMESTICA * 30;
+            let total = 0;
+
+            if (document.getElementById('chk-usa-calculadora').checked) {
+                let co2Evitado = parseFloat(document.getElementById('val-co2-externo').value) || 0;
+                total = (genBruta * FACTOR_EMISION_RESIDUOS) - co2Evitado;
+            } else {
+                let desc = 0;
+                if(document.getElementById('chk-plastico').checked) desc += PORC_PLASTICO;
+                if(document.getElementById('chk-carton').checked) desc += PORC_CARTON;
+                if(document.getElementById('chk-papel').checked) desc += PORC_PAPEL;
+                if(document.getElementById('chk-vidrio').checked) desc += PORC_VIDRIO;
+                if(document.getElementById('chk-lata').checked) desc += PORC_METALES;
+                total = (genBruta - (genBruta * desc)) * FACTOR_EMISION_RESIDUOS;
+            }
+
+            if(returnOnly) return total;
+            document.getElementById('total-co2-residuos').innerText = total.toFixed(2);
+            document.getElementById('resultado-residuos').classList.remove('hidden');
+            if(total < 0) document.getElementById('mensaje-carbono-negativo').classList.remove('hidden');
+            else document.getElementById('mensaje-carbono-negativo').classList.add('hidden');
+            return total;
+        }
+
+        function calcularAgua(returnOnly = false) {
+            let total = 0;
+            if (document.getElementById('chk-agua-opcional').checked) {
+                total = (parseFloat(document.getElementById('agua-m3').value) || 0) * FACTOR_EMISION_AGUA;
+            }
+            if(returnOnly) return total;
+            document.getElementById('total-co2-agua').innerText = total.toFixed(2);
+            document.getElementById('resultado-agua').classList.remove('hidden');
+            return total;
+        }
+
+        // ==========================================
+        // CÁLCULO GRAN TOTAL
+        // ==========================================
+        function calcularHuellaTotal() {
+            let vComb = calcularEmisiones(true);
+            let vElec = calcularElectricidad(true);
+            let vRes = calcularResiduos(true);
+            let vAgua = calcularAgua(true);
+
+            let granTotal = vComb + vElec + vRes + vAgua;
+
+            document.getElementById('res-sum-combustibles').innerText = vComb.toFixed(2);
+            document.getElementById('res-sum-elec').innerText = vElec.toFixed(2);
+            document.getElementById('res-sum-residuos').innerText = vRes.toFixed(2);
+            document.getElementById('res-sum-agua').innerText = vAgua.toFixed(2);
+            
+            // Animación ascendente del número principal
+            animateValue("gran-total-co2", 0, granTotal, 1500);
+            
+            const resultBox = document.getElementById('caja-gran-total');
+            resultBox.classList.remove('hidden');
+            
+            resultBox.classList.remove('animate-fade-in-up');
+            void resultBox.offsetWidth; 
+            resultBox.classList.add('animate-fade-in-up');
+            
+            setTimeout(() => {
+                resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+
+        // Función auxiliar para animar el conteo del número final
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                // Función de suavizado (easeOutQuart)
+                const easeProgress = 1 - Math.pow(1 - progress, 4);
+                obj.innerHTML = (easeProgress * (end - start) + start).toFixed(2);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+    </script>
+</body>
+</html>
