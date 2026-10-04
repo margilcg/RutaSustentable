@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Empresas | Ruta Sustentable</title>
+    <title>Cotizador B2B | Ruta Sustentable</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -35,67 +35,109 @@
     <main class="flex-grow flex items-center justify-center px-4 py-12">
         <div class="max-w-3xl w-full bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden relative">
             
-            <!-- Decoración -->
             <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-emerald-500 to-blue-600"></div>
             
-            <div class="p-8 sm:p-12 text-center">
-                <div class="inline-flex items-center justify-center w-20 h-20 bg-slate-100 text-slate-800 rounded-full mb-6 shadow-sm">
-                    <span class="text-4xl">🏢</span>
-                </div>
-                
-                <h1 class="text-3xl sm:text-4xl font-black text-slate-900 mb-4 tracking-tight">Consultoría <span class="text-emerald-600">B2B</span></h1>
-                
-                <!-- Diferenciador -->
-                <div class="bg-emerald-50 text-emerald-800 text-sm font-semibold py-2 px-4 rounded-full inline-block mb-6 border border-emerald-200">
-                    Tecnología para la eficiencia. Inteligencia humana para la precisión.
-                </div>
-
-                <p class="text-base text-slate-600 mb-8 max-w-xl mx-auto leading-relaxed">
-                    Procesamos tus datos mediante IA bajo normativas SEMARNAT e IPCC, pero <strong>ningún reporte se entrega sin la validación, análisis y firma de nuestros ingenieros especialistas.</strong>
-                </p>
-
-                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 sm:p-8 mb-8 text-left max-w-2xl mx-auto">
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-800 mb-6 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                        Servicios y Cotizaciones Base
-                    </h3>
-                    
-                    <ul class="space-y-4 mb-8">
-                        <li class="flex justify-between items-center pb-4 border-b border-slate-200">
-                            <div>
-                                <strong class="text-slate-800 block">Inventario Básico (Alcance 1 y 2)</strong>
-                                <span class="text-sm text-slate-500">Emisiones directas y energía eléctrica.</span>
-                            </div>
-                            <span class="font-bold text-slate-900 text-right">Desde $15,000 MXN</span>
-                        </li>
-                        <li class="flex justify-between items-center pb-4 border-b border-slate-200">
-                            <div>
-                                <strong class="text-slate-800 block">Inventario Integral (Alcance 1, 2 y 3)</strong>
-                                <span class="text-sm text-slate-500">Incluye cadena de valor y logística.</span>
-                            </div>
-                            <span class="font-bold text-slate-900 text-right">Desde $25,000 MXN</span>
-                        </li>
-                        <li class="flex justify-between items-center">
-                            <div>
-                                <strong class="text-slate-800 block">Reporte COA y Proyectos a Medida</strong>
-                                <span class="text-sm text-slate-500">Cédula de Operación Anual y auditorías.</span>
-                            </div>
-                            <span class="font-bold text-slate-900 text-right">Previa evaluación</span>
-                        </li>
-                    </ul>
-
-                    <!-- Aquí conectamos a Tally -->
-                    <a href="diagnostico.html" class="block w-full text-center bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-md hover:shadow-lg">
-                        Solicitar Cotización de mi Proyecto
-                    </a>
+            <div class="p-8 sm:p-12">
+                <div class="text-center mb-10">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-slate-100 text-slate-800 rounded-full mb-6 shadow-sm">
+                        <span class="text-3xl">🏢</span>
+                    </div>
+                    <h1 class="text-3xl font-black text-slate-900 mb-4 tracking-tight">Cotizador de Servicios <span class="text-emerald-600">B2B</span></h1>
+                    <p class="text-slate-600 max-w-xl mx-auto">
+                        Tecnología para la eficiencia. Inteligencia humana para la precisión. Cotiza el diagnóstico ambiental de tu empresa en segundos.
+                    </p>
                 </div>
 
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">
-                    Módulo automatizado SaaS en desarrollo • 2027
-                </p>
+                <!-- Calculadora Dinámica -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 sm:p-8 mb-8 mx-auto shadow-inner">
+                    <div class="grid grid-cols-1 gap-6 mb-8">
+                        
+                        <!-- Selección de Servicio -->
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">1. ¿Qué nivel de diagnóstico requieres?</label>
+                            <select id="tipo-servicio" onchange="calcularCotizacion()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                                <option value="basico">Inventario Básico (Alcance 1 y 2)</option>
+                                <option value="integral">Inventario Integral (Alcance 1, 2 y 3)</option>
+                                <option value="coa">Cédula de Operación Anual (COA) o Auditoría a Medida</option>
+                            </select>
+                        </div>
+
+                        <!-- Número de Sucursales -->
+                        <div id="contenedor-sucursales">
+                            <label class="block text-sm font-bold text-slate-700 mb-2">2. Número de instalaciones o sucursales a evaluar</label>
+                            <div class="flex items-center">
+                                <input type="number" id="num-sucursales" oninput="calcularCotizacion()" value="1" min="1" max="50" class="w-24 bg-white border border-slate-300 rounded-xl px-4 py-3 text-slate-700 font-bold text-center focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                                <span class="ml-4 text-sm text-slate-500">Cada instalación extra ajusta el volumen de procesamiento de datos.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resultado de Cotización -->
+                    <div class="border-t border-slate-200 pt-6 mt-2">
+                        <p class="text-sm text-slate-500 font-semibold uppercase tracking-wider mb-1">Inversión Estimada</p>
+                        <div id="precio-display" class="text-4xl font-black text-slate-900 mb-6">
+                            $15,000 MXN <span class="text-base text-slate-500 font-normal">+ IVA</span>
+                        </div>
+                        
+                        <!-- Botón que enviará al Tally Financiero -->
+                        <a href="onboarding.html" id="btn-continuar" class="block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md hover:shadow-lg text-lg">
+                            Aceptar y Comenzar Proyecto
+                        </a>
+                        <p class="text-xs text-center text-slate-400 mt-4">
+                            Soportamos pagos por SPEI (Anticipo) o inicio vía Orden de Compra (OC).
+                        </p>
+                    </div>
+                </div>
+
             </div>
         </div>
     </main>
 
+    <!-- Script del Cotizador -->
+    <script>
+        // Configuración de precios
+        const precios = {
+            basico: 15000,
+            integral: 25000
+        };
+        const costoPorSucursalExtra = 2500; // Puedes ajustar este valor
+
+        function calcularCotizacion() {
+            const servicio = document.getElementById('tipo-servicio').value;
+            const sucursalesInput = document.getElementById('num-sucursales');
+            let sucursales = parseInt(sucursalesInput.value);
+            
+            // Validaciones básicas
+            if (isNaN(sucursales) || sucursales < 1) {
+                sucursales = 1;
+            }
+
+            const contenedorSucursales = document.getElementById('contenedor-sucursales');
+            const precioDisplay = document.getElementById('precio-display');
+            const btnContinuar = document.getElementById('btn-continuar');
+
+            if (servicio === 'coa') {
+                // Esconder sucursales si es a medida
+                contenedorSucursales.style.display = 'none';
+                precioDisplay.innerHTML = 'Previa evaluación técnica';
+                btnContinuar.innerHTML = 'Solicitar Cotización a Medida';
+            } else {
+                // Mostrar sucursales y calcular
+                contenedorSucursales.style.display = 'block';
+                
+                // Fórmula: Precio Base + (Sucursales Extra * Costo Extra)
+                let total = precios[servicio] + ((sucursales - 1) * costoPorSucursalExtra);
+                
+                // Formatear a moneda
+                let totalFormateado = total.toLocaleString('es-MX');
+                
+                precioDisplay.innerHTML = '$' + totalFormateado + ' MXN <span class="text-base text-slate-500 font-normal">+ IVA</span>';
+                btnContinuar.innerHTML = 'Aceptar y Comenzar Proyecto';
+            }
+        }
+
+        // Ejecutar al cargar para inicializar el precio correcto
+        window.onload = calcularCotizacion;
+    </script>
 </body>
 </html>
