@@ -12,10 +12,8 @@
         body { 
             font-family: 'Inter', sans-serif; 
             background-color: #f8fafc;
-            /* Evita que la página entera haga scroll, dejando que Tally lo maneje por dentro */
             overflow: hidden; 
         }
-        /* Esta es la magia: la altura de la pantalla completa (100vh) menos la altura del Navbar (64px) */
         .contenedor-formulario {
             height: calc(100vh - 64px);
             width: 100%;
@@ -38,7 +36,8 @@
 
     <!-- Contenedor del Formulario Tally -->
     <main class="contenedor-formulario relative bg-slate-50">
-    <iframe data-tally-src="https://tally.so/r/b5Ojd7?transparentBackground=1" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0" title="Alta de Proyecto y Facturación - Ruta Sustentable"></iframe>
+        <!-- Enlace corregido con el número CERO -->
+        <iframe data-tally-src="https://tally.so/r/b50jd7?transparentBackground=1" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0" title="Alta de Proyecto"></iframe>
     </main>
 
 </body>
