@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alta de Proyecto | Ruta Sustentable</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Script de Tally -->
+    <script async src="https://tally.so/widgets/embed.js"></script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f8fafc;
+            /* Evita que la página entera haga scroll, dejando que Tally lo maneje por dentro */
+            overflow: hidden; 
+        }
+        /* Esta es la magia: la altura de la pantalla completa (100vh) menos la altura del Navbar (64px) */
+        .contenedor-formulario {
+            height: calc(100vh - 64px);
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col h-screen">
+
+    <!-- Navbar Minimalista Fijo -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200 h-16 flex-shrink-0 flex items-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex justify-between">
+            <a href="index.html" class="flex-shrink-0 flex items-center hover:opacity-80 transition">
+                <span class="font-extrabold text-2xl text-slate-900 tracking-tighter" style="font-family: system-ui, -apple-system, sans-serif;">Ruta<span class="text-emerald-600">Sustentable</span></span>
+            </a>
+            <a href="empresas.html" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition flex items-center gap-2">
+                ← Volver al Cotizador
+            </a>
+        </div>
+    </nav>
+
+    <!-- Contenedor del Formulario Tally -->
+    <main class="contenedor-formulario relative bg-slate-50">
+        <!-- RECUERDA: Cambiar TU_ENLACE_AQUI por el link de tu Tally Financiero -->
+        <iframe data-tally-src="https://tally.so/r/TU_ENLACE_AQUI?transparentBackground=1" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0" title="Alta de Proyecto"></iframe>
+    </main>
+
+</body>
+</html>
