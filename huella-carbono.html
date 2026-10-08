@@ -91,7 +91,6 @@
                         Uso Doméstico (Gas)
                     </h3>
                     
-                    <!-- FIX: Grilla responsive en lugar de w-max horizontal para que no se salga de pantalla -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-5 bg-slate-200/50 p-1.5 rounded-xl w-full shadow-inner">
                         <button onclick="switchTab('gas', 'cilindro')" id="tab-cilindro" class="w-full py-2.5 text-sm font-bold rounded-lg bg-white shadow-sm text-slate-800 transition-colors duration-300">Cilindro (kg)</button>
                         <button onclick="switchTab('gas', 'estacionario')" id="tab-estacionario" class="w-full py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors duration-300">Estacionario (L)</button>
@@ -123,7 +122,6 @@
                         Movilidad
                     </h3>
                     
-                    <!-- FIX: Grilla responsive -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-5 bg-slate-200/50 p-1.5 rounded-xl w-full shadow-inner">
                         <button onclick="switchTab('movilidad', 'litros')" id="tab-litros" class="w-full py-2.5 text-sm font-bold rounded-lg bg-white shadow-sm text-slate-800 transition-colors duration-300">Por Litros</button>
                         <button onclick="switchTab('movilidad', 'gasto')" id="tab-gasto" class="w-full py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors duration-300">Por Gasto ($)</button>
@@ -185,7 +183,6 @@
             </div>
 
             <div class="p-6 sm:p-8">
-                <!-- FIX: Grilla responsive -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6 bg-slate-200/50 p-1.5 rounded-xl w-full shadow-inner">
                     <button onclick="switchTabElec('recibo')" id="tab-recibo" class="w-full py-2.5 text-sm font-bold rounded-lg bg-white shadow-sm text-slate-800 transition-colors duration-300">Tengo mi recibo CFE</button>
                     <button onclick="switchTabElec('aparatos')" id="tab-aparatos" class="w-full py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors duration-300">Calcular por aparatos</button>
@@ -370,12 +367,24 @@
                         <p class="text-xl sm:text-2xl font-bold text-cyan-400 mt-1"><span id="res-sum-agua">0</span> <span class="text-[10px] sm:text-xs font-medium text-slate-500">kg</span></p>
                     </div>
                 </div>
+
+                <!-- ========================================== -->
+                <!-- NUEVO: RESUMEN COPIABLE (Estilo Dark Mode) -->
+                <!-- ========================================== -->
+                <div class="mt-8 pt-6 border-t border-slate-700/50 animate-fade-in-up" style="animation-delay: 0.4s; opacity: 0;">
+                    <h3 class="text-[11px] sm:text-xs font-bold text-slate-400 mb-3 uppercase tracking-widest text-center sm:text-left relative z-10">Tu Resumen para Compartir</h3>
+                    <div class="relative z-10">
+                        <textarea id="texto-resumen" class="w-full h-48 sm:h-40 p-4 bg-slate-900/50 border border-slate-700 rounded-xl text-sm text-slate-300 font-mono resize-none focus:outline-none focus:border-cyan-500 transition-colors shadow-inner" readonly>Calcula tu huella de carbono para ver el resumen...</textarea>
+                        <button onclick="copiarResumen()" id="btn-copiar" class="absolute bottom-4 right-4 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-lg transition-all flex items-center gap-2">
+                            <span>📋</span> Copiar resumen
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </div>
 
-<!-- ==========================================
-             SEPARADOR VISUAL Y DONACIONES
-        ========================================== -->
+        <!-- SEPARADOR VISUAL Y DONACIONES -->
         <div class="mt-32 mb-16 flex items-center justify-center gap-4 opacity-40 animate-fade-in-up" style="animation-delay: 0.3s; opacity: 0;">
             <div class="h-px bg-slate-400 w-1/4 sm:w-1/3"></div>
             <span class="text-xl">🌱</span>
@@ -389,26 +398,21 @@
             <p class="text-sm text-slate-500 mb-8 max-w-2xl mx-auto">Esta calculadora es un proyecto de libre acceso. Si deseas apoyar su mantenimiento y la creación de más herramientas ambientales, puedes hacer una aportación voluntaria.</p>
             
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-                <!-- Buy Me a Coffee -->
                 <div class="flex items-center hover:scale-105 transition-transform">
                     <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="margilcg" data-color="#10b981" data-emoji="" data-font="Cookie" data-text="Invítame un café" data-outline-color="#ffffff" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
                 </div>
                 
-                <!-- Mercado Pago -->
                 <a href="https://link.mercadopago.com.mx/calculadorareciclaje" target="_blank" class="bg-[#009EE3] hover:bg-[#007EBA] text-white font-bold px-6 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center h-[51px] text-base hover:scale-105">
                     🤝 Mercado Pago
                 </a>
 
-                <!-- PayPal -->
                 <a href="https://www.paypal.com/donate/?hosted_button_id=JQ2VLWD2AV37N" target="_blank" class="bg-[#FFC439] hover:bg-[#F2B627] text-[#003087] font-bold px-8 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center h-[51px] text-base hover:scale-105">
                     PayPal
                 </a>
             </div>
         </div>
 
-        <!-- ==========================================
-             FOOTER Y AVISOS LEGALES
-        ========================================== -->
+        <!-- FOOTER Y AVISOS LEGALES -->
         <footer class="pt-8 pb-12 border-t border-slate-200 animate-fade-in-up" style="animation-delay: 0.7s; opacity: 0;">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 px-2 sm:px-0">
                 <div class="md:col-span-2 space-y-3">
@@ -442,8 +446,6 @@
 
     </div>
 
-    </div>
-
     <!-- EL MOTOR CENTRAL (JAVASCRIPT) -->
     <script>
         const FACTORES_COMB = { gas_kg: 3.0523, gas_l: 1.6482, gas_m3: 2.1925, gasolina_l: 2.4466, diesel_l: 2.8267 };
@@ -467,7 +469,6 @@
 
         let modoGas = 'cilindro', modoMovilidad = 'litros', modoElec = 'recibo';
 
-        // FIX: Layout de aparatos para que no se aplaste en celulares
         const listaHTML = document.getElementById('lista-aparatos');
         APARATOS.forEach(app => {
             listaHTML.innerHTML += `
@@ -645,7 +646,7 @@
             const resultBox = document.getElementById('caja-gran-total');
             resultBox.classList.remove('hidden');
             
-            // Forzar reflow para reiniciar animación si ya estaba abierta
+            // Forzar reflow para reiniciar animación
             resultBox.classList.remove('animate-fade-in-up');
             void resultBox.offsetWidth; 
             resultBox.classList.add('animate-fade-in-up');
@@ -653,6 +654,47 @@
             setTimeout(() => {
                 resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }, 100);
+
+            // ==========================================
+            // NUEVO: GENERAR EL TEXTO DEL RESUMEN
+            // ==========================================
+            const resumenTexto = `🌍 MI HUELLA DE CARBONO MENSUAL
+Ruta Sustentable (rutasustentable.com)
+
+Mi impacto estimado es de:
+🚨 ${granTotal.toFixed(2)} kg de CO₂e al mes
+
+Mi desglose por categoría:
+🔥 Combustibles: ${vComb.toFixed(2)} kg
+⚡ Electricidad: ${vElec.toFixed(2)} kg
+♻️ Residuos: ${vRes.toFixed(2)} kg
+💧 Agua: ${vAgua.toFixed(2)} kg
+
+Calcula tu huella y descubre cómo reducirla gratis en Ruta Sustentable.`;
+            
+            document.getElementById("texto-resumen").value = resumenTexto;
+        }
+
+        // ==========================================
+        // NUEVO: FUNCIÓN PARA EL BOTÓN COPIAR
+        // ==========================================
+        function copiarResumen() {
+            const texto = document.getElementById("texto-resumen");
+            texto.select();
+            texto.setSelectionRange(0, 99999); 
+            navigator.clipboard.writeText(texto.value).then(() => {
+                const btn = document.getElementById("btn-copiar");
+                const textoOriginal = btn.innerHTML;
+                btn.innerHTML = "<span>✅</span> ¡Copiado!";
+                btn.classList.add("bg-emerald-500");
+                btn.classList.remove("bg-cyan-600");
+                
+                setTimeout(() => {
+                    btn.innerHTML = textoOriginal;
+                    btn.classList.remove("bg-emerald-500");
+                    btn.classList.add("bg-cyan-600");
+                }, 2000);
+            });
         }
 
         function animateValue(id, start, end, duration) {
