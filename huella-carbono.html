@@ -645,14 +645,21 @@
             return total;
         }
 
-        function calcularResiduos(returnOnly = false) {
-            // Generación per cápita: Ya es un cálculo individual
-            let genBrutaPersonal = 1 * GENERACION_DOMESTICA * 30; 
+          function calcularResiduos(returnOnly = false) {
+            // Leemos cuántos habitantes hay en el hogar desde el nuevo input global
+            let habitantes = parseInt(document.getElementById('global-habitantes').value) || 1;
+            
+            // Calculamos la generación total de la casa (Habitantes * Factor Diario * 30 días)
+            let genBrutaCasa = habitantes * GENERACION_DOMESTICA * 30; 
+            
             let total = 0;
 
             if (document.getElementById('chk-usa-calculadora').checked) {
                 let co2Evitado = parseFloat(document.getElementById('val-co2-externo').value) || 0;
-                total = (genBrutaPersonal * FACTOR_EMISION_RESIDUOS) - co2Evitado;
+                // Al total de emisiones de la casa le restamos lo que reciclaron
+                let emisionesNetasCasa = (genBrutaCasa * FACTOR_EMISION_RESIDUOS) - co2Evitado;
+                // Y finalmente, prorrateamos el resultado entre los habitantes
+                total = emisionesNetasCasa / habitantes;
             } else {
                 let desc = 0;
                 if(document.getElementById('chk-plastico').checked) desc += PORC_PLASTICO;
@@ -660,7 +667,9 @@
                 if(document.getElementById('chk-papel').checked) desc += PORC_PAPEL;
                 if(document.getElementById('chk-vidrio').checked) desc += PORC_VIDRIO;
                 if(document.getElementById('chk-lata').checked) desc += PORC_METALES;
-                total = (genBrutaPersonal - (genBrutaPersonal * desc)) * FACTOR_EMISION_RESIDUOS;
+                
+                let emisionesNetasCasa = (genBrutaCasa - (genBrutaCasa * desc)) * FACTOR_EMISION_RESIDUOS;
+                total = emisionesNetasCasa / habitantes;
             }
 
             if(returnOnly) return total;
