@@ -751,6 +751,45 @@ Calcula tu huella y descubre cómo reducirla gratis en Ruta Sustentable.`;
             };
             window.requestAnimationFrame(step);
         }
+        // ==========================================
+        // LÓGICA PARA INSTALAR COMO APP (PWA)
+        // ==========================================
+        
+        // 1. Registrar el Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(error => {
+                    console.log('Error al registrar SW:', error);
+                });
+            });
+        }
+
+        // 2. Controlar el botón de instalación
+        let eventoInstalacionDiferida;
+        const btnInstalar = document.getElementById('btn-instalar');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevenir que el navegador muestre el aviso automático feo
+            e.preventDefault();
+            // Guardar el evento para dispararlo cuando el usuario haga clic
+            eventoInstalacionDiferida = e;
+            // Mostrar nuestro botón elegante
+            btnInstalar.classList.remove('hidden');
+        });
+
+        btnInstalar.addEventListener('click', async () => {
+            if (eventoInstalacionDiferida) {
+                // Mostrar el cuadro de diálogo de instalación del celular
+                eventoInstalacionDiferida.prompt();
+                // Esperar a que el usuario responda
+                const { outcome } = await eventoInstalacionDiferida.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('El usuario instaló la app');
+                    btnInstalar.classList.add('hidden'); // Ocultar botón si ya se instaló
+                }
+                eventoInstalacionDiferida = null;
+            }
+        });
     </script>
 </body>
 </html>
