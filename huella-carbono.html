@@ -409,6 +409,21 @@
             </div>
         </div>
 
+        <!-- MODAL INSTRUCCIONES iOS -->
+        <div id="modal-ios" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl relative text-center">
+                <button onclick="cerrarModalIos()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl font-bold leading-none">&times;</button>
+                <div class="text-4xl mb-4">🍎</div>
+                <h3 class="text-lg font-black text-slate-800 mb-2">Instalar en iPhone / iPad</h3>
+                <p class="text-sm text-slate-600 mb-6">Para instalar la calculadora, toca el botón de <strong>Compartir</strong> en la barra inferior de Safari y luego selecciona <strong>"Agregar a inicio"</strong>.</p>
+                <div class="flex justify-center mb-6">
+                    <!-- Icono compartir de Safari -->
+                    <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                </div>
+                <button onclick="cerrarModalIos()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-3 rounded-xl transition-colors">Entendido</button>
+            </div>
+        </div>
+
         <!-- SEPARADOR VISUAL Y DONACIONES -->
         <div class="mt-32 mb-16 flex items-center justify-center gap-4 opacity-40 animate-fade-in-up" style="animation-delay: 0.3s; opacity: 0;">
             <div class="h-px bg-slate-400 w-1/4 sm:w-1/3"></div>
@@ -764,31 +779,47 @@ Calcula tu huella y descubre cómo reducirla gratis en Ruta Sustentable.`;
             });
         }
 
-        // 2. Controlar el botón de instalación
+// 2. Controlar el botón de instalación (Android + iOS)
         let eventoInstalacionDiferida;
         const btnInstalar = document.getElementById('btn-instalar');
 
+        // Detectar si es un dispositivo iOS y si NO está ya instalado
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+        // Si es iOS y no está instalada, mostramos el botón manualmente
+        if (isIOS && !isStandalone) {
+            btnInstalar.classList.remove('hidden');
+            btnInstalar.innerHTML = '<span>🍎</span> Instalar en iOS';
+        }
+
+        // Interceptar el aviso en Android
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevenir que el navegador muestre el aviso automático feo
             e.preventDefault();
-            // Guardar el evento para dispararlo cuando el usuario haga clic
             eventoInstalacionDiferida = e;
-            // Mostrar nuestro botón elegante
             btnInstalar.classList.remove('hidden');
         });
 
+        // Acción al hacer clic en el botón
         btnInstalar.addEventListener('click', async () => {
-            if (eventoInstalacionDiferida) {
-                // Mostrar el cuadro de diálogo de instalación del celular
+            if (isIOS) {
+                // Si es Apple, abrimos el modal de instrucciones
+                document.getElementById('modal-ios').classList.remove('hidden');
+            } else if (eventoInstalacionDiferida) {
+                // Si es Android/PC, disparamos el instalador nativo
                 eventoInstalacionDiferida.prompt();
-                // Esperar a que el usuario responda
                 const { outcome } = await eventoInstalacionDiferida.userChoice;
                 if (outcome === 'accepted') {
-                    console.log('El usuario instaló la app');
-                    btnInstalar.classList.add('hidden'); // Ocultar botón si ya se instaló
+                    btnInstalar.classList.add('hidden'); 
                 }
                 eventoInstalacionDiferida = null;
             }
+        });
+
+        // Función para cerrar el modal de iOS
+        function cerrarModalIos() {
+            document.getElementById('modal-ios').classList.add('hidden');
+        }
         });
     </script>
 </body>
