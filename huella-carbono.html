@@ -75,6 +75,26 @@
             <p class="text-slate-500 font-semibold tracking-wide uppercase text-xs sm:text-sm px-4">Motor de cálculo auditable | Estándares SEMARNAT, SEN, IMTA e IPCC</p>
         </div>
 
+        <!-- CONFIGURACIÓN INICIAL: PUNTO DE PARTIDA -->
+        <div class="bg-white rounded-3xl shadow-md border border-slate-200 p-6 sm:p-8 animate-fade-in-up" style="animation-delay: 0.15s; opacity: 0;">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex-1 text-center sm:text-left">
+                    <h2 class="text-lg sm:text-xl font-extrabold text-slate-800 flex items-center justify-center sm:justify-start gap-2">
+                        <span class="text-2xl">🏠</span> Tu Punto de Partida
+                    </h2>
+                    <p class="text-sm text-slate-500 mt-2">Los consumos de la casa (luz, gas, agua) se dividirán entre los habitantes para calcular tu huella personal real. El transporte es individual.</p>
+                </div>
+                <div class="w-full sm:w-1/3 mt-2 sm:mt-0">
+                    <label class="block text-[11px] sm:text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest text-center">Personas en tu hogar</label>
+                    <div class="flex items-center shadow-sm rounded-xl">
+                        <button onclick="cambiarHabitantes(-1)" class="w-12 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold py-3 rounded-l-xl border border-slate-200 transition-colors text-lg">-</button>
+                        <input type="number" id="global-habitantes" value="1" min="1" class="w-full text-center border-y border-slate-200 py-3 bg-white font-black text-slate-800 outline-none text-lg pointer-events-none" readonly>
+                        <button onclick="cambiarHabitantes(1)" class="w-12 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold py-3 rounded-r-xl border border-slate-200 transition-colors text-lg">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- MÓDULO 1: COMBUSTIBLES -->
         <div class="module-card bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden animate-fade-in-up" style="animation-delay: 0.2s; opacity: 0;">
             <div class="bg-gradient-to-r from-slate-900 to-slate-800 px-6 sm:px-8 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
@@ -223,11 +243,7 @@
             </div>
 
             <div class="p-6 sm:p-8 space-y-8">
-                <div class="w-full">
-                    <label class="block text-sm font-semibold text-slate-600 mb-2">¿Cuántas personas viven en tu hogar?</label>
-                    <input type="number" id="res-habitantes" placeholder="Ej. 4" class="w-full sm:w-1/2 border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-colors duration-300 hover:border-blue-300 text-base">
-                </div>
-
+ 
                 <div class="p-4 sm:p-5 bg-blue-50/70 rounded-2xl border border-blue-100 transition-colors duration-300 hover:bg-blue-50 shadow-sm w-full">
                     <label class="flex items-start sm:items-center gap-3 cursor-pointer mb-2">
                         <input type="checkbox" id="chk-usa-calculadora" onchange="toggleCalculadoraExterna()" class="w-5 h-5 mt-0.5 sm:mt-0 text-blue-600 rounded border-slate-300 focus:ring-blue-500 transition-colors duration-300">
@@ -468,6 +484,11 @@
         const FACTOR_EMISION_AGUA = 0.4662; 
 
         let modoGas = 'cilindro', modoMovilidad = 'litros', modoElec = 'recibo';
+        function cambiarHabitantes(cambio) {
+            let input = document.getElementById('global-habitantes');
+            let val = parseInt(input.value) + cambio;
+            if (val >= 1) input.value = val;
+        }
 
         const listaHTML = document.getElementById('lista-aparatos');
         APARATOS.forEach(app => {
@@ -553,21 +574,27 @@
             }
         }
 
-        function calcularEmisiones(returnOnly = false) {
+       function calcularEmisiones(returnOnly = false) {
             let totalGas = 0, totalMov = 0;
+            let habitantes = parseInt(document.getElementById('global-habitantes').value) || 1;
+
             if (modoGas === 'cilindro') totalGas = (parseFloat(document.getElementById('gas-kg').value) || 0) * FACTORES_COMB.gas_kg;
             else if (modoGas === 'estacionario') totalGas = (parseFloat(document.getElementById('gas-l').value) || 0) * FACTORES_COMB.gas_l;
             else if (modoGas === 'natural') totalGas = (parseFloat(document.getElementById('gas-m3').value) || 0) * FACTORES_COMB.gas_m3;
             
+            let gasPersonal = totalGas / habitantes; // Prorrateo de la casa
+
             let tipoMotor = document.getElementById('tipo-combustible').value;
             let factorMotor = tipoMotor === 'gasolina' ? FACTORES_COMB.gasolina_l : FACTORES_COMB.diesel_l;
             let lts = 0;
+            
             if (modoMovilidad === 'litros') lts = parseFloat(document.getElementById('mov-litros').value) || 0;
             else if (modoMovilidad === 'gasto') lts = (parseFloat(document.getElementById('mov-pesos').value) || 0) / PRECIO_GASOLINA;
             else if (modoMovilidad === 'km') lts = (parseFloat(document.getElementById('mov-km').value) || 0) / (parseFloat(document.getElementById('mov-rendimiento').value) || 15);
-            totalMov = lts * factorMotor;
             
-            let total = totalGas + totalMov;
+            totalMov = lts * factorMotor; // La movilidad es 100% individual
+            
+            let total = gasPersonal + totalMov;
             if(returnOnly) return total;
             document.getElementById('total-co2-combustible').innerText = total.toFixed(2);
             document.getElementById('resultado-combustibles').classList.remove('hidden');
@@ -576,6 +603,8 @@
 
         function calcularElectricidad(returnOnly = false) {
             let kwhMes = 0;
+            let habitantes = parseInt(document.getElementById('global-habitantes').value) || 1;
+
             if (modoElec === 'recibo') kwhMes = parseFloat(document.getElementById('elec-kwh').value) || 0;
             else {
                 APARATOS.forEach(app => {
@@ -584,7 +613,7 @@
                     kwhMes += (q * app.watts * h * 30) / 1000;
                 });
             }
-            let total = kwhMes * FACTOR_SEN;
+            let total = (kwhMes * FACTOR_SEN) / habitantes; // Prorrateo de la luz
             if(returnOnly) return total;
             document.getElementById('total-co2-elec').innerText = total.toFixed(2);
             document.getElementById('resultado-elec').classList.remove('hidden');
@@ -592,13 +621,13 @@
         }
 
         function calcularResiduos(returnOnly = false) {
-            let hab = parseFloat(document.getElementById('res-habitantes').value) || 0;
-            let genBruta = hab * GENERACION_DOMESTICA * 30;
+            // Generación per cápita: Ya es un cálculo individual
+            let genBrutaPersonal = 1 * GENERACION_DOMESTICA * 30; 
             let total = 0;
 
             if (document.getElementById('chk-usa-calculadora').checked) {
                 let co2Evitado = parseFloat(document.getElementById('val-co2-externo').value) || 0;
-                total = (genBruta * FACTOR_EMISION_RESIDUOS) - co2Evitado;
+                total = (genBrutaPersonal * FACTOR_EMISION_RESIDUOS) - co2Evitado;
             } else {
                 let desc = 0;
                 if(document.getElementById('chk-plastico').checked) desc += PORC_PLASTICO;
@@ -606,7 +635,7 @@
                 if(document.getElementById('chk-papel').checked) desc += PORC_PAPEL;
                 if(document.getElementById('chk-vidrio').checked) desc += PORC_VIDRIO;
                 if(document.getElementById('chk-lata').checked) desc += PORC_METALES;
-                total = (genBruta - (genBruta * desc)) * FACTOR_EMISION_RESIDUOS;
+                total = (genBrutaPersonal - (genBrutaPersonal * desc)) * FACTOR_EMISION_RESIDUOS;
             }
 
             if(returnOnly) return total;
@@ -619,8 +648,10 @@
 
         function calcularAgua(returnOnly = false) {
             let total = 0;
+            let habitantes = parseInt(document.getElementById('global-habitantes').value) || 1;
+
             if (document.getElementById('chk-agua-opcional').checked) {
-                total = (parseFloat(document.getElementById('agua-m3').value) || 0) * FACTOR_EMISION_AGUA;
+                total = ((parseFloat(document.getElementById('agua-m3').value) || 0) * FACTOR_EMISION_AGUA) / habitantes; // Prorrateo del agua
             }
             if(returnOnly) return total;
             document.getElementById('total-co2-agua').innerText = total.toFixed(2);
