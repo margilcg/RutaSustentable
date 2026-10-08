@@ -779,48 +779,45 @@ Calcula tu huella y descubre cómo reducirla gratis en Ruta Sustentable.`;
             });
         }
 
-// 2. Controlar el botón de instalación (Android + iOS)
+// 2. Controlar el botón de instalación (Android + iOS Blindado)
         let eventoInstalacionDiferida;
         const btnInstalar = document.getElementById('btn-instalar');
 
-        // Detectar si es un dispositivo iOS y si NO está ya instalado
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        // Detección robusta de iOS (incluye iPads modernos)
+        const isIOS = (/iPad|iPhone|iPod/.test(navigator.userAgent)) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
-        // Si es iOS y no está instalada, mostramos el botón manualmente
-        if (isIOS && !isStandalone) {
-            btnInstalar.classList.remove('hidden');
-            btnInstalar.innerHTML = '<span>🍎</span> Instalar en iOS';
-        }
-
-        // Interceptar el aviso en Android
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            eventoInstalacionDiferida = e;
-            btnInstalar.classList.remove('hidden');
-        });
-
-        // Acción al hacer clic en el botón
-        btnInstalar.addEventListener('click', async () => {
-            if (isIOS) {
-                // Si es Apple, abrimos el modal de instrucciones
-                document.getElementById('modal-ios').classList.remove('hidden');
-            } else if (eventoInstalacionDiferida) {
-                // Si es Android/PC, disparamos el instalador nativo
-                eventoInstalacionDiferida.prompt();
-                const { outcome } = await eventoInstalacionDiferida.userChoice;
-                if (outcome === 'accepted') {
-                    btnInstalar.classList.add('hidden'); 
-                }
-                eventoInstalacionDiferida = null;
+        if (btnInstalar) {
+            // Si es Apple y no está instalada, forzamos el botón
+            if (isIOS && !isStandalone) {
+                btnInstalar.classList.remove('hidden');
+                btnInstalar.innerHTML = '<span>🍎</span> Instalar en iOS';
             }
-        });
 
-        // Función para cerrar el modal de iOS
-        function cerrarModalIos() {
-            document.getElementById('modal-ios').classList.add('hidden');
+            // Si es Android/PC y Chrome da el permiso, mostramos el botón
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                eventoInstalacionDiferida = e;
+                // Restauramos el texto de Android por si acaso
+                btnInstalar.innerHTML = '<span>📱</span> Instalar como App';
+                btnInstalar.classList.remove('hidden');
+            });
+
+            // Acción al hacer clic
+            btnInstalar.addEventListener('click', async () => {
+                if (isIOS) {
+                    const modal = document.getElementById('modal-ios');
+                    if(modal) modal.classList.remove('hidden');
+                } else if (eventoInstalacionDiferida) {
+                    eventoInstalacionDiferida.prompt();
+                    const { outcome } = await eventoInstalacionDiferida.userChoice;
+                    if (outcome === 'accepted') {
+                        btnInstalar.classList.add('hidden'); 
+                    }
+                    eventoInstalacionDiferida = null;
+                }
+            });
         }
-        });
     </script>
 </body>
 </html>
