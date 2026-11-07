@@ -1,493 +1,559 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="/manifest-carbono.json">
-    <meta name="theme-color" content="#0f172a">
-    <title>Calculadora de Huella de Carbono | Ruta Sustentable </title>
+    <meta name="theme-color" content="#0b2228">
+    <title>Calculadora de Huella de Carbono | Ruta Sustentable</title>
+
+    <!-- Fuentes: Onest (Baseline Editorial) + Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Onest', 'Inter', 'system-ui', 'sans-serif'],
+                        body: ['Inter', 'system-ui', 'sans-serif'],
+                        logo: ['system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Arial', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            deep: '#0b2228',
+                            navy: '#0f2f63',
+                            primary: '#059669',
+                            light: '#34d399',
+                            surface: '#f3f5f4',
+                            ink: '#0a0a0a',
+                            soft: '#64748b'
+                        }
+                    },
+                    borderRadius: {
+                        'card': '1.5rem',
+                        'card-lg': '2rem',
+                        'pill': '62.5rem'
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f8fafc;
-            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-            background-size: 24px 24px;
+        body {
+            font-family: 'Onest', system-ui, sans-serif;
+            background-color: #ffffff;
+            color: #0a0a0a;
+            overflow-x: clip;
         }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in-up {
-            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-4px); }
-            100% { transform: translateY(0px); }
-        }
-        .title-icon {
-            display: inline-block;
-        }
-        .module-card:hover .title-icon {
-            animation: float 1.5s ease-in-out infinite;
-        }
-
-        .glow-green:hover { box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
-        .glow-yellow:hover { box-shadow: 0 0 20px rgba(234, 179, 8, 0.4); }
-        .glow-blue:hover { box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
-        .glow-cyan:hover { box-shadow: 0 0 20px rgba(6, 182, 212, 0.4); }
-        
-        .glow-master {
-            background-size: 200% auto;
-            transition: 0.5s;
-        }
-        .glow-master:hover {
-            background-position: right center;
-            box-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
-        }
-
-        .module-card {
-            transition: box-shadow 0.4s ease, border-color 0.4s ease;
-        }
-        .module-card:hover {
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            border-color: #e2e8f0;
-        }
-        
+        input[type="number"]::-webkit-inner-spin-button, 
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+        .inview {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .inview.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Loader Rápido */
+        #loader-curtain {
+            transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        #loader-curtain.slide-up {
+            transform: translateY(-105%);
+        }
+        #loader-bar {
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+        }
     </style>
 </head>
-<body class="p-4 sm:p-8 text-slate-800">
+<body class="antialiased selection:bg-emerald-500 selection:text-white">
 
-    <div class="max-w-4xl mx-auto space-y-10">
-        
-        <div class="text-center space-y-3 mb-12 animate-fade-in-up" style="animation-delay: 0.1s; opacity: 0;">
-            <div class="inline-block p-3 bg-white rounded-2xl shadow-sm border border-slate-200 mb-2">
-                <span class="text-4xl">🌍</span>
-            </div>
-            <h1 class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-blue-600 tracking-tight leading-tight">Mi Huella de Carbono</h1>
-            <p class="text-slate-500 font-semibold tracking-wide uppercase text-xs sm:text-sm px-4">Motor de cálculo auditable | Estándares SEMARNAT, SEN, IMTA e IPCC</p>
-            
-            <!-- NUEVO BOTÓN DE INSTALACIÓN -->
-            <div class="pt-2">
-                <button id="btn-instalar" class="hidden mx-auto bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold py-2 px-5 rounded-full shadow-lg transition-all flex items-center gap-2">
-                    <span>📱</span> Instalar como App
-                </button>
-            </div>
+    <!-- INTRO LOADER ÁGIL -->
+    <div id="loader-curtain" class="fixed inset-0 z-[200] bg-brand-deep text-white flex flex-col items-center justify-center gap-6">
+        <div class="flex items-center gap-3">
+            <svg class="w-7 h-7 text-brand-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/>
+                <path d="M19.2 5.6a9 9 0 0 1 0 12.8"/>
+            </svg>
+            <span class="font-logo text-xl font-medium uppercase tracking-[0.2em] text-brand-light">Ruta Sustentable</span>
         </div>
-
-        <!-- CONFIGURACIÓN INICIAL: PUNTO DE PARTIDA -->
-        <div class="bg-white rounded-3xl shadow-md border border-slate-200 p-6 sm:p-8 animate-fade-in-up" style="animation-delay: 0.15s; opacity: 0;">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="flex-1 text-center sm:text-left">
-                    <h2 class="text-lg sm:text-xl font-extrabold text-slate-800 flex items-center justify-center sm:justify-start gap-2">
-                        <span class="text-2xl">🏠</span> Tu Punto de Partida
-                    </h2>
-                    <p class="text-sm text-slate-500 mt-2">Los consumos de la casa (luz, gas, agua) se dividirán entre los habitantes para calcular tu huella personal real. El transporte es individual.</p>
-                </div>
-                <div class="w-full sm:w-1/3 mt-2 sm:mt-0">
-                    <label class="block text-[11px] sm:text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest text-center">Personas en tu hogar</label>
-                    <div class="flex items-center shadow-sm rounded-xl">
-                        <button onclick="cambiarHabitantes(-1)" class="w-12 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold py-3 rounded-l-xl border border-slate-200 transition-colors text-lg">-</button>
-                        <input type="number" id="global-habitantes" value="1" min="1" class="w-full text-center border-y border-slate-200 py-3 bg-white font-black text-slate-800 outline-none text-lg pointer-events-none" readonly>
-                        <button onclick="cambiarHabitantes(1)" class="w-12 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold py-3 rounded-r-xl border border-slate-200 transition-colors text-lg">+</button>
-                    </div>
-                </div>
-            </div>
+        <div class="w-44 h-[2px] rounded-full bg-white/20 overflow-hidden">
+            <div id="loader-bar" class="w-full h-full bg-brand-light"></div>
         </div>
-        
-        <!-- MÓDULO 1: COMBUSTIBLES -->
-        <div class="module-card bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden animate-fade-in-up" style="animation-delay: 0.2s; opacity: 0;">
-            <div class="bg-gradient-to-r from-slate-900 to-slate-800 px-6 sm:px-8 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
-                <h2 class="text-xl sm:text-2xl font-extrabold text-white flex items-center gap-3">
-                    <span class="text-2xl sm:text-3xl drop-shadow-md title-icon">🔥</span> Combustibles
-                </h2>
-                <span class="px-3 py-1 bg-slate-800 rounded-full text-[10px] sm:text-xs font-semibold text-emerald-400 border border-slate-700 shadow-inner">RENE - SEMARNAT 2015/2026</span>
+    </div>
+
+    <main class="p-2 sm:p-3 w-full max-w-[1440px] mx-auto">
+
+        <!-- 1. HERO EDITORIAL + PUNTO DE PARTIDA INTEGRADO (ESTILO BASELINE) -->
+        <section class="relative isolate overflow-hidden rounded-card-lg bg-brand-deep text-white px-5 py-6 sm:px-10 sm:py-10 flex flex-col justify-between min-h-[28rem] sm:min-h-[34rem]">
+            <div class="absolute inset-0 -z-10 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1920&q=80" alt="Planeta y datos climáticos" class="w-full h-full object-cover opacity-30">
+                <div class="absolute inset-0 bg-gradient-to-b from-[#0b2228]/85 via-[#0f2f63]/55 to-[#0b2228]/95"></div>
             </div>
 
-            <div class="p-6 sm:p-8 space-y-8">
-                <div class="p-4 sm:p-6 bg-slate-50/50 rounded-2xl border border-slate-100">
-                    <h3 class="text-base sm:text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm">1</span> 
-                        Uso Doméstico (Gas)
-                    </h3>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-5 bg-slate-200/50 p-1.5 rounded-xl w-full shadow-inner">
-                        <button onclick="switchTab('gas', 'cilindro')" id="tab-cilindro" class="w-full py-2.5 text-sm font-bold rounded-lg bg-white shadow-sm text-slate-800 transition-colors duration-300">Cilindro (kg)</button>
-                        <button onclick="switchTab('gas', 'estacionario')" id="tab-estacionario" class="w-full py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors duration-300">Estacionario (L)</button>
-                        <button onclick="switchTab('gas', 'natural')" id="tab-natural" class="w-full py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors duration-300">Natural (m³)</button>
-                    </div>
+            <!-- Header Superior -->
+            <header class="flex items-center justify-between gap-4 border-b border-white/15 pb-5">
+                <a href="index.html" class="flex items-center gap-2.5">
+                    <svg class="w-5 h-5 text-brand-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <circle cx="12" cy="12" r="9"/><path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/><path d="M19.2 5.6a9 9 0 0 1 0 12.8"/>
+                    </svg>
+                    <span class="font-logo text-xs sm:text-sm font-medium uppercase tracking-[0.2em]">Ruta <span class="text-brand-light">Sustentable</span></span>
+                </a>
 
-                    <div id="input-cilindro" class="transition-opacity duration-300 w-full">
-                        <label class="block text-sm font-semibold text-slate-600 mb-2">Tamaño del cilindro al mes</label>
-                        <select id="gas-kg" class="w-full sm:w-1/2 border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-colors duration-300 hover:border-emerald-300 cursor-pointer text-base">
-                            <option value="0">No uso cilindro</option>
-                            <option value="20">20 kg</option>
-                            <option value="30">30 kg</option>
-                            <option value="45">45 kg</option>
-                        </select>
+                <div class="flex items-center gap-3">
+                    <button id="btn-instalar" class="hidden bg-brand-light hover:bg-white text-brand-deep text-xs font-bold uppercase tracking-wider py-2 px-4 rounded-pill shadow-md transition-all flex items-center gap-2">
+                        <span>📱</span> Instalar como App
+                    </button>
+                    <a href="index.html" class="inline-flex items-center gap-2 rounded-pill bg-white/10 hover:bg-white/20 border border-white/15 px-4 py-2 text-xs uppercase tracking-wider transition-colors">
+                        <span>← Inicio</span>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Titular + Tarjeta Glass de Habitantes ("Tu Punto de Partida") -->
+            <div class="my-auto py-8 flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+                <div>
+                    <div class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-brand-light mb-3">
+                        <span class="w-2 h-2 rounded-pill bg-brand-light"></span>
+                        <span>SEMARNAT • SEN • IMTA • IPCC</span>
                     </div>
-                    <div id="input-estacionario" class="hidden w-full">
-                        <label class="block text-sm font-semibold text-slate-600 mb-2">Litros cargados al mes</label>
-                        <input type="number" id="gas-l" placeholder="Ej. 50" class="w-full sm:w-1/2 border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-colors duration-300 hover:border-emerald-300 text-base">
-                    </div>
-                    <div id="input-natural" class="hidden w-full">
-                        <label class="block text-sm font-semibold text-slate-600 mb-2">Consumo en recibo (m³)</label>
-                        <input type="number" id="gas-m3" placeholder="Ej. 15" class="w-full sm:w-1/2 border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-colors duration-300 hover:border-emerald-300 text-base">
-                    </div>
+                    <h1 class="text-4xl sm:text-6xl lg:text-7xl font-medium uppercase leading-[0.9] tracking-tight">
+                        MI HUELLA DE<br><span class="text-brand-light">CARBONO</span>
+                    </h1>
+                    <p class="mt-4 text-sm sm:text-base text-white/75 max-w-xl font-body">
+                        Los consumos del hogar (electricidad, gas y agua) se prorratean automáticamente entre los habitantes para obtener tu huella personal mensual exacta.
+                    </p>
                 </div>
 
-                <div class="p-4 sm:p-6 bg-slate-50/50 rounded-2xl border border-slate-100">
-                    <h3 class="text-base sm:text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm">2</span> 
-                        Movilidad
-                    </h3>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-5 bg-slate-200/50 p-1.5 rounded-xl w-full shadow-inner">
-                        <button onclick="switchTab('movilidad', 'litros')" id="tab-litros" class="w-full py-2.5 text-sm font-bold rounded-lg bg-white shadow-sm text-slate-800 transition-colors duration-300">Por Litros</button>
-                        <button onclick="switchTab('movilidad', 'gasto')" id="tab-gasto" class="w-full py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors duration-300">Por Gasto ($)</button>
-                        <button onclick="switchTab('movilidad', 'km')" id="tab-km" class="w-full py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors duration-300">Por Kilometraje</button>
+                <!-- Tarjeta Glassmorphism: Tu Punto de Partida -->
+                <div class="rounded-card border border-white/20 bg-white/10 backdrop-blur-xl p-5 sm:p-6 w-full lg:w-80 shrink-0 shadow-2xl">
+                    <div class="flex items-center gap-2.5 mb-2">
+                        <span class="text-xl">🏠</span>
+                        <h2 class="text-sm font-semibold uppercase tracking-wider text-brand-light">Tu Punto de Partida</h2>
                     </div>
+                    <p class="text-xs text-white/75 mb-4 font-body">Personas que habitan en tu hogar:</p>
+                    <div class="flex items-center rounded-pill bg-black/30 border border-white/15 p-1">
+                        <button onclick="cambiarHabitantes(-1)" class="w-11 h-11 rounded-pill bg-white/10 hover:bg-brand-light hover:text-brand-deep text-white font-bold transition-colors text-lg">-</button>
+                        <input type="number" id="global-habitantes" value="1" min="1" class="w-full text-center bg-transparent font-bold text-white outline-none text-xl pointer-events-none" readonly>
+                        <button onclick="cambiarHabitantes(1)" class="w-11 h-11 rounded-pill bg-white/10 hover:bg-brand-light hover:text-brand-deep text-white font-bold transition-colors text-lg">+</button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-                    <div class="mb-5 w-full">
-                        <label class="block text-sm font-semibold text-slate-600 mb-2">Tipo de Motor</label>
-                        <select id="tipo-combustible" class="w-full sm:w-1/2 border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-colors duration-300 hover:border-emerald-300 cursor-pointer text-base">
-                            <option value="gasolina">Gasolina (Magna/Premium)</option>
-                            <option value="diesel">Diésel (Tractores/Carga)</option>
-                        </select>
-                    </div>
+        <!-- CONTENEDOR DE LOS 4 MÓDULOS -->
+        <div class="max-w-5xl mx-auto space-y-4 mt-4">
 
-                    <div id="input-litros" class="w-full">
-                        <label class="block text-sm font-semibold text-slate-600 mb-2">Litros cargados al mes</label>
-                        <input type="number" id="mov-litros" placeholder="Ej. 120" class="w-full sm:w-1/2 border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-colors duration-300 hover:border-emerald-300 text-base">
-                    </div>
-                    <div id="input-gasto" class="hidden w-full">
-                        <label class="block text-sm font-semibold text-slate-600 mb-2">Gasto mensual ($ MXN)</label>
-                        <input type="number" id="mov-pesos" placeholder="Ej. 2500" class="w-full sm:w-1/2 border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-colors duration-300 hover:border-emerald-300 text-base">
-                    </div>
-                    <div id="input-km" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 w-full">
-                        <div class="w-full">
-                            <label class="block text-sm font-semibold text-slate-600 mb-2">Kilómetros al mes</label>
-                            <input type="number" id="mov-km" placeholder="Ej. 800" class="w-full border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-colors duration-300 hover:border-emerald-300 text-base">
+            <!-- MÓDULO 1: COMBUSTIBLES -->
+            <section class="rounded-card-lg bg-brand-surface p-5 sm:p-9 border border-slate-200/80 inview">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-slate-300/80">
+                    <div class="flex items-center gap-3.5">
+                        <span class="rounded-xl bg-brand-deep text-brand-light px-3.5 py-2 text-lg font-semibold">#01</span>
+                        <div>
+                            <h2 class="text-2xl sm:text-3xl font-medium tracking-tight text-brand-ink flex items-center gap-2">
+                                <span>🔥</span> Combustibles
+                            </h2>
                         </div>
-                        <div class="w-full">
-                            <label class="block text-sm font-semibold text-slate-600 mb-2">Rendimiento Vehicular</label>
-                            <select id="mov-rendimiento" class="w-full border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-colors duration-300 hover:border-emerald-300 cursor-pointer text-base">
-                                <option value="15">Compacto / Sedán (15 km/l)</option>
-                                <option value="9">SUV Mediana (Ej. V6, 9 km/l)</option>
-                                <option value="6">Pick-up pesada (6 km/l)</option>
+                    </div>
+                    <span class="px-3.5 py-1 bg-white rounded-pill text-xs font-semibold text-emerald-700 border border-slate-200 self-start sm:self-auto">
+                        RENE - SEMARNAT 2015/2026
+                    </span>
+                </div>
+
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Sub-bloque 1: Gas Doméstico -->
+                    <div class="bg-white p-5 sm:p-6 rounded-card border border-slate-200/80 shadow-sm">
+                        <h3 class="text-base font-semibold text-brand-ink mb-4 flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-pill bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">1</span>
+                            Uso Doméstico (Gas)
+                        </h3>
+
+                        <div class="grid grid-cols-3 gap-1.5 mb-5 bg-brand-surface p-1.5 rounded-pill">
+                            <button onclick="switchTab('gas', 'cilindro')" id="tab-cilindro" class="w-full py-2 text-xs sm:text-sm font-semibold rounded-pill bg-brand-deep text-white shadow-sm transition-all">Cilindro (kg)</button>
+                            <button onclick="switchTab('gas', 'estacionario')" id="tab-estacionario" class="w-full py-2 text-xs sm:text-sm font-semibold rounded-pill text-slate-600 hover:text-brand-ink transition-all">Estacionario (L)</button>
+                            <button onclick="switchTab('gas', 'natural')" id="tab-natural" class="w-full py-2 text-xs sm:text-sm font-semibold rounded-pill text-slate-600 hover:text-brand-ink transition-all">Natural (m³)</button>
+                        </div>
+
+                        <div id="input-cilindro" class="w-full">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Tamaño del cilindro al mes</label>
+                            <select id="gas-kg" class="w-full border border-slate-200 rounded-xl p-3 bg-brand-surface font-medium focus:bg-white focus:border-brand-primary outline-none cursor-pointer">
+                                <option value="0">No uso cilindro</option>
+                                <option value="20">20 kg</option>
+                                <option value="30">30 kg</option>
+                                <option value="45">45 kg</option>
                             </select>
                         </div>
+                        <div id="input-estacionario" class="hidden w-full">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Litros cargados al mes</label>
+                            <input type="number" id="gas-l" placeholder="Ej. 50" class="w-full border border-slate-200 rounded-xl p-3 bg-brand-surface font-medium focus:bg-white focus:border-brand-primary outline-none">
+                        </div>
+                        <div id="input-natural" class="hidden w-full">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Consumo en recibo (m³)</label>
+                            <input type="number" id="gas-m3" placeholder="Ej. 15" class="w-full border border-slate-200 rounded-xl p-3 bg-brand-surface font-medium focus:bg-white focus:border-brand-primary outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Sub-bloque 2: Movilidad -->
+                    <div class="bg-white p-5 sm:p-6 rounded-card border border-slate-200/80 shadow-sm">
+                        <h3 class="text-base font-semibold text-brand-ink mb-4 flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-pill bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">2</span>
+                            Movilidad Individual
+                        </h3>
+
+                        <div class="grid grid-cols-3 gap-1.5 mb-4 bg-brand-surface p-1.5 rounded-pill">
+                            <button onclick="switchTab('movilidad', 'litros')" id="tab-litros" class="w-full py-2 text-xs sm:text-sm font-semibold rounded-pill bg-brand-deep text-white shadow-sm transition-all">Por Litros</button>
+                            <button onclick="switchTab('movilidad', 'gasto')" id="tab-gasto" class="w-full py-2 text-xs sm:text-sm font-semibold rounded-pill text-slate-600 hover:text-brand-ink transition-all">Por Gasto ($)</button>
+                            <button onclick="switchTab('movilidad', 'km')" id="tab-km" class="w-full py-2 text-xs sm:text-sm font-semibold rounded-pill text-slate-600 hover:text-brand-ink transition-all">Kilometraje</button>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Tipo de Motor</label>
+                            <select id="tipo-combustible" class="w-full border border-slate-200 rounded-xl p-3 bg-brand-surface font-medium focus:bg-white focus:border-brand-primary outline-none cursor-pointer">
+                                <option value="gasolina">Gasolina (Magna/Premium)</option>
+                                <option value="diesel">Diésel (Tractores/Carga)</option>
+                            </select>
+                        </div>
+
+                        <div id="input-litros" class="w-full">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Litros cargados al mes</label>
+                            <input type="number" id="mov-litros" placeholder="Ej. 120" class="w-full border border-slate-200 rounded-xl p-3 bg-brand-surface font-medium focus:bg-white focus:border-brand-primary outline-none">
+                        </div>
+                        <div id="input-gasto" class="hidden w-full">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Gasto mensual ($ MXN)</label>
+                            <input type="number" id="mov-pesos" placeholder="Ej. 2500" class="w-full border border-slate-200 rounded-xl p-3 bg-brand-surface font-medium focus:bg-white focus:border-brand-primary outline-none">
+                        </div>
+                        <div id="input-km" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Kilómetros/mes</label>
+                                <input type="number" id="mov-km" placeholder="Ej. 800" class="w-full border border-slate-200 rounded-xl p-3 bg-brand-surface font-medium focus:bg-white focus:border-brand-primary outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Rendimiento</label>
+                                <select id="mov-rendimiento" class="w-full border border-slate-200 rounded-xl p-3 bg-brand-surface font-medium focus:bg-white focus:border-brand-primary outline-none">
+                                    <option value="15">Compacto / Sedán (15 km/l)</option>
+                                    <option value="9">SUV Mediana (9 km/l)</option>
+                                    <option value="6">Pick-up pesada (6 km/l)</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="pt-2 border-t border-slate-100">
-                    <button onclick="calcularEmisiones(false)" class="w-full glow-green bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-extrabold text-base sm:text-lg py-4 px-6 rounded-xl transition-all duration-300 shadow-md">
-                        Calcular Combustibles
+                <div class="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-5 border-t border-slate-300/70">
+                    <button onclick="calcularEmisiones(false)" class="inline-flex items-center justify-center gap-2 rounded-pill bg-brand-deep hover:bg-emerald-700 text-white font-semibold uppercase tracking-wider text-xs sm:text-sm py-4 px-8 transition-all shadow-md">
+                        <span>Calcular Combustibles</span>
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                     </button>
-                    <div id="resultado-combustibles" class="hidden mt-5 bg-slate-900 rounded-2xl p-5 text-center shadow-inner relative overflow-hidden">
-                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500 rounded-full mix-blend-screen filter blur-3xl opacity-20"></div>
-                        <p class="text-slate-400 text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-1 relative z-10">Huella Parcial</p>
-                        <p class="text-3xl sm:text-4xl font-black text-emerald-400 relative z-10"><span id="total-co2-combustible">0.00</span> <span class="text-sm sm:text-base text-slate-300 font-medium">kg CO₂e</span></p>
+                    <div id="resultado-combustibles" class="hidden rounded-card bg-brand-deep text-white px-6 py-3.5 flex items-center justify-between sm:justify-end gap-4">
+                        <span class="text-xs uppercase tracking-widest text-white/70">Huella Parcial:</span>
+                        <span class="text-2xl font-semibold text-brand-light"><span id="total-co2-combustible">0.00</span> <small class="text-xs text-white/80">kg CO₂e</small></span>
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <!-- MÓDULO 2: ELECTRICIDAD -->
-        <div class="module-card bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden animate-fade-in-up" style="animation-delay: 0.3s; opacity: 0;">
-            <div class="bg-gradient-to-r from-slate-900 to-slate-800 px-6 sm:px-8 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
-                <h2 class="text-xl sm:text-2xl font-extrabold text-white flex items-center gap-3">
-                    <span class="text-2xl sm:text-3xl drop-shadow-md title-icon">⚡</span> Electricidad
-                </h2>
-                <span class="px-3 py-1 bg-slate-800 rounded-full text-[10px] sm:text-xs font-semibold text-yellow-400 border border-slate-700 shadow-inner">Factor SEN (SEMARNAT)</span>
-            </div>
-
-            <div class="p-6 sm:p-8">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6 bg-slate-200/50 p-1.5 rounded-xl w-full shadow-inner">
-                    <button onclick="switchTabElec('recibo')" id="tab-recibo" class="w-full py-2.5 text-sm font-bold rounded-lg bg-white shadow-sm text-slate-800 transition-colors duration-300">Tengo mi recibo CFE</button>
-                    <button onclick="switchTabElec('aparatos')" id="tab-aparatos" class="w-full py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors duration-300">Calcular por aparatos</button>
+            <!-- MÓDULO 2: ELECTRICIDAD -->
+            <section class="rounded-card-lg bg-brand-surface p-5 sm:p-9 border border-slate-200/80 inview">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-slate-300/80">
+                    <div class="flex items-center gap-3.5">
+                        <span class="rounded-xl bg-brand-deep text-yellow-300 px-3.5 py-2 text-lg font-semibold">#02</span>
+                        <h2 class="text-2xl sm:text-3xl font-medium tracking-tight text-brand-ink flex items-center gap-2">
+                            <span>⚡</span> Electricidad
+                        </h2>
+                    </div>
+                    <span class="px-3.5 py-1 bg-white rounded-pill text-xs font-semibold text-amber-700 border border-slate-200 self-start sm:self-auto">
+                        Factor SEN (SEMARNAT)
+                    </span>
                 </div>
 
-                <div id="input-recibo" class="space-y-4 w-full">
-                    <label class="block text-sm font-semibold text-slate-600 mb-2">Consumo mensual en kWh (Aparece en tu recibo)</label>
-                    <input type="number" id="elec-kwh" placeholder="Ej. 250" class="w-full sm:w-1/2 border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 outline-none transition-colors duration-300 hover:border-yellow-300 text-base">
-                </div>
+                <div class="mt-6 bg-white p-5 sm:p-6 rounded-card border border-slate-200/80 shadow-sm">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 mb-6 bg-brand-surface p-1.5 rounded-pill max-w-md">
+                        <button onclick="switchTabElec('recibo')" id="tab-recibo" class="w-full py-2.5 text-xs sm:text-sm font-semibold rounded-pill bg-brand-deep text-white shadow-sm transition-all">Tengo mi recibo CFE</button>
+                        <button onclick="switchTabElec('aparatos')" id="tab-aparatos" class="w-full py-2.5 text-xs sm:text-sm font-semibold rounded-pill text-slate-600 hover:text-brand-ink transition-all">Calcular por aparatos</button>
+                    </div>
 
-                <div id="input-aparatos" class="hidden space-y-4 w-full">
-                    <p class="text-sm text-slate-500 mb-4 font-medium">Ingresa la cantidad de aparatos que tienes y las horas promedio que se usan al día.</p>
-                    <div id="lista-aparatos" class="space-y-3 max-h-80 overflow-y-auto pr-2 sm:pr-3 custom-scrollbar">
-                        <!-- JS Inject adaptativo -->
+                    <div id="input-recibo" class="w-full max-w-md">
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Consumo mensual en kWh (Aparece en tu recibo)</label>
+                        <input type="number" id="elec-kwh" placeholder="Ej. 250" class="w-full border border-slate-200 rounded-xl p-3.5 bg-brand-surface font-medium focus:bg-white focus:border-amber-500 outline-none">
+                    </div>
+
+                    <div id="input-aparatos" class="hidden space-y-4 w-full">
+                        <p class="text-xs sm:text-sm text-brand-soft font-body">Ingresa la cantidad de aparatos que tienes y las horas promedio que se usan al día:</p>
+                        <div id="lista-aparatos" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-2 custom-scrollbar"></div>
                     </div>
                 </div>
 
-                <div class="pt-6 mt-8 border-t border-slate-100">
-                    <button onclick="calcularElectricidad(false)" class="w-full glow-yellow bg-gradient-to-r from-yellow-500 to-amber-500 text-white font-extrabold text-base sm:text-lg py-4 px-6 rounded-xl transition-all duration-300 shadow-md">
-                        Calcular Electricidad
+                <div class="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-5 border-t border-slate-300/70">
+                    <button onclick="calcularElectricidad(false)" class="inline-flex items-center justify-center gap-2 rounded-pill bg-brand-deep hover:bg-amber-600 text-white font-semibold uppercase tracking-wider text-xs sm:text-sm py-4 px-8 transition-all shadow-md">
+                        <span>Calcular Electricidad</span>
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                     </button>
-                    <div id="resultado-elec" class="hidden mt-5 bg-slate-900 rounded-2xl p-5 text-center shadow-inner relative overflow-hidden">
-                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-yellow-500 rounded-full mix-blend-screen filter blur-3xl opacity-20"></div>
-                        <p class="text-slate-400 text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-1 relative z-10">Huella Parcial</p>
-                        <p class="text-3xl sm:text-4xl font-black text-yellow-400 relative z-10"><span id="total-co2-elec">0.00</span> <span class="text-sm sm:text-base text-slate-300 font-medium">kg CO₂e</span></p>
+                    <div id="resultado-elec" class="hidden rounded-card bg-brand-deep text-white px-6 py-3.5 flex items-center justify-between sm:justify-end gap-4">
+                        <span class="text-xs uppercase tracking-widest text-white/70">Huella Parcial:</span>
+                        <span class="text-2xl font-semibold text-yellow-300"><span id="total-co2-elec">0.00</span> <small class="text-xs text-white/80">kg CO₂e</small></span>
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <!-- MÓDULO 3: RESIDUOS -->
-        <div class="module-card bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden animate-fade-in-up" style="animation-delay: 0.4s; opacity: 0;">
-            <div class="bg-gradient-to-r from-slate-900 to-slate-800 px-6 sm:px-8 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
-                <h2 class="text-xl sm:text-2xl font-extrabold text-white flex items-center gap-3">
-                    <span class="text-2xl sm:text-3xl drop-shadow-md title-icon">♻️</span> Residuos Sólidos
-                </h2>
-                <span class="px-3 py-1 bg-slate-800 rounded-full text-[10px] sm:text-xs font-semibold text-blue-400 border border-slate-700 shadow-inner">DBGIR 2026 / IPCC</span>
-            </div>
-
-            <div class="p-6 sm:p-8 space-y-8">
- 
-                <div class="p-4 sm:p-5 bg-blue-50/70 rounded-2xl border border-blue-100 transition-colors duration-300 hover:bg-blue-50 shadow-sm w-full">
-                    <label class="flex items-start sm:items-center gap-3 cursor-pointer mb-2">
-                        <input type="checkbox" id="chk-usa-calculadora" onchange="toggleCalculadoraExterna()" class="w-5 h-5 mt-0.5 sm:mt-0 text-blue-600 rounded border-slate-300 focus:ring-blue-500 transition-colors duration-300">
-                        <span class="text-sm sm:text-base font-extrabold text-blue-900">Tengo mi dato exacto de reciclaje</span>
-                    </label>
-                    <p class="text-xs sm:text-sm text-blue-700/80 mb-4 ml-8">Si usaste la <a href="https://calculadorareciclaje.org/" target="_blank" class="font-black text-blue-800 underline hover:text-blue-600 transition-colors">Calculadora de Reciclaje</a>, ingresa el resultado.</p>
-                    
-                    <div id="input-co2-externo" class="hidden ml-8 mt-2 w-full">
-                        <label class="block text-[10px] sm:text-xs font-bold text-blue-800 mb-1 uppercase tracking-wide">CO₂e evitado (kg)</label>
-                        <input type="number" id="val-co2-externo" placeholder="Ej. 15.5" class="w-full sm:w-1/2 border-blue-200 rounded-xl p-3 text-base sm:text-sm bg-white shadow-inner outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors duration-300">
+            <!-- MÓDULO 3: RESIDUOS SÓLIDOS -->
+            <section class="rounded-card-lg bg-brand-surface p-5 sm:p-9 border border-slate-200/80 inview">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-slate-300/80">
+                    <div class="flex items-center gap-3.5">
+                        <span class="rounded-xl bg-brand-deep text-sky-300 px-3.5 py-2 text-lg font-semibold">#03</span>
+                        <h2 class="text-2xl sm:text-3xl font-medium tracking-tight text-brand-ink flex items-center gap-2">
+                            <span>♻️</span> Residuos Sólidos
+                        </h2>
                     </div>
+                    <span class="px-3.5 py-1 bg-white rounded-pill text-xs font-semibold text-blue-700 border border-slate-200 self-start sm:self-auto">
+                        DBGIR 2026 / IPCC
+                    </span>
                 </div>
 
-                <div id="contenedor-casillas-genericas" class="transition-opacity duration-300 p-5 sm:p-6 bg-slate-50/50 rounded-2xl border border-slate-100 w-full">
-                    <h3 class="text-sm sm:text-base font-bold text-slate-800 mb-2">¿Separas y entregas estos materiales?</h3>
-                    <p class="text-xs sm:text-sm text-slate-500 mb-5">Aplicaremos los promedios del DBGIR a tu huella.</p>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                        <label class="flex items-center gap-3 p-3 sm:p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-blue-300 cursor-pointer transition-all duration-300">
-                            <input type="checkbox" id="chk-plastico" class="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500 casillas-reciclaje">
-                            <span class="text-xs sm:text-sm font-bold text-slate-700">Plásticos (PET, Rígidos)</span>
+                <div class="mt-6 space-y-5">
+                    <div class="p-5 bg-white rounded-card border border-blue-200 shadow-sm">
+                        <label class="flex items-start sm:items-center gap-3 cursor-pointer">
+                            <input type="checkbox" id="chk-usa-calculadora" onchange="toggleCalculadoraExterna()" class="w-5 h-5 text-brand-navy rounded border-slate-300">
+                            <span class="text-sm sm:text-base font-semibold text-brand-ink">Tengo mi dato exacto de reciclaje</span>
                         </label>
-                        <label class="flex items-center gap-3 p-3 sm:p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-blue-300 cursor-pointer transition-all duration-300">
-                            <input type="checkbox" id="chk-carton" class="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500 casillas-reciclaje">
-                            <span class="text-xs sm:text-sm font-bold text-slate-700">Cartón</span>
-                        </label>
-                        <label class="flex items-center gap-3 p-3 sm:p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-blue-300 cursor-pointer transition-all duration-300">
-                            <input type="checkbox" id="chk-papel" class="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500 casillas-reciclaje">
-                            <span class="text-xs sm:text-sm font-bold text-slate-700">Papel</span>
-                        </label>
-                        <label class="flex items-center gap-3 p-3 sm:p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-blue-300 cursor-pointer transition-all duration-300">
-                            <input type="checkbox" id="chk-vidrio" class="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500 casillas-reciclaje">
-                            <span class="text-xs sm:text-sm font-bold text-slate-700">Vidrio</span>
-                        </label>
-                        <label class="flex items-center gap-3 p-3 sm:p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-blue-300 cursor-pointer transition-all duration-300">
-                            <input type="checkbox" id="chk-lata" class="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500 casillas-reciclaje">
-                            <span class="text-xs sm:text-sm font-bold text-slate-700">Metales (Latas)</span>
-                        </label>
+                        <p class="text-xs text-brand-soft mt-1 ml-8 font-body">
+                            Si usaste la <a href="https://calculadorareciclaje.org/" target="_blank" class="font-bold text-brand-navy underline">Calculadora de Reciclaje</a>, ingresa el resultado obtenido.
+                        </p>
+                        <div id="input-co2-externo" class="hidden ml-8 mt-4 max-w-xs">
+                            <label class="block text-[11px] font-bold text-brand-navy mb-1 uppercase tracking-wider">CO₂e evitado (kg)</label>
+                            <input type="number" id="val-co2-externo" placeholder="Ej. 15.5" class="w-full border border-blue-200 rounded-xl p-3 bg-brand-surface font-semibold focus:bg-white outline-none">
+                        </div>
                     </div>
-                </div>
 
-                <div class="pt-2 border-t border-slate-100">
-                    <button onclick="calcularResiduos(false)" class="w-full glow-blue bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-extrabold text-base sm:text-lg py-4 px-6 rounded-xl transition-all duration-300 shadow-md">
-                        Calcular Residuos
-                    </button>
-                    
-                    <div id="resultado-residuos" class="hidden mt-5 bg-slate-900 rounded-2xl p-5 text-center shadow-inner relative overflow-hidden">
-                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-500 rounded-full mix-blend-screen filter blur-3xl opacity-20"></div>
-                        <p class="text-slate-400 text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-1 relative z-10">Huella Parcial (Neta)</p>
-                        <p class="text-3xl sm:text-4xl font-black text-blue-400 relative z-10"><span id="total-co2-residuos">0.00</span> <span class="text-sm sm:text-base text-slate-300 font-medium">kg CO₂e</span></p>
+                    <div id="contenedor-casillas-genericas" class="p-5 sm:p-6 bg-white rounded-card border border-slate-200/80 shadow-sm transition-opacity">
+                        <h3 class="text-sm sm:text-base font-semibold text-brand-ink mb-1">¿Separas y entregas estos materiales?</h3>
+                        <p class="text-xs text-brand-soft mb-4 font-body">Aplicaremos los factores de mitigación promedio del DBGIR a tu huella personal.</p>
                         
-                        <div id="mensaje-carbono-negativo" class="hidden mt-4 px-4 py-2 bg-emerald-900/40 text-emerald-400 text-[10px] sm:text-xs font-black uppercase tracking-wider rounded-full w-max mx-auto border border-emerald-700/50 shadow-[0_0_10px_rgba(16,185,129,0.2)] relative z-10">
-                            🌟 Eres Carbono Negativo en Residuos
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- MÓDULO 4: AGUA -->
-        <div class="module-card bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden animate-fade-in-up" style="animation-delay: 0.5s; opacity: 0;">
-            <div class="bg-gradient-to-r from-slate-900 to-slate-800 px-6 sm:px-8 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
-                <h2 class="text-xl sm:text-2xl font-extrabold text-white flex items-center gap-3">
-                    <span class="text-2xl sm:text-3xl drop-shadow-md title-icon">💧</span> Agua Potable
-                </h2>
-                <span class="px-3 py-1 bg-slate-800 rounded-full text-[10px] sm:text-xs font-semibold text-cyan-400 border border-slate-700 shadow-inner">IMTA Nacional</span>
-            </div>
-
-            <div class="p-6 sm:p-8 space-y-8">
-                <div class="p-4 sm:p-5 bg-cyan-50/50 rounded-2xl border border-cyan-100 transition-colors duration-300 hover:bg-cyan-50 shadow-sm w-full">
-                    <div class="flex items-start gap-3 sm:gap-4">
-                        <div class="flex items-center h-5 mt-0.5 sm:mt-1">
-                            <input type="checkbox" id="chk-agua-opcional" onchange="toggleAgua()" class="w-5 h-5 text-cyan-600 rounded border-slate-300 focus:ring-cyan-500 cursor-pointer transition-colors duration-300">
-                        </div>
-                        <div>
-                            <label for="chk-agua-opcional" class="text-sm sm:text-base font-extrabold text-cyan-900 cursor-pointer">Calcular huella hídrica indirecta (Opcional)</label>
-                            <p class="text-xs sm:text-sm text-cyan-700/80 mt-1 font-medium">Si no cuentas con recibo medido en m³, déjalo sin marcar.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <label class="flex items-center gap-3 p-3.5 bg-brand-surface border border-slate-200/80 rounded-xl hover:border-brand-primary cursor-pointer transition-all">
+                                <input type="checkbox" id="chk-plastico" class="w-4 h-4 text-brand-primary rounded casillas-reciclaje">
+                                <span class="text-xs sm:text-sm font-semibold text-brand-ink">Plásticos (PET, Rígidos)</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3.5 bg-brand-surface border border-slate-200/80 rounded-xl hover:border-brand-primary cursor-pointer transition-all">
+                                <input type="checkbox" id="chk-carton" class="w-4 h-4 text-brand-primary rounded casillas-reciclaje">
+                                <span class="text-xs sm:text-sm font-semibold text-brand-ink">Cartón</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3.5 bg-brand-surface border border-slate-200/80 rounded-xl hover:border-brand-primary cursor-pointer transition-all">
+                                <input type="checkbox" id="chk-papel" class="w-4 h-4 text-brand-primary rounded casillas-reciclaje">
+                                <span class="text-xs sm:text-sm font-semibold text-brand-ink">Papel</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3.5 bg-brand-surface border border-slate-200/80 rounded-xl hover:border-brand-primary cursor-pointer transition-all">
+                                <input type="checkbox" id="chk-vidrio" class="w-4 h-4 text-brand-primary rounded casillas-reciclaje">
+                                <span class="text-xs sm:text-sm font-semibold text-brand-ink">Vidrio</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3.5 bg-brand-surface border border-slate-200/80 rounded-xl hover:border-brand-primary cursor-pointer transition-all">
+                                <input type="checkbox" id="chk-lata" class="w-4 h-4 text-brand-primary rounded casillas-reciclaje">
+                                <span class="text-xs sm:text-sm font-semibold text-brand-ink">Metales (Latas)</span>
+                            </label>
                         </div>
                     </div>
                 </div>
 
-                <div id="input-agua" class="hidden space-y-4 w-full">
-                    <label class="block text-sm font-semibold text-slate-600 mb-2">Consumo mensual (m³)</label>
-                    <input type="number" id="agua-m3" placeholder="Ej. 20" class="w-full sm:w-1/2 border-slate-200 rounded-xl p-3 bg-white shadow-sm focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 outline-none transition-colors duration-300 hover:border-cyan-300 text-base">
-                </div>
-
-                <div class="pt-2 border-t border-slate-100">
-                    <button onclick="calcularAgua(false)" id="btn-calc-agua" class="w-full glow-cyan bg-gradient-to-r from-cyan-500 to-sky-500 text-white font-extrabold text-base sm:text-lg py-4 px-6 rounded-xl transition-all duration-300 shadow-md opacity-50 cursor-not-allowed" disabled>
-                        Calcular Agua
+                <div class="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-5 border-t border-slate-300/70">
+                    <button onclick="calcularResiduos(false)" class="inline-flex items-center justify-center gap-2 rounded-pill bg-brand-deep hover:bg-blue-700 text-white font-semibold uppercase tracking-wider text-xs sm:text-sm py-4 px-8 transition-all shadow-md">
+                        <span>Calcular Residuos</span>
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                     </button>
-                    <div id="resultado-agua" class="hidden mt-5 bg-slate-900 rounded-2xl p-5 text-center shadow-inner relative overflow-hidden">
-                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-cyan-500 rounded-full mix-blend-screen filter blur-3xl opacity-20"></div>
-                        <p class="text-slate-400 text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-1 relative z-10">Huella Parcial</p>
-                        <p class="text-3xl sm:text-4xl font-black text-cyan-400 relative z-10"><span id="total-co2-agua">0.00</span> <span class="text-sm sm:text-base text-slate-300 font-medium">kg CO₂e</span></p>
+                    <div id="resultado-residuos" class="hidden rounded-card bg-brand-deep text-white px-6 py-3.5 flex flex-col sm:flex-row items-center gap-3">
+                        <span class="text-xs uppercase tracking-widest text-white/70">Huella Neta:</span>
+                        <span class="text-2xl font-semibold text-sky-300"><span id="total-co2-residuos">0.00</span> <small class="text-xs text-white/80">kg CO₂e</small></span>
+                        <span id="mensaje-carbono-negativo" class="hidden px-3 py-1 bg-emerald-500/20 text-brand-light text-[10px] font-bold uppercase tracking-wider rounded-pill border border-brand-light/40">
+                            🌟 Carbono Negativo
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MÓDULO 4: AGUA POTABLE -->
+            <section class="rounded-card-lg bg-brand-surface p-5 sm:p-9 border border-slate-200/80 inview">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-slate-300/80">
+                    <div class="flex items-center gap-3.5">
+                        <span class="rounded-xl bg-brand-deep text-cyan-300 px-3.5 py-2 text-lg font-semibold">#04</span>
+                        <h2 class="text-2xl sm:text-3xl font-medium tracking-tight text-brand-ink flex items-center gap-2">
+                            <span>💧</span> Agua Potable
+                        </h2>
+                    </div>
+                    <span class="px-3.5 py-1 bg-white rounded-pill text-xs font-semibold text-cyan-700 border border-slate-200 self-start sm:self-auto">
+                        IMTA Nacional
+                    </span>
+                </div>
+
+                <div class="mt-6 bg-white p-5 sm:p-6 rounded-card border border-slate-200/80 shadow-sm space-y-4">
+                    <label class="flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" id="chk-agua-opcional" onchange="toggleAgua()" class="w-5 h-5 mt-0.5 text-cyan-600 rounded border-slate-300">
+                        <div>
+                            <span class="text-sm sm:text-base font-semibold text-brand-ink">Calcular huella hídrica indirecta (Opcional)</span>
+                            <p class="text-xs text-brand-soft mt-0.5 font-body">Si no cuentas con recibo medido en m³, déjalo sin marcar.</p>
+                        </div>
+                    </label>
+
+                    <div id="input-agua" class="hidden pt-2 max-w-xs">
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Consumo mensual (m³)</label>
+                        <input type="number" id="agua-m3" placeholder="Ej. 20" class="w-full border border-slate-200 rounded-xl p-3 bg-brand-surface font-medium focus:bg-white focus:border-cyan-500 outline-none">
+                    </div>
+                </div>
+
+                <div class="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-5 border-t border-slate-300/70">
+                    <button onclick="calcularAgua(false)" id="btn-calc-agua" class="inline-flex items-center justify-center gap-2 rounded-pill bg-brand-deep text-white font-semibold uppercase tracking-wider text-xs sm:text-sm py-4 px-8 transition-all shadow-md opacity-50 cursor-not-allowed" disabled>
+                        <span>Calcular Agua</span>
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </button>
+                    <div id="resultado-agua" class="hidden rounded-card bg-brand-deep text-white px-6 py-3.5 flex items-center justify-between sm:justify-end gap-4">
+                        <span class="text-xs uppercase tracking-widest text-white/70">Huella Parcial:</span>
+                        <span class="text-2xl font-semibold text-cyan-300"><span id="total-co2-agua">0.00</span> <small class="text-xs text-white/80">kg CO₂e</small></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BOTÓN MAESTRO Y BANDA DE GRAN TOTAL -->
+            <div class="pt-4 inview">
+                <button onclick="calcularHuellaTotal()" class="w-full rounded-pill bg-gradient-to-r from-[#0b2228] via-[#0f2f63] to-emerald-700 hover:opacity-95 text-white font-semibold uppercase tracking-[0.15em] text-base sm:text-xl py-6 px-8 shadow-2xl transition-all flex items-center justify-center gap-3">
+                    <span>🌍</span> CALCULAR IMPACTO TOTAL MENSUAL
+                </button>
+
+                <div id="caja-gran-total" class="hidden mt-6 rounded-card-lg bg-brand-deep text-white p-6 sm:p-12 shadow-2xl relative overflow-hidden">
+                    <div class="text-center max-w-2xl mx-auto">
+                        <div class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-brand-light mb-3">
+                            <span class="w-2 h-2 rounded-pill bg-brand-light"></span>
+                            <span>Diagnóstico Personal Mensual</span>
+                        </div>
+                        <div class="text-6xl sm:text-8xl font-semibold text-white tracking-tight py-2">
+                            <span id="gran-total-co2">0.00</span>
+                        </div>
+                        <p class="text-base sm:text-xl text-brand-light font-medium uppercase tracking-widest mb-10">Kilogramos de CO₂e / mes</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 border-t border-white/15 pt-8">
+                        <div class="rounded-card bg-white/10 backdrop-blur-md p-5 border border-white/15">
+                            <span class="text-2xl">🔥</span>
+                            <p class="text-[11px] text-white/65 uppercase font-semibold tracking-wider mt-2">Combustibles</p>
+                            <p class="text-2xl font-semibold text-brand-light mt-1"><span id="res-sum-combustibles">0</span> <small class="text-xs text-white/60">kg</small></p>
+                        </div>
+                        <div class="rounded-card bg-white/10 backdrop-blur-md p-5 border border-white/15">
+                            <span class="text-2xl">⚡</span>
+                            <p class="text-[11px] text-white/65 uppercase font-semibold tracking-wider mt-2">Electricidad</p>
+                            <p class="text-2xl font-semibold text-yellow-300 mt-1"><span id="res-sum-elec">0</span> <small class="text-xs text-white/60">kg</small></p>
+                        </div>
+                        <div class="rounded-card bg-white/10 backdrop-blur-md p-5 border border-white/15">
+                            <span class="text-2xl">♻️</span>
+                            <p class="text-[11px] text-white/65 uppercase font-semibold tracking-wider mt-2">Residuos</p>
+                            <p class="text-2xl font-semibold text-sky-300 mt-1"><span id="res-sum-residuos">0</span> <small class="text-xs text-white/60">kg</small></p>
+                        </div>
+                        <div class="rounded-card bg-white/10 backdrop-blur-md p-5 border border-white/15">
+                            <span class="text-2xl">💧</span>
+                            <p class="text-[11px] text-white/65 uppercase font-semibold tracking-wider mt-2">Agua</p>
+                            <p class="text-2xl font-semibold text-cyan-300 mt-1"><span id="res-sum-agua">0</span> <small class="text-xs text-white/60">kg</small></p>
+                        </div>
+                    </div>
+
+                    <!-- Resumen Copiable -->
+                    <div class="mt-8 pt-6 border-t border-white/15">
+                        <h3 class="text-xs font-semibold text-white/70 mb-3 uppercase tracking-[0.2em]">Tu Resumen para Compartir</h3>
+                        <div class="relative">
+                            <textarea id="texto-resumen" class="w-full h-44 sm:h-36 p-4 bg-black/30 border border-white/15 rounded-card text-xs sm:text-sm text-white/90 font-mono resize-none focus:outline-none focus:border-brand-light" readonly>Calcula tu huella de carbono para ver el resumen...</textarea>
+                            <button onclick="copiarResumen()" id="btn-copiar" class="absolute bottom-4 right-4 bg-white hover:bg-brand-light text-brand-deep text-xs font-bold uppercase tracking-wider py-2.5 px-5 rounded-pill shadow-lg transition-all flex items-center gap-2">
+                                <span>📋</span> Copiar resumen
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
 
-        <!-- MÓDULO MAESTRO: CÁLCULO TOTAL -->
-        <div class="pt-10 animate-fade-in-up" style="animation-delay: 0.6s; opacity: 0;">
-            <button onclick="calcularHuellaTotal()" class="w-full glow-master bg-gradient-to-r from-emerald-600 via-teal-500 to-blue-600 text-white font-black text-xl sm:text-2xl py-6 px-4 sm:px-8 rounded-3xl transition-all duration-500 shadow-2xl border-b-4 border-emerald-800 flex items-center justify-center gap-2 sm:gap-3">
-                <span class="title-icon">🌍</span> CALCULAR IMPACTO TOTAL
-            </button>
-
-            <!-- Resultados Gran Total -->
-            <div id="caja-gran-total" class="hidden mt-10 bg-slate-900 rounded-[2rem] p-6 sm:p-10 shadow-2xl border border-slate-700/50 text-center relative overflow-hidden">
-                <div class="absolute -top-20 -right-20 w-64 h-64 bg-emerald-500 rounded-full mix-blend-screen filter blur-[80px] opacity-30"></div>
-                <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-blue-500 rounded-full mix-blend-screen filter blur-[80px] opacity-30"></div>
-                
-                <h3 class="text-slate-400 font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-sm mb-4 relative z-10">Tu Impacto Ambiental Mensual</h3>
-                <div class="text-6xl sm:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-br from-emerald-300 via-teal-300 to-cyan-300 py-2 sm:py-3 relative z-10 drop-shadow-lg break-all">
-                    <span id="gran-total-co2">0.00</span>
-                </div>
-                <p class="text-lg sm:text-2xl text-slate-300 font-medium mb-10 sm:mb-12 relative z-10">Kilogramos de CO₂e</p>
-
-                <!-- Desglose Visual Estilo Analítica -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-6 relative z-10">
-                    <div class="bg-slate-800/80 backdrop-blur-sm p-4 sm:p-5 rounded-2xl border border-slate-700">
-                        <span class="block text-2xl sm:text-3xl mb-2 drop-shadow-md">🔥</span>
-                        <p class="text-[9px] sm:text-[10px] text-slate-400 uppercase font-black tracking-wider">Combustibles</p>
-                        <p class="text-xl sm:text-2xl font-bold text-emerald-400 mt-1"><span id="res-sum-combustibles">0</span> <span class="text-[10px] sm:text-xs font-medium text-slate-500">kg</span></p>
+        <!-- DONACIONES -->
+        <section class="rounded-card-lg bg-brand-surface mt-6 p-6 sm:p-10 text-center inview">
+            <div class="max-w-2xl mx-auto">
+                <h3 class="text-2xl sm:text-3xl font-medium tracking-tight text-brand-ink mb-2">
+                    💡 ¿Te fue útil esta herramienta?
+                </h3>
+                <p class="text-xs sm:text-sm text-brand-soft mb-7 font-body">
+                    Esta calculadora es un proyecto de libre acceso. Si deseas apoyar su mantenimiento y la creación de más herramientas ambientales, puedes hacer una aportación voluntaria.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                    <div class="flex items-center hover:scale-105 transition-transform">
+                        <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="margilcg" data-color="#10b981" data-emoji="" data-font="Cookie" data-text="Invítame un café" data-outline-color="#ffffff" data-font-color="#ffffff" data-coffee-color="#FFDD00"></script>
                     </div>
-                    <div class="bg-slate-800/80 backdrop-blur-sm p-4 sm:p-5 rounded-2xl border border-slate-700">
-                        <span class="block text-2xl sm:text-3xl mb-2 drop-shadow-md">⚡</span>
-                        <p class="text-[9px] sm:text-[10px] text-slate-400 uppercase font-black tracking-wider">Electricidad</p>
-                        <p class="text-xl sm:text-2xl font-bold text-yellow-400 mt-1"><span id="res-sum-elec">0</span> <span class="text-[10px] sm:text-xs font-medium text-slate-500">kg</span></p>
-                    </div>
-                    <div class="bg-slate-800/80 backdrop-blur-sm p-4 sm:p-5 rounded-2xl border border-slate-700">
-                        <span class="block text-2xl sm:text-3xl mb-2 drop-shadow-md">♻️</span>
-                        <p class="text-[9px] sm:text-[10px] text-slate-400 uppercase font-black tracking-wider">Residuos</p>
-                        <p class="text-xl sm:text-2xl font-bold text-blue-400 mt-1"><span id="res-sum-residuos">0</span> <span class="text-[10px] sm:text-xs font-medium text-slate-500">kg</span></p>
-                    </div>
-                    <div class="bg-slate-800/80 backdrop-blur-sm p-4 sm:p-5 rounded-2xl border border-slate-700">
-                        <span class="block text-2xl sm:text-3xl mb-2 drop-shadow-md">💧</span>
-                        <p class="text-[9px] sm:text-[10px] text-slate-400 uppercase font-black tracking-wider">Agua</p>
-                        <p class="text-xl sm:text-2xl font-bold text-cyan-400 mt-1"><span id="res-sum-agua">0</span> <span class="text-[10px] sm:text-xs font-medium text-slate-500">kg</span></p>
-                    </div>
-                </div>
-
-                <!-- ========================================== -->
-                <!-- NUEVO: RESUMEN COPIABLE (Estilo Dark Mode) -->
-                <!-- ========================================== -->
-                <div class="mt-8 pt-6 border-t border-slate-700/50 animate-fade-in-up" style="animation-delay: 0.4s; opacity: 0;">
-                    <h3 class="text-[11px] sm:text-xs font-bold text-slate-400 mb-3 uppercase tracking-widest text-center sm:text-left relative z-10">Tu Resumen para Compartir</h3>
-                    <div class="relative z-10">
-                        <textarea id="texto-resumen" class="w-full h-48 sm:h-40 p-4 bg-slate-900/50 border border-slate-700 rounded-xl text-sm text-slate-300 font-mono resize-none focus:outline-none focus:border-cyan-500 transition-colors shadow-inner" readonly>Calcula tu huella de carbono para ver el resumen...</textarea>
-                        <button onclick="copiarResumen()" id="btn-copiar" class="absolute bottom-4 right-4 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-lg transition-all flex items-center gap-2">
-                            <span>📋</span> Copiar resumen
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- MODAL INSTRUCCIONES iOS -->
-        <div id="modal-ios" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
-            <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl relative text-center">
-                <button onclick="cerrarModalIos()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl font-bold leading-none">&times;</button>
-                <div class="text-4xl mb-4">🍎</div>
-                <h3 class="text-lg font-black text-slate-800 mb-2">Instalar en iPhone / iPad</h3>
-                <p class="text-sm text-slate-600 mb-6">Para instalar la calculadora, <strong>ábrela en Safari</strong>, toca el botón de <strong>Compartir</strong> en la barra inferior y luego selecciona <strong>"Agregar a inicio"</strong>.</p>
-                <div class="flex justify-center mb-6">
-                    <!-- Icono compartir de Safari -->
-                    <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                </div>
-                <button onclick="cerrarModalIos()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-3 rounded-xl transition-colors">Entendido</button>
-            </div>
-        </div>
-
-        <!-- SEPARADOR VISUAL Y DONACIONES -->
-        <div class="mt-32 mb-16 flex items-center justify-center gap-4 opacity-40 animate-fade-in-up" style="animation-delay: 0.3s; opacity: 0;">
-            <div class="h-px bg-slate-400 w-1/4 sm:w-1/3"></div>
-            <span class="text-xl">🌱</span>
-            <div class="h-px bg-slate-400 w-1/4 sm:w-1/3"></div>
-        </div>
-
-        <div class="bg-white border border-emerald-100 p-8 rounded-3xl shadow-sm text-center animate-fade-in-up mb-12" style="animation-delay: 0.4s; opacity: 0;">
-            <h3 class="text-xl font-extrabold text-emerald-800 mb-3 flex justify-center items-center gap-2">
-                <span class="title-icon">💡</span> ¿Te fue útil esta herramienta?
-            </h3>
-            <p class="text-sm text-slate-500 mb-8 max-w-2xl mx-auto">Esta calculadora es un proyecto de libre acceso. Si deseas apoyar su mantenimiento y la creación de más herramientas ambientales, puedes hacer una aportación voluntaria.</p>
-            
-            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-                <div class="flex items-center hover:scale-105 transition-transform">
-                    <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="margilcg" data-color="#10b981" data-emoji="" data-font="Cookie" data-text="Invítame un café" data-outline-color="#ffffff" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
-                </div>
-                
-                <a href="https://link.mercadopago.com.mx/calculadorareciclaje" target="_blank" class="bg-[#009EE3] hover:bg-[#007EBA] text-white font-bold px-6 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center h-[51px] text-base hover:scale-105">
-                    🤝 Mercado Pago
-                </a>
-
-                <a href="https://www.paypal.com/donate/?hosted_button_id=JQ2VLWD2AV37N" target="_blank" class="bg-[#FFC439] hover:bg-[#F2B627] text-[#003087] font-bold px-8 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center h-[51px] text-base hover:scale-105">
-                    PayPal
-                </a>
-            </div>
-        </div>
-
-        <!-- FOOTER Y AVISOS LEGALES -->
-        <footer class="pt-8 pb-12 border-t border-slate-200 animate-fade-in-up" style="animation-delay: 0.7s; opacity: 0;">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 px-2 sm:px-0">
-                <div class="md:col-span-2 space-y-3">
-                    <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
-                        <span>⚖️</span> Nota Metodológica y Legal
-                    </h4>
-                    <p class="text-xs text-slate-500 leading-relaxed text-justify">
-                        Esta herramienta estima la huella de carbono domiciliaria utilizando factores de emisión oficiales publicados por la <strong>SEMARNAT, CONUEE, IMTA y metodologías del IPCC vigentes a 2026</strong>. Los resultados arrojados tienen un propósito estrictamente educativo y de concientización ciudadana. Este cálculo no constituye una auditoría oficial de emisiones ni genera reportes con validez legal, técnica o regulatoria para el cumplimiento normativo empresarial.
-                    </p>
-                </div>
-                <div class="space-y-3">
-                    <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
-                        <span>✉️</span> Contacto
-                    </h4>
-                    <p class="text-xs text-slate-500 leading-relaxed">
-                        ¿Deseas implementar una versión corporativa para tu empresa o municipio?
-                    </p>
-                    <a href="mailto:contacto@rutasustentable.com" class="inline-block text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors break-all">
-                        contacto@rutasustentable.com
+                    <a href="https://link.mercadopago.com.mx/calculadorareciclaje" target="_blank" class="bg-[#009EE3] hover:bg-[#007EBA] text-white font-semibold px-6 rounded-pill shadow-md transition-all flex items-center justify-center h-[48px] text-sm hover:scale-105">
+                        🤝 Mercado Pago
+                    </a>
+                    <a href="https://www.paypal.com/donate/?hosted_button_id=JQ2VLWD2AV37N" target="_blank" class="bg-[#FFC439] hover:bg-[#F2B627] text-[#003087] font-bold px-8 rounded-pill shadow-md transition-all flex items-center justify-center h-[48px] text-sm hover:scale-105">
+                        PayPal
                     </a>
                 </div>
             </div>
-          <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold text-slate-400 px-4 sm:px-0 bg-slate-100/50 p-4 rounded-xl border border-slate-100 text-center sm:text-left">
-                <p>© 2026 M.C. Jesús Margil Coronado G. Todos los derechos reservados. </p>
-                <div class="flex flex-wrap justify-center gap-4 sm:gap-6">
-                  <a href="/legales" class="hover:text-slate-700 transition-colors">Privacidad</a>
-                  <a href="/legales" class="hover:text-slate-700 transition-colors">Términos</a>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="rounded-card-lg bg-[#07161a] text-white mt-3 p-6 sm:p-10">
+            <div class="max-w-5xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pb-8 border-b border-white/15">
+                    <div class="md:col-span-2 space-y-2">
+                        <h4 class="text-xs font-semibold text-brand-light uppercase tracking-[0.2em]">⚖️ Nota Metodológica y Legal</h4>
+                        <p class="text-xs text-white/65 leading-relaxed font-body text-justify">
+                            Esta herramienta estima la huella de carbono domiciliaria utilizando factores de emisión oficiales publicados por la <strong>SEMARNAT, CONUEE, IMTA y metodologías del IPCC vigentes a 2026</strong>. Los resultados arrojados tienen un propósito estrictamente educativo y de concientización ciudadana. Este cálculo no constituye una auditoría oficial de emisiones ni genera reportes con validez legal, técnica o regulatoria para el cumplimiento normativo empresarial.
+                        </p>
+                    </div>
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-semibold text-brand-light uppercase tracking-[0.2em]">✉️ Contacto</h4>
+                        <p class="text-xs text-white/65 font-body">¿Deseas implementar una versión corporativa para tu empresa o municipio?</p>
+                        <a href="mailto:contacto@rutasustentable.com" class="inline-block text-sm font-medium text-brand-light hover:text-white transition-colors break-all">
+                            contacto@rutasustentable.com
+                        </a>
+                    </div>
+                </div>
+                <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/50">
+                    <p>© 2026 M.C. Jesús Margil Coronado G. Todos los derechos reservados.</p>
+                    <div class="flex gap-6">
+                        <a href="/legales" class="hover:text-white transition-colors">Privacidad</a>
+                        <a href="/legales" class="hover:text-white transition-colors">Términos</a>
+                    </div>
                 </div>
             </div>
         </footer>
 
+    </main>
+
+    <!-- MODAL INSTRUCCIONES iOS -->
+    <div id="modal-ios" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-[#0b2228]/80 backdrop-blur-md p-4">
+        <div class="bg-white rounded-card-lg p-6 sm:p-8 max-w-sm w-full shadow-2xl relative text-center">
+            <button onclick="cerrarModalIos()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl font-bold leading-none">&times;</button>
+            <div class="text-4xl mb-4">🍎</div>
+            <h3 class="text-lg font-bold text-brand-ink mb-2">Instalar en iPhone / iPad</h3>
+            <p class="text-sm text-slate-600 mb-6 font-body">Para instalar la calculadora, <strong>ábrela en Safari</strong>, toca el botón de <strong>Compartir</strong> en la barra inferior y selecciona <strong>"Agregar a inicio"</strong>.</p>
+            <button onclick="cerrarModalIos()" class="w-full bg-brand-deep text-white font-semibold uppercase tracking-wider text-xs py-3.5 rounded-pill">Entendido</button>
+        </div>
     </div>
 
-    <!-- EL MOTOR CENTRAL (JAVASCRIPT) -->
+    <!-- Script de aparición rápida -->
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.inview').forEach(el => observer.observe(el));
+    </script>
+
+    <!-- MOTOR CENTRAL JAVASCRIPT INTACTO -->
     <script>
         const FACTORES_COMB = { gas_kg: 3.0523, gas_l: 1.6482, gas_m3: 2.1925, gasolina_l: 2.4466, diesel_l: 2.8267 };
         const PRECIO_GASOLINA = 23.50; 
@@ -515,22 +581,27 @@
             if (val >= 1) input.value = val;
         }
 
+        function cerrarModalIos() {
+            const modal = document.getElementById('modal-ios');
+            if (modal) modal.classList.add('hidden');
+        }
+
         const listaHTML = document.getElementById('lista-aparatos');
         APARATOS.forEach(app => {
             listaHTML.innerHTML += `
-                <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm hover:border-yellow-300 hover:shadow-md transition-colors duration-300">
-                    <div class="w-full sm:w-1/2 text-sm font-bold text-slate-700 text-center sm:text-left">${app.nombre} <span class="text-xs font-semibold text-slate-400 block mt-0.5 sm:inline sm:ml-2">${app.watts} W</span></div>
-                    <div class="w-full sm:w-1/2 flex gap-2">
-                        <input type="number" id="qty-${app.id}" placeholder="Cant." class="w-1/2 text-sm font-semibold border-slate-200 rounded-lg p-2.5 outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 border transition-colors bg-slate-50 focus:bg-white text-center">
-                        <input type="number" id="hrs-${app.id}" placeholder="Hrs/día" class="w-1/2 text-sm font-semibold border-slate-200 rounded-lg p-2.5 outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 border transition-colors bg-slate-50 focus:bg-white text-center">
+                <div class="flex items-center justify-between gap-2 bg-brand-surface p-3 rounded-xl border border-slate-200/80">
+                    <div class="text-xs sm:text-sm font-semibold text-brand-ink">${app.nombre} <span class="text-[11px] font-normal text-slate-500 block">${app.watts} W</span></div>
+                    <div class="flex gap-1.5 w-36 shrink-0">
+                        <input type="number" id="qty-${app.id}" placeholder="Cant." class="w-1/2 text-xs font-semibold border border-slate-200 rounded-lg p-2 bg-white text-center outline-none focus:border-amber-500">
+                        <input type="number" id="hrs-${app.id}" placeholder="Hrs/día" class="w-1/2 text-xs font-semibold border border-slate-200 rounded-lg p-2 bg-white text-center outline-none focus:border-amber-500">
                     </div>
                 </div>
             `;
         });
 
         function switchTab(categoria, tab) {
-            let activeClass = "w-full py-2.5 text-sm font-bold rounded-lg bg-white shadow-sm text-slate-800 transition-colors duration-300";
-            let inactiveClass = "w-full py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors duration-300";
+            let activeClass = "w-full py-2 text-xs sm:text-sm font-semibold rounded-pill bg-brand-deep text-white shadow-sm transition-all";
+            let inactiveClass = "w-full py-2 text-xs sm:text-sm font-semibold rounded-pill text-slate-600 hover:text-brand-ink transition-all";
             
             if(categoria === 'gas') {
                 modoGas = tab;
@@ -554,8 +625,8 @@
 
         function switchTabElec(tab) {
             modoElec = tab;
-            let activeClass = "w-full py-2.5 text-sm font-bold rounded-lg bg-white shadow-sm text-slate-800 transition-colors duration-300";
-            let inactiveClass = "w-full py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors duration-300";
+            let activeClass = "w-full py-2.5 text-xs sm:text-sm font-semibold rounded-pill bg-brand-deep text-white shadow-sm transition-all";
+            let inactiveClass = "w-full py-2.5 text-xs sm:text-sm font-semibold rounded-pill text-slate-600 hover:text-brand-ink transition-all";
             
             ['recibo', 'aparatos'].forEach(t => {
                 document.getElementById(`input-${t}`).classList.add('hidden');
@@ -599,7 +670,7 @@
             }
         }
 
-       function calcularEmisiones(returnOnly = false) {
+        function calcularEmisiones(returnOnly = false) {
             let totalGas = 0, totalMov = 0;
             let habitantes = parseInt(document.getElementById('global-habitantes').value) || 1;
 
@@ -607,7 +678,7 @@
             else if (modoGas === 'estacionario') totalGas = (parseFloat(document.getElementById('gas-l').value) || 0) * FACTORES_COMB.gas_l;
             else if (modoGas === 'natural') totalGas = (parseFloat(document.getElementById('gas-m3').value) || 0) * FACTORES_COMB.gas_m3;
             
-            let gasPersonal = totalGas / habitantes; // Prorrateo de la casa
+            let gasPersonal = totalGas / habitantes;
 
             let tipoMotor = document.getElementById('tipo-combustible').value;
             let factorMotor = tipoMotor === 'gasolina' ? FACTORES_COMB.gasolina_l : FACTORES_COMB.diesel_l;
@@ -617,7 +688,7 @@
             else if (modoMovilidad === 'gasto') lts = (parseFloat(document.getElementById('mov-pesos').value) || 0) / PRECIO_GASOLINA;
             else if (modoMovilidad === 'km') lts = (parseFloat(document.getElementById('mov-km').value) || 0) / (parseFloat(document.getElementById('mov-rendimiento').value) || 15);
             
-            totalMov = lts * factorMotor; // La movilidad es 100% individual
+            totalMov = lts * factorMotor;
             
             let total = gasPersonal + totalMov;
             if(returnOnly) return total;
@@ -638,33 +709,23 @@
                     kwhMes += (q * app.watts * h * 30) / 1000;
                 });
             }
-            let total = (kwhMes * FACTOR_SEN) / habitantes; // Prorrateo de la luz
+            let total = (kwhMes * FACTOR_SEN) / habitantes;
             if(returnOnly) return total;
             document.getElementById('total-co2-elec').innerText = total.toFixed(2);
             document.getElementById('resultado-elec').classList.remove('hidden');
             return total;
         }
 
-                 function calcularResiduos(returnOnly = false) {
+        function calcularResiduos(returnOnly = false) {
             let habitantes = parseInt(document.getElementById('global-habitantes').value) || 1;
-            
-            // Generación de 1 sola persona (El usuario)
             let genBrutaPersonal = 1 * GENERACION_DOMESTICA * 30; 
-            
-            // Generación del resto de la casa (Si hay más de 1 persona)
             let genRestoCasa = (habitantes > 1) ? (habitantes - 1) * GENERACION_DOMESTICA * 30 : 0;
-            
             let total = 0;
 
             if (document.getElementById('chk-usa-calculadora').checked) {
                 let co2Evitado = parseFloat(document.getElementById('val-co2-externo').value) || 0;
-                
-                // Las emisiones de la casa completa
                 let emisionesTotalesCasa = ((genBrutaPersonal + genRestoCasa) * FACTOR_EMISION_RESIDUOS);
-                
-                // Le restamos el CO2 que el usuario evitó, y prorrateamos el total
                 total = (emisionesTotalesCasa - co2Evitado) / habitantes;
-
             } else {
                 let desc = 0;
                 if(document.getElementById('chk-plastico').checked) desc += PORC_PLASTICO;
@@ -673,13 +734,8 @@
                 if(document.getElementById('chk-vidrio').checked) desc += PORC_VIDRIO;
                 if(document.getElementById('chk-lata').checked) desc += PORC_METALES;
                 
-                // Aplicamos el descuento SOLO a la basura del usuario
                 let emisionesUsuario = (genBrutaPersonal - (genBrutaPersonal * desc)) * FACTOR_EMISION_RESIDUOS;
-                
-                // El resto de la casa emite al 100%
                 let emisionesRestantes = genRestoCasa * FACTOR_EMISION_RESIDUOS;
-                
-                // Sumamos ambas y dividimos entre todos
                 total = (emisionesUsuario + emisionesRestantes) / habitantes;
             }
 
@@ -694,9 +750,8 @@
         function calcularAgua(returnOnly = false) {
             let total = 0;
             let habitantes = parseInt(document.getElementById('global-habitantes').value) || 1;
-
             if (document.getElementById('chk-agua-opcional').checked) {
-                total = ((parseFloat(document.getElementById('agua-m3').value) || 0) * FACTOR_EMISION_AGUA) / habitantes; // Prorrateo del agua
+                total = ((parseFloat(document.getElementById('agua-m3').value) || 0) * FACTOR_EMISION_AGUA) / habitantes;
             }
             if(returnOnly) return total;
             document.getElementById('total-co2-agua').innerText = total.toFixed(2);
@@ -709,7 +764,6 @@
             let vElec = calcularElectricidad(true);
             let vRes = calcularResiduos(true);
             let vAgua = calcularAgua(true);
-
             let granTotal = vComb + vElec + vRes + vAgua;
 
             document.getElementById('res-sum-combustibles').innerText = vComb.toFixed(2);
@@ -717,23 +771,12 @@
             document.getElementById('res-sum-residuos').innerText = vRes.toFixed(2);
             document.getElementById('res-sum-agua').innerText = vAgua.toFixed(2);
             
-            animateValue("gran-total-co2", 0, granTotal, 1500);
+            animateValue("gran-total-co2", 0, granTotal, 700);
             
             const resultBox = document.getElementById('caja-gran-total');
             resultBox.classList.remove('hidden');
-            
-            // Forzar reflow para reiniciar animación
-            resultBox.classList.remove('animate-fade-in-up');
-            void resultBox.offsetWidth; 
-            resultBox.classList.add('animate-fade-in-up');
-            
-            setTimeout(() => {
-                resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 100);
+            setTimeout(() => { resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
 
-            // ==========================================
-            // NUEVO: GENERAR EL TEXTO DEL RESUMEN
-            // ==========================================
             const resumenTexto = `🌍 MI HUELLA DE CARBONO MENSUAL
 Ruta Sustentable (rutasustentable.com)
 
@@ -751,9 +794,6 @@ Calcula tu huella y descubre cómo reducirla gratis en Ruta Sustentable.`;
             document.getElementById("texto-resumen").value = resumenTexto;
         }
 
-        // ==========================================
-        // NUEVO: FUNCIÓN PARA EL BOTÓN COPIAR
-        // ==========================================
         function copiarResumen() {
             const texto = document.getElementById("texto-resumen");
             texto.select();
@@ -762,14 +802,7 @@ Calcula tu huella y descubre cómo reducirla gratis en Ruta Sustentable.`;
                 const btn = document.getElementById("btn-copiar");
                 const textoOriginal = btn.innerHTML;
                 btn.innerHTML = "<span>✅</span> ¡Copiado!";
-                btn.classList.add("bg-emerald-500");
-                btn.classList.remove("bg-cyan-600");
-                
-                setTimeout(() => {
-                    btn.innerHTML = textoOriginal;
-                    btn.classList.remove("bg-emerald-500");
-                    btn.classList.add("bg-cyan-600");
-                }, 2000);
+                setTimeout(() => { btn.innerHTML = textoOriginal; }, 2000);
             });
         }
 
@@ -781,50 +814,33 @@ Calcula tu huella y descubre cómo reducirla gratis en Ruta Sustentable.`;
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
                 const easeProgress = 1 - Math.pow(1 - progress, 4);
                 obj.innerHTML = (easeProgress * (end - start) + start).toFixed(2);
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
+                if (progress < 1) window.requestAnimationFrame(step);
             };
             window.requestAnimationFrame(step);
         }
-        // ==========================================
-        // LÓGICA PARA INSTALAR COMO APP (PWA)
-        // ==========================================
-        
-        // 1. Registrar el Service Worker
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').catch(error => {
-                    console.log('Error al registrar SW:', error);
-                });
+                navigator.serviceWorker.register('/sw.js').catch(error => console.log('Error SW:', error));
             });
         }
 
-// 2. Controlar el botón de instalación (Android + iOS Blindado)
         let eventoInstalacionDiferida;
         const btnInstalar = document.getElementById('btn-instalar');
-
-        // Detección robusta de iOS (incluye iPads modernos)
         const isIOS = (/iPad|iPhone|iPod/.test(navigator.userAgent)) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
         if (btnInstalar) {
-            // Si es Apple y no está instalada, forzamos el botón
             if (isIOS && !isStandalone) {
                 btnInstalar.classList.remove('hidden');
                 btnInstalar.innerHTML = '<span>🍎</span> Instalar en iOS';
             }
-
-            // Si es Android/PC y Chrome da el permiso, mostramos el botón
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
                 eventoInstalacionDiferida = e;
-                // Restauramos el texto de Android por si acaso
                 btnInstalar.innerHTML = '<span>📱</span> Instalar como App';
                 btnInstalar.classList.remove('hidden');
             });
-
-            // Acción al hacer clic
             btnInstalar.addEventListener('click', async () => {
                 if (isIOS) {
                     const modal = document.getElementById('modal-ios');
@@ -832,13 +848,24 @@ Calcula tu huella y descubre cómo reducirla gratis en Ruta Sustentable.`;
                 } else if (eventoInstalacionDiferida) {
                     eventoInstalacionDiferida.prompt();
                     const { outcome } = await eventoInstalacionDiferida.userChoice;
-                    if (outcome === 'accepted') {
-                        btnInstalar.classList.add('hidden'); 
-                    }
+                    if (outcome === 'accepted') btnInstalar.classList.add('hidden');
                     eventoInstalacionDiferida = null;
                 }
             });
         }
+
+        // =====================================
+        // LOADER ULTRA RÁPIDO Y ANIMACIONES
+        // =====================================
+        window.addEventListener('DOMContentLoaded', () => {
+            const bar = document.getElementById('loader-bar');
+            const curtain = document.getElementById('loader-curtain');
+
+            setTimeout(() => { if (bar) bar.style.transform = 'scaleX(1)'; }, 10);
+            setTimeout(() => { if (curtain) curtain.classList.add('slide-up'); }, 350);
+            setTimeout(() => { if (curtain) curtain.style.display = 'none'; }, 850);
+        });
     </script>
 </body>
 </html>
+
