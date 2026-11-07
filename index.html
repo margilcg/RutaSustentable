@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ruta Sustentable | Inteligencia y datos para la sustentabilidad</title>
-    
-    <!-- Tipografía Premium: Inter -->
+
+    <!-- Fuentes: Onest (Baseline Editorial) + Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -19,229 +19,599 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'], 
-                        logo: ['system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Arial', 'sans-serif'],
+                        sans: ['Onest', 'Inter', 'system-ui', 'sans-serif'],
+                        body: ['Inter', 'system-ui', 'sans-serif'],
                     },
                     colors: {
                         brand: {
-                            dark: '#18181b',
-                            light: '#fafafa',
-                            accent: '#059669',
-                            hover: '#047857'
+                            deep: '#0b2228',     
+                            navy: '#0f2f63',     
+                            primary: '#059669',  
+                            light: '#34d399',    
+                            teal: '#0b6e97',     
+                            surface: '#f3f5f4',  
+                            ink: '#0a0a0a',
+                            soft: '#64748b',
+                            ghost: '#dce2e5'
                         }
+                    },
+                    borderRadius: {
+                        'card': '1.5rem',
+                        'card-lg': '2rem',
+                        'pill': '62.5rem'
                     }
                 }
             }
         }
     </script>
-</head>
-<body class="bg-brand-light text-gray-800 font-sans antialiased selection:bg-brand-accent selection:text-white">
 
-   <!-- 1. Navbar (Corregido: Alineado a la derecha en PC, centrado en móvil) -->
-    <nav class="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-center py-4 md:h-20 gap-4 md:gap-0">
-                
-                <!-- LOGO CON ENLACE Y BRILLO -->
-                <a href="index.html" class="flex-shrink-0 flex items-center group transition-all duration-300 hover:drop-shadow-[0_0_15px_rgba(5,150,105,0.4)] hover:-translate-y-0.5">
-                    <span class="font-logo font-extrabold text-3xl text-brand-dark tracking-tighter group-hover:text-gray-700 transition-colors">Ruta<span class="text-brand-accent group-hover:text-emerald-500 transition-colors">Sustentable</span></span>
-                </a>
-                
-                <!-- ENLACES -->
-                <div class="flex flex-wrap justify-center md:justify-end gap-5 md:gap-8 items-center font-medium w-full md:w-auto">
-                    <a href="#herramientas" class="text-sm md:text-base text-gray-500 hover:text-brand-accent transition-colors">Herramientas</a>
-                    <a href="#metodologia" class="text-sm md:text-base text-gray-500 hover:text-brand-accent transition-colors">Metodología</a>
-                    <a href="empresas.html" class="bg-brand-dark text-white px-5 py-2.5 rounded-lg hover:bg-gray-800 hover:shadow-lg transition-all text-xs sm:text-sm shadow-sm font-bold">Acceso Empresas</a>
-                </div>
-                
+    <style>
+        :root {
+            --brand-deep: #0b2228;
+            --brand-light: #34d399;
+            --surface: #f3f5f4;
+            --ink: #0a0a0a;
+            --ghost: #dce2e5;
+            --hairline: #e2e8f0;
+        }
+        * { box-sizing: border-box; }
+        body {
+            background-color: #ffffff;
+            color: var(--ink);
+            font-family: 'Onest', system-ui, sans-serif;
+            overflow-x: clip;
+        }
+        
+        .clip-box {
+            overflow: hidden;
+            display: inline-block;
+            padding-bottom: 0.12em;
+            vertical-align: bottom;
+        }
+        .clip-item {
+            display: inline-block;
+            transform: translateY(115%);
+            opacity: 0;
+            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.55s ease;
+        }
+        .revealed .clip-item {
+            transform: translateY(0%);
+            opacity: 1;
+        }
+        
+        .inview {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .inview.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        #loader-curtain {
+            transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        #loader-curtain.slide-up {
+            transform: translateY(-105%);
+        }
+        #loader-bar {
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.85s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        
+        .program-row:hover .row-arrow {
+            transform: translateX(6px);
+            opacity: 1;
+            background-color: #0b2228;
+            color: #ffffff;
+            border-color: #0b2228;
+        }
+        
+        .ghost-headline {
+            font-size: clamp(2rem, 8vw, 7rem);
+            line-height: 1.02;
+            letter-spacing: -0.03em;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- INTRO LOADER ESTILO BASELINE -->
+    <div id="loader-curtain" class="fixed inset-0 z-[200] bg-brand-deep text-white flex flex-col items-center justify-center gap-6">
+        <div class="flex items-center gap-3">
+            <svg class="w-7 h-7 text-brand-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/>
+                <path d="M19.2 5.6a9 9 0 0 1 0 12.8"/>
+            </svg>
+            <span class="text-xl sm:text-2xl font-medium uppercase tracking-[0.22em]">Ruta Sustentable</span>
+        </div>
+        <div class="w-44 h-[2px] rounded-pill bg-white/20 overflow-hidden">
+            <div id="loader-bar" class="w-full h-full bg-brand-light"></div>
+        </div>
+    </div>
+
+    <!-- FULLSCREEN MENU OVERLAY -->
+    <div id="menu-overlay" class="fixed inset-0 z-[150] bg-brand-deep/95 backdrop-blur-xl text-white opacity-0 pointer-events-none transition-opacity duration-300 flex flex-col justify-between p-6 sm:p-12">
+        <div class="flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5 text-white">
+                <svg class="w-5 h-5 text-brand-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="12" cy="12" r="9"/><path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/><path d="M19.2 5.6a9 9 0 0 1 0 12.8"/>
+                </svg>
+                <span class="text-sm sm:text-base font-medium uppercase tracking-[0.2em]">Ruta Sustentable</span>
+            </a>
+            <button onclick="toggleMenu()" class="w-10 h-10 rounded-pill bg-white/15 hover:bg-white/25 flex items-center justify-center transition-transform duration-300 hover:rotate-90" aria-label="Cerrar menú">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+        </div>
+
+        <nav class="flex flex-col gap-3 my-auto">
+            <a href="#herramientas" onclick="toggleMenu()" class="text-3xl sm:text-6xl font-medium tracking-tight hover:text-brand-light transition-colors">01. Herramientas</a>
+            <a href="#metodologia" onclick="toggleMenu()" class="text-3xl sm:text-6xl font-medium tracking-tight hover:text-brand-light transition-colors">02. Metodología</a>
+            <a href="https://calculadorareciclaje.org/" target="_blank" class="text-3xl sm:text-6xl font-medium tracking-tight hover:text-brand-light transition-colors">03. Reciclaje</a>
+            <a href="huella-carbono.html" class="text-3xl sm:text-6xl font-medium tracking-tight hover:text-brand-light transition-colors">04. Huella de Carbono</a>
+            <a href="empresas.html" class="text-3xl sm:text-6xl font-medium tracking-tight text-brand-light hover:text-white transition-colors">05. Acceso Empresas</a>
+        </nav>
+
+        <div class="border-t border-white/15 pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs sm:text-sm text-white/70">
+            <a href="empresas.html" class="inline-flex items-center gap-2 rounded-pill bg-white text-brand-deep px-6 py-3 font-semibold uppercase tracking-wider hover:bg-brand-light transition-colors">
+                Portal Corporativo
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <div class="flex gap-6">
+                <a href="mailto:contacto@rutasustentable.com" class="hover:text-white">contacto@rutasustentable.com</a>
+                <a href="legales.html" class="hover:text-white">Privacidad y Términos</a>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <!-- 2. Hero Section con Mockup -->
-    <section class="relative bg-brand-dark text-white py-16 lg:py-32 overflow-hidden">
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-gray-700/40 via-brand-dark to-brand-dark pointer-events-none"></div>
-        
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center text-center lg:text-left">
+    <!-- CONTENEDOR EDITORIAL CON INSET (ESTILO BASELINE) -->
+    <main class="p-2 sm:p-3 w-full">
+
+        <!-- 1. HERO SECTION -->
+        <section class="relative isolate overflow-hidden rounded-card-lg bg-brand-deep text-white min-h-[calc(100svh-1rem)] sm:min-h-[calc(100svh-1.5rem)] flex flex-col justify-between">
             
-            <div class="z-10">
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
-                    Inteligencia y datos para la <span class="text-brand-accent block sm:inline">sustentabilidad operativa</span>
+            <!-- Fondo con Parallax y atmósfera profunda -->
+            <div class="absolute inset-0 -z-10 overflow-hidden">
+                <img id="hero-parallax" src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=2000&q=85" alt="Naturaleza e inteligencia ambiental" class="w-full h-[125%] -top-[12%] absolute object-cover opacity-45 scale-105 transition-transform duration-100 ease-out">
+                <div class="absolute inset-0 bg-gradient-to-b from-[#0b2228]/80 via-[#0f2f63]/45 to-[#0b2228]/95"></div>
+            </div>
+
+            <!-- Header Integrado -->
+            <header class="flex items-center justify-between px-5 pt-5 sm:px-10 sm:pt-8 text-xs sm:text-sm z-20">
+                <nav class="hidden lg:flex flex-1 items-center gap-8 text-white/85">
+                    <a href="#herramientas" class="hover:text-white transition-colors">Herramientas Operativas</a>
+                    <a href="#metodologia" class="hover:text-white transition-colors">Rigor Metodológico</a>
+                    <a href="https://calculadorareciclaje.org/" target="_blank" class="hover:text-white transition-colors">Calculadora Reciclaje</a>
+                </nav>
+
+                <a href="index.html" class="flex-1 lg:text-center flex items-center lg:justify-center gap-2.5 group">
+                    <svg class="w-5 h-5 text-brand-light transition-transform duration-300 group-hover:rotate-45 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <circle cx="12" cy="12" r="9"/>
+                        <path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/>
+                        <path d="M19.2 5.6a9 9 0 0 1 0 12.8"/>
+                    </svg>
+                    <span class="text-sm sm:text-base font-medium uppercase tracking-[0.2em]">Ruta <span class="text-brand-light">Sustentable</span></span>
+                </a>
+
+                <div class="flex-1 flex items-center justify-end gap-3 sm:gap-5">
+                    <a href="empresas.html" class="hidden sm:inline-block uppercase tracking-widest text-xs font-medium text-white/90 hover:text-brand-light underline-offset-4 hover:underline transition-all">
+                        Acceso Empresas
+                    </a>
+                    <button onclick="toggleMenu()" class="w-10 h-10 rounded-pill bg-white/15 backdrop-blur-md hover:bg-white/25 flex flex-col items-center justify-center gap-[5px] transition-colors" aria-label="Abrir menú">
+                        <span class="w-4 h-[1.5px] bg-white"></span>
+                        <span class="w-4 h-[1.5px] bg-white"></span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Titular Gigante Editorial -->
+            <div class="px-5 sm:px-10 my-auto py-12 z-10">
+                <div class="inline-flex items-center gap-2 text-[11px] sm:text-xs uppercase tracking-[0.22em] text-white/75 mb-4">
+                    <span class="w-2 h-2 rounded-pill bg-brand-light animate-pulse"></span>
+                    <span>SEMARNAT • CONAGUA • CFE • IPCC</span>
+                </div>
+
+                <h1 id="hero-title" class="text-[11vw] sm:text-[9.2vw] font-medium uppercase leading-[0.88] tracking-[-0.03em]">
+                    <span class="clip-box"><span class="clip-item" style="transition-delay: 50ms;">DATOS</span></span>
+                    <span class="clip-box"><span class="clip-item text-brand-light" style="transition-delay: 130ms;">PARA</span></span>
+                    <span class="clip-box"><span class="clip-item" style="transition-delay: 210ms;">EL</span></span><br>
+                    <span class="clip-box"><span class="clip-item" style="transition-delay: 290ms;">IMPACTO</span></span>
+                    <span class="clip-box"><span class="clip-item text-white/90" style="transition-delay: 370ms;">REAL</span></span>
                 </h1>
-                <p class="text-base sm:text-lg md:text-xl text-gray-400 mb-8 max-w-xl mx-auto lg:mx-0 font-light">
-                    Herramientas de cálculo y diagnóstico basadas en normativas mexicanas para ciudadanos, proyectos agropecuarios y PyMEs.
+
+                <p class="mt-6 max-w-xl text-sm sm:text-lg text-white/80 font-body font-light leading-relaxed">
+                    Herramientas de cálculo y diagnóstico ambiental basadas en normativas mexicanas vigentes para ciudadanos, proyectos agropecuarios y PyMEs.
                 </p>
-                
-                <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-6">
-                    <a href="huella-carbono.html" target="_blank" class="bg-brand-accent hover:bg-brand-hover text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(5,150,105,0.4)] hover:shadow-[0_0_30px_rgba(5,150,105,0.6)] hover:-translate-y-1 text-lg flex justify-center items-center gap-2">
-                        Usar Calculadora
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                        </svg>
+
+                <div class="mt-8 flex flex-wrap items-center gap-4">
+                    <a href="huella-carbono.html" class="group inline-flex items-center gap-3 rounded-pill bg-white text-brand-deep px-7 py-4 text-xs sm:text-sm font-semibold uppercase tracking-wider hover:bg-brand-light transition-all duration-300 shadow-xl">
+                        <span>Usar Calculadora</span>
+                        <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </a>
+                    <a href="https://calculadorareciclaje.org/" target="_blank" class="inline-flex items-center gap-2 rounded-pill border border-white/25 bg-white/10 backdrop-blur-md text-white px-6 py-4 text-xs sm:text-sm font-medium uppercase tracking-wider hover:bg-white/20 transition-all">
+                        <span>Calculadora de Reciclaje</span>
                     </a>
                 </div>
-
-                <div class="mt-10 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    <span>Motores respaldados por:</span>
-                    <span class="flex items-center gap-3 text-gray-400">
-                        <span>SEMARNAT</span> <span class="w-1 h-1 bg-gray-600 rounded-full"></span> 
-                        <span>CONAGUA</span> <span class="w-1 h-1 bg-gray-600 rounded-full"></span> 
-                        <span>CFE</span>
-                    </span>
-                </div>
             </div>
 
-            <div class="relative hidden lg:block z-10 perspective-1000">
-                <div class="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 rounded-2xl shadow-2xl p-6 transform rotate-[-2deg] hover:rotate-0 hover:scale-105 transition-all duration-500 group cursor-default">
-                    <div class="flex justify-between items-center mb-6 border-b border-gray-700 pb-4">
-                        <div class="flex space-x-2">
-                            <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
-                            <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
-                            <div class="w-3 h-3 rounded-full bg-brand-accent/80"></div>
-                        </div>
-                        <div class="h-4 w-24 bg-gray-700/50 rounded-md"></div>
-                    </div>
+            <!-- Fila Inferior Hero: Tagline + Glass Cards (Estilo Baseline) -->
+            <div class="px-5 pb-6 sm:px-10 sm:pb-10 flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6 z-10">
+                <div>
+                    <p class="text-2xl sm:text-4xl font-medium uppercase leading-[0.95] tracking-tight text-white/90">
+                        MIDE HOY,<br><span class="text-brand-light">DECIDE MEJOR</span>
+                    </p>
+                </div>
+
+                <!-- Tarjetas de Cristal Flotantes -->
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-end gap-4 w-full lg:w-auto">
                     
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <div class="bg-gray-700/40 rounded-xl p-4 border border-gray-600/30">
-                            <div class="h-3 w-20 bg-gray-600 rounded mb-3"></div>
-                            <div class="text-3xl font-bold text-white mb-2">1,240 <span class="text-sm font-medium text-brand-accent">kg CO₂e</span></div>
-                            <div class="h-1.5 w-full bg-gray-800 rounded-full overflow-hidden">
-                                <div class="h-full bg-brand-accent w-2/3 rounded-full"></div>
+                    <!-- Card 1: Monitor de Impacto -->
+                    <a href="huella-carbono.html" class="flex-1 sm:w-64 rounded-card border border-white/15 bg-white/10 backdrop-blur-md p-4 flex items-center gap-4 hover:bg-white/15 transition-all group">
+                        <div class="w-14 h-14 rounded-xl bg-brand-light/20 border border-brand-light/30 flex items-center justify-center text-2xl shrink-0">
+                            🌍
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-[11px] font-medium uppercase tracking-widest text-brand-light">Motor Auditable</p>
+                            <p class="text-xs sm:text-sm font-medium uppercase text-white truncate mt-0.5">Huella Doméstica</p>
+                            <span class="inline-block text-[11px] text-white/80 underline mt-1 group-hover:text-brand-light">Iniciar cálculo →</span>
+                        </div>
+                    </a>
+
+                    <!-- Card 2: Estadística Destacada (como el 9K+ de Baseline) -->
+                    <div class="flex-1 sm:w-64 rounded-card border border-white/15 bg-white/10 backdrop-blur-md p-4 flex items-center justify-between gap-4">
+                        <div class="flex flex-col justify-between">
+                            <span class="text-2xl sm:text-3xl font-semibold leading-none text-white">1,240 <span class="text-xs font-normal text-brand-light">kg CO₂e</span></span>
+                            <div class="flex -space-x-2 my-2">
+                                <span class="w-5 h-5 rounded-pill border border-brand-deep bg-[#34d399]"></span>
+                                <span class="w-5 h-5 rounded-pill border border-brand-deep bg-[#5790e6]"></span>
+                                <span class="w-5 h-5 rounded-pill border border-brand-deep bg-[#0b6e97]"></span>
+                                <span class="w-5 h-5 rounded-pill border border-brand-deep bg-white"></span>
+                            </div>
+                            <span class="text-[11px] text-white/75">Monitoreo y ahorro estimado</span>
+                        </div>
+                        <div class="w-14 h-16 rounded-xl bg-gradient-to-br from-emerald-400/30 to-sky-500/30 border border-white/15 flex flex-col items-center justify-center p-2 text-center shrink-0">
+                            <span class="text-base font-bold text-brand-light">32%</span>
+                            <span class="text-[9px] uppercase tracking-wider text-white/80">Mitigación</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. SECCIÓN DE CONFIANZA Y PALABRAS FANTASMA (ESTILO TRUST SECTION) -->
+        <section class="relative isolate overflow-hidden py-16 sm:py-24 px-5 sm:px-10 bg-white">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 inview">
+                    <!-- Badge circular -->
+                    <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-pill bg-brand-surface flex flex-col items-center justify-center text-center p-3 border border-slate-200/80 shrink-0">
+                        <span class="text-2xl font-semibold text-brand-deep">100%</span>
+                        <span class="text-[10px] text-brand-soft leading-tight mt-1">Factores oficiales de México</span>
+                    </div>
+
+                    <!-- Tarjeta #01 -->
+                    <article class="max-w-md rounded-card bg-brand-surface p-5 sm:p-6 flex items-start gap-4 border border-slate-200/60">
+                        <span class="rounded-xl bg-white px-3.5 py-2 text-lg font-semibold text-brand-deep shadow-sm">#01</span>
+                        <div>
+                            <h2 class="text-base sm:text-lg font-semibold text-brand-ink">Rigor técnico sin cajas negras</h2>
+                            <p class="text-xs text-brand-soft leading-relaxed mt-1 font-body">
+                                Desde hogares y ranchos agropecuarios hasta PyMEs, operamos con factores del SEN, RENE, IMTA y EPA WARM adaptados al territorio nacional.
+                            </p>
+                        </div>
+                    </article>
+                </div>
+
+                <!-- Palabras Fantasma Gigantes (Calibradas para mostrarse juntas y legibles) -->
+                <div class="mt-14 sm:mt-20 select-none pointer-events-none inview flex flex-col gap-1 sm:gap-2">
+                    <!-- Línea 1: PRECISIÓN CIENTÍFICA -->
+                    <div class="flex justify-start sm:justify-center items-baseline gap-4 sm:gap-6 ghost-headline font-medium uppercase text-brand-ghost whitespace-nowrap">
+                        <span>PRECISIÓN</span>
+                        <span>CIENTÍFICA</span>
+                    </div>
+                    <!-- Línea 2: IMPACTO MEDIBLE -->
+                    <div class="flex justify-start sm:justify-center items-baseline gap-4 sm:gap-6 ghost-headline font-medium uppercase whitespace-nowrap">
+                        <span class="text-brand-deep">IMPACTO</span>
+                        <span class="text-brand-ghost">MEDIBLE</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. CAJA DE HERRAMIENTAS OPERATIVAS (ESTILO NUMBERED PROGRAMS LIST) -->
+        <section id="herramientas" class="rounded-card-lg bg-brand-surface py-16 sm:py-24 px-5 sm:px-10">
+            <div class="max-w-7xl mx-auto">
+                <div class="inview">
+                    <div class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.22em] text-brand-soft">
+                        <span class="w-2 h-2 rounded-pill bg-brand-primary"></span>
+                        <span>Módulos Especializados</span>
+                    </div>
+                    <h2 class="mt-3 text-4xl sm:text-5xl font-medium tracking-tight leading-[0.95] text-brand-ink">
+                        Caja de Herramientas<br><span class="text-brand-primary">Operativas</span>
+                    </h2>
+                </div>
+
+                <!-- Lista Numerada Interactiva + Tarjetas -->
+                <div class="mt-12 border-t border-slate-300/80 divide-y divide-slate-300/80 border-b">
+                    
+                    <!-- 01. Emisiones de Reciclaje -->
+                    <a href="https://calculadorareciclaje.org/" target="_blank" class="program-row block py-7 sm:py-8 transition-colors hover:bg-white/70 px-3 sm:px-6 rounded-2xl inview">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="flex items-start sm:items-center gap-4 sm:gap-8">
+                                <span class="text-sm font-semibold text-brand-primary w-8 shrink-0">01</span>
+                                <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl shrink-0">♻️</div>
+                                <div>
+                                    <div class="flex flex-wrap items-center gap-2.5">
+                                        <h3 class="text-2xl sm:text-3xl font-medium tracking-tight text-brand-ink">Emisiones de Reciclaje</h3>
+                                        <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-pill bg-emerald-100 text-emerald-800">Activo</span>
+                                    </div>
+                                    <p class="text-sm text-brand-soft mt-1 font-body">Calcula el impacto ambiental mitigado, árboles equivalentes y energía ahorrada por la correcta separación de residuos (EPA WARM v16).</p>
+                                </div>
+                            </div>
+                            <div class="row-arrow w-11 h-11 rounded-pill border border-slate-300 flex items-center justify-center opacity-70 transition-all duration-300 self-end sm:self-center shrink-0">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                             </div>
                         </div>
-                        <div class="bg-gray-700/40 rounded-xl p-4 border border-gray-600/30">
-                            <div class="h-3 w-16 bg-gray-600 rounded mb-3"></div>
-                            <div class="text-3xl font-bold text-white mb-2">32% <span class="text-sm font-medium text-gray-400">Ahorro</span></div>
-                            <div class="h-1.5 w-full bg-gray-800 rounded-full overflow-hidden">
-                                <div class="h-full bg-blue-500 w-1/3 rounded-full"></div>
+                    </a>
+
+                    <!-- 02. Huella de Carbono -->
+                    <a href="huella-carbono.html" class="program-row block py-7 sm:py-8 transition-colors hover:bg-white/70 px-3 sm:px-6 rounded-2xl inview">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="flex items-start sm:items-center gap-4 sm:gap-8">
+                                <span class="text-sm font-semibold text-brand-primary w-8 shrink-0">02</span>
+                                <div class="w-12 h-12 rounded-2xl bg-sky-100 text-sky-700 flex items-center justify-center text-2xl shrink-0">👣</div>
+                                <div>
+                                    <div class="flex flex-wrap items-center gap-2.5">
+                                        <h3 class="text-2xl sm:text-3xl font-medium tracking-tight text-brand-ink">Huella de Carbono</h3>
+                                        <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-pill bg-emerald-100 text-emerald-800">Activo</span>
+                                    </div>
+                                    <p class="text-sm text-brand-soft mt-1 font-body">Mide tus emisiones mensuales con factores de la red eléctrica nacional (SEN), combustibles locales, residuos sólidos y consumo de agua en casa.</p>
+                                </div>
+                            </div>
+                            <div class="row-arrow w-11 h-11 rounded-pill border border-slate-300 flex items-center justify-center opacity-70 transition-all duration-300 self-end sm:self-center shrink-0">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- 03. Simulador Hídrico -->
+                    <div class="block py-7 sm:py-8 px-3 sm:px-6 opacity-60 cursor-not-allowed inview">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="flex items-start sm:items-center gap-4 sm:gap-8">
+                                <span class="text-sm font-semibold text-slate-400 w-8 shrink-0">03</span>
+                                <div class="w-12 h-12 rounded-2xl bg-slate-200 text-slate-500 flex items-center justify-center text-2xl shrink-0">💧</div>
+                                <div>
+                                    <div class="flex flex-wrap items-center gap-2.5">
+                                        <h3 class="text-2xl sm:text-3xl font-medium tracking-tight text-slate-700">Simulador Hídrico</h3>
+                                        <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-pill bg-slate-200 text-slate-600">Próximamente</span>
+                                    </div>
+                                    <p class="text-sm text-brand-soft mt-1 font-body">Calcula la captación de agua de lluvia y el dimensionamiento de cisternas según datos históricos de precipitación de tu municipio.</p>
+                                </div>
+                            </div>
+                            <div class="w-11 h-11 rounded-pill border border-slate-200 flex items-center justify-center text-slate-400 self-end sm:self-center shrink-0">
+                                🔒
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="h-32 bg-gray-700/30 rounded-xl border border-gray-600/30 flex items-end justify-between p-4 space-x-2">
-                        <div class="w-full bg-brand-accent/20 rounded-t-sm h-[40%] group-hover:bg-brand-accent/40 transition-colors duration-500 delay-75"></div>
-                        <div class="w-full bg-brand-accent/40 rounded-t-sm h-[60%] group-hover:bg-brand-accent/60 transition-colors duration-500 delay-100"></div>
-                        <div class="w-full bg-brand-accent/60 rounded-t-sm h-[35%] group-hover:bg-brand-accent/80 transition-colors duration-500 delay-150"></div>
-                        <div class="w-full bg-brand-accent/80 rounded-t-sm h-[90%] group-hover:bg-brand-accent transition-colors duration-500 delay-200"></div>
-                        <div class="w-full bg-brand-accent rounded-t-sm h-[70%] group-hover:bg-emerald-400 transition-colors duration-500 delay-300"></div>
+
+                    <!-- 04. Diagnóstico OBD2 -->
+                    <div class="block py-7 sm:py-8 px-3 sm:px-6 opacity-60 cursor-not-allowed inview">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="flex items-start sm:items-center gap-4 sm:gap-8">
+                                <span class="text-sm font-semibold text-slate-400 w-8 shrink-0">04</span>
+                                <div class="w-12 h-12 rounded-2xl bg-slate-200 text-slate-500 flex items-center justify-center text-2xl shrink-0">⚙️</div>
+                                <div>
+                                    <div class="flex flex-wrap items-center gap-2.5">
+                                        <h3 class="text-2xl sm:text-3xl font-medium tracking-tight text-slate-700">Diagnóstico OBD2</h3>
+                                        <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-pill bg-slate-200 text-slate-600">Próximamente</span>
+                                    </div>
+                                    <p class="text-sm text-brand-soft mt-1 font-body">Traductor ciudadano de códigos de falla automotriz para mantenimiento preventivo vehicular y control de emisiones en flotillas.</p>
+                                </div>
+                            </div>
+                            <div class="w-11 h-11 rounded-pill border border-slate-200 flex items-center justify-center text-slate-400 self-end sm:self-center shrink-0">
+                                🔒
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. METODOLOGÍA Y PILARES CIENTÍFICOS (ESTILO FACILITIES / TESTIMONIALS DE BASELINE) -->
+        <section id="metodologia" class="rounded-card-lg bg-white -mt-6 pt-16 pb-20 px-5 sm:px-10 relative z-10 shadow-sm border border-slate-100">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 inview">
+                    <div>
+                        <div class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.22em] text-brand-soft">
+                            <span class="w-2 h-2 rounded-pill bg-brand-navy"></span>
+                            <span>Marco Regulatorio Mexicano</span>
+                        </div>
+                        <h2 class="mt-3 text-4xl sm:text-5xl font-medium tracking-tight leading-[0.95] text-brand-ink">
+                            Rigor técnico y<br>transparencia operativa
+                        </h2>
+                    </div>
+                    <p class="text-sm sm:text-base text-brand-soft max-w-md font-body leading-relaxed">
+                        En Ruta Sustentable no usamos promedios globales genéricos. Nuestros motores operan con el marco regulatorio vigente y bases de datos oficiales para México.
+                    </p>
+                </div>
+
+                <!-- 3 Tarjetas de Pilares con Hover Lift -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <article class="rounded-card bg-brand-surface p-7 flex flex-col justify-between border border-slate-200/70 hover:-translate-y-2 transition-transform duration-300 inview">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl mb-6">📊</div>
+                            <h3 class="text-xl font-semibold text-brand-ink mb-3">Factores Localizados</h3>
+                            <p class="text-sm text-brand-soft leading-relaxed font-body">
+                                Calculamos la huella eléctrica y de hidrocarburos utilizando los factores de emisión del Sistema Eléctrico Nacional (SEN) y RENE actualizados, asegurando precisión territorial.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-200 text-xs font-semibold uppercase tracking-wider text-emerald-700">
+                            SEN • RENE • SEMARNAT
+                        </div>
+                    </article>
+
+                    <article class="rounded-card bg-brand-surface p-7 flex flex-col justify-between border border-slate-200/70 hover:-translate-y-2 transition-transform duration-300 inview">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center text-2xl mb-6">🔒</div>
+                            <h3 class="text-xl font-semibold text-brand-ink mb-3">Privacidad por Diseño</h3>
+                            <p class="text-sm text-brand-soft leading-relaxed font-body">
+                                No recolectamos, vendemos ni almacenamos tu información personal en las calculadoras públicas. Todos los cálculos matemáticos se ejecutan de manera anónima y local en tu navegador.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-200 text-xs font-semibold uppercase tracking-wider text-blue-700">
+                            Ejecución 100% Local
+                        </div>
+                    </article>
+
+                    <article class="rounded-card bg-brand-surface p-7 flex flex-col justify-between border border-slate-200/70 hover:-translate-y-2 transition-transform duration-300 inview">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center text-2xl mb-6">⚖️</div>
+                            <h3 class="text-xl font-semibold text-brand-ink mb-3">Base Científica</h3>
+                            <p class="text-sm text-brand-soft leading-relaxed font-body">
+                                Nuestros modelos analíticos siguen las directrices del Panel Intergubernamental del Cambio Climático (IPCC), EPA WARM v16 y el Diagnóstico Básico de Residuos (DBGIR 2026).
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-200 text-xs font-semibold uppercase tracking-wider text-teal-800">
+                            IPCC • EPA WARM • DBGIR
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. BANDA DE ESTADÍSTICAS PROFUNDA (ESTILO BASELINE STATS BAND) -->
+        <section class="rounded-card-lg bg-brand-deep text-white mt-3 py-16 sm:py-20 px-5 sm:px-10">
+            <div class="max-w-7xl mx-auto">
+                <div class="inview">
+                    <div class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.22em] text-white/70">
+                        <span class="w-2 h-2 rounded-pill bg-brand-light"></span>
+                        <span>Respaldo Normativo</span>
+                    </div>
+                    <h2 class="mt-3 text-3xl sm:text-5xl font-medium tracking-tight leading-[0.95]">
+                        Ingeniería ambiental<br><span class="text-brand-light">en números</span>
+                    </h2>
+                </div>
+
+                <dl class="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-12">
+                    <div class="border-t border-white/20 pt-5 inview">
+                        <dt class="sr-only">Materiales Auditables</dt>
+                        <dd class="text-5xl sm:text-6xl font-medium tracking-tight text-brand-light">14</dd>
+                        <dd class="text-xs sm:text-sm text-white/70 mt-2">Fracciones de reciclaje modeladas con EPA WARM v16</dd>
+                    </div>
+                    <div class="border-t border-white/20 pt-5 inview">
+                        <dt class="sr-only">Alcances de Emisión</dt>
+                        <dd class="text-5xl sm:text-6xl font-medium tracking-tight text-white">1, 2, 3</dd>
+                        <dd class="text-xs sm:text-sm text-white/70 mt-2">Cobertura de diagnóstico operativo empresarial</dd>
+                    </div>
+                    <div class="border-t border-white/20 pt-5 inview">
+                        <dt class="sr-only">Fuentes Oficiales</dt>
+                        <dd class="text-5xl sm:text-6xl font-medium tracking-tight text-brand-light">5+</dd>
+                        <dd class="text-xs sm:text-sm text-white/70 mt-2">SEMARNAT • CONAGUA • CFE • CONUEE • IPCC</dd>
+                    </div>
+                    <div class="border-t border-white/20 pt-5 inview">
+                        <dt class="sr-only">Actualización</dt>
+                        <dd class="text-5xl sm:text-6xl font-medium tracking-tight text-white">2026</dd>
+                        <dd class="text-xs sm:text-sm text-white/70 mt-2">Factores de emisión actualizados al marco vigente</dd>
+                    </div>
+                </dl>
+            </div>
+        </section>
+
+        <!-- 6. FOOTER EDITORIAL (ESTILO BASELINE) -->
+        <footer class="rounded-card-lg bg-[#07161a] text-white mt-3 py-12 sm:py-16 px-5 sm:px-10">
+            <div class="max-w-7xl mx-auto">
+                <!-- Banda Superior CTA -->
+                <div class="border-b border-white/15 pb-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6">
+                    <div>
+                        <div class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-white/60">
+                            <span class="w-2 h-2 rounded-pill bg-brand-light"></span>
+                            <span>Diagnóstico Corporativo y Ciudadano</span>
+                        </div>
+                        <p class="mt-3 text-4xl sm:text-6xl font-medium tracking-tight leading-[0.92]">
+                            ¿Listo para medir<br><span class="text-brand-light">tu huella?</span>
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <a href="empresas.html" class="inline-flex items-center gap-2 rounded-pill bg-white text-brand-deep px-6 py-3.5 text-xs sm:text-sm font-semibold uppercase tracking-wider hover:bg-brand-light transition-colors">
+                            <span>Acceso Empresas</span>
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                        </a>
                     </div>
                 </div>
-                <div class="absolute -top-10 -right-10 w-40 h-40 bg-brand-accent rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
-            </div>
-        </div>
-    </section>
 
-    <!-- 3. Cuadrícula de Herramientas -->
-    <section id="herramientas" class="py-20 bg-brand-light">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl font-extrabold text-brand-dark mb-4">Caja de Herramientas Operativas</h2>
-                <p class="text-gray-500 max-w-2xl mx-auto text-sm sm:text-base">Módulos especializados para análisis rápido. Transforma datos crudos en decisiones técnicas.</p>
-            </div>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                
-                <a href="https://calculadorareciclaje.org/" target="_blank" class="group bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:-translate-y-1.5 hover:shadow-xl hover:border-brand-accent/30 transition-all duration-300 relative overflow-hidden flex flex-col h-full">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-brand-accent transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-                    <div class="w-12 h-12 bg-emerald-50 text-brand-accent rounded-xl flex items-center justify-center mb-5 text-xl group-hover:scale-110 transition-transform">♻️</div>
-                    <h3 class="text-lg font-bold text-brand-dark mb-2">Emisiones de Reciclaje</h3>
-                    <p class="text-gray-500 text-sm mb-6 flex-grow">Calcula el impacto ambiental mitigado por la correcta gestión de residuos.</p>
-                    <div class="mt-auto text-center sm:text-left">
-                        <span class="inline-block bg-emerald-50 text-brand-accent text-xs px-3 py-1.5 rounded-md font-bold uppercase tracking-wider w-full sm:w-auto">Acceder</span>
+                <!-- Barra Inferior -->
+                <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-white/60">
+                    <div class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 text-brand-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <circle cx="12" cy="12" r="9"/><path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/><path d="M19.2 5.6a9 9 0 0 1 0 12.8"/>
+                        </svg>
+                        <span class="text-white font-medium">Ruta Sustentable</span>
+                        <span>© 2026. Todos los derechos reservados.</span>
                     </div>
-                </a>
-
-                <a href="huella-carbono.html" target="_blank" class="group bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:-translate-y-1.5 hover:shadow-xl hover:border-brand-accent/30 transition-all duration-300 relative overflow-hidden flex flex-col h-full">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-brand-accent transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-                    <div class="w-12 h-12 bg-emerald-50 text-brand-accent rounded-xl flex items-center justify-center mb-5 text-xl group-hover:scale-110 transition-transform">👣</div>
-                    <h3 class="text-lg font-bold text-brand-dark mb-2">Huella de Carbono</h3>
-                    <p class="text-gray-500 text-sm mb-6 flex-grow">Mide tus emisiones con factores de emisión de la red eléctrica nacional, combustibles locales, residuos y consumo de agua en casa.</p>
-                    <div class="mt-auto text-center sm:text-left">
-                        <span class="inline-block bg-emerald-50 text-brand-accent text-xs px-3 py-1.5 rounded-md font-bold uppercase tracking-wider transition-colors w-full sm:w-auto">Acceder</span>
-                    </div>
-                </a>
-
-                <div class="bg-gray-50 rounded-2xl shadow-sm border border-gray-200 p-6 relative overflow-hidden flex flex-col h-full opacity-60 cursor-not-allowed grayscale-[50%]">
-                    <div class="w-12 h-12 bg-gray-200 text-gray-500 rounded-xl flex items-center justify-center mb-5 text-xl">💧</div>
-                    <h3 class="text-lg font-bold text-gray-700 mb-2">Simulador Hídrico</h3>
-                    <p class="text-gray-500 text-sm mb-6 flex-grow">Calcula la captación de lluvia y dimensionamiento de cisternas según datos históricos de tu municipio.</p>
-                    <div class="mt-auto text-center sm:text-left">
-                        <span class="inline-block bg-gray-200 text-gray-500 text-xs px-3 py-1.5 rounded-md font-bold uppercase tracking-wider w-full sm:w-auto">Próximamente</span>
+                    <div class="flex flex-wrap justify-center gap-6">
+                        <a href="legales.html" class="hover:text-white transition-colors">Privacidad</a>
+                        <a href="legales.html" class="hover:text-white transition-colors">Términos</a>
+                        <a href="mailto:contacto@rutasustentable.com" class="text-brand-light hover:text-white transition-colors">contacto@rutasustentable.com</a>
                     </div>
                 </div>
-
-                <div class="bg-gray-50 rounded-2xl shadow-sm border border-gray-200 p-6 relative overflow-hidden flex flex-col h-full opacity-60 cursor-not-allowed grayscale-[50%]">
-                    <div class="w-12 h-12 bg-gray-200 text-gray-500 rounded-xl flex items-center justify-center mb-5 text-xl">⚙️</div>
-                    <h3 class="text-lg font-bold text-gray-700 mb-2">Diagnóstico OBD2</h3>
-                    <p class="text-gray-500 text-sm mb-6 flex-grow">Traductor ciudadano de códigos de falla para mantenimiento preventivo vehicular y flotillas.</p>
-                    <div class="mt-auto text-center sm:text-left">
-                        <span class="inline-block bg-gray-200 text-gray-500 text-xs px-3 py-1.5 rounded-md font-bold uppercase tracking-wider w-full sm:w-auto">Próximamente</span>
-                    </div>
-                </div>
-
             </div>
-        </div>
-    </section>
+        </footer>
 
-<!-- 4. Metodología (Expandida) -->
-    <section id="metodologia" class="py-20 bg-white border-t border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-14">
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-dark mb-6">Rigor técnico y transparencia</h2>
-                <p class="text-gray-600 text-base sm:text-lg leading-relaxed">
-                    En Ruta Sustentable no usamos promedios globales genéricos. Nuestros motores operan estrictamente con el marco regulatorio vigente y las bases de datos de emisiones oficiales para el territorio mexicano.
-                </p>
-            </div>
+    </main>
 
-            <!-- Grid de pilares metodológicos -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                <div class="bg-gray-50 rounded-2xl p-8 border border-gray-100 hover:shadow-md transition-shadow">
-                    <div class="w-12 h-12 bg-emerald-100 text-brand-accent rounded-xl flex items-center justify-center mb-6 text-2xl">📊</div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-3">Factores Localizados</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed">Calculamos la huella eléctrica y de hidrocarburos utilizando los factores de emisión del Sistema Eléctrico Nacional (SEN) y RENE actualizados, asegurando precisión territorial.</p>
-                </div>
-                <div class="bg-gray-50 rounded-2xl p-8 border border-gray-100 hover:shadow-md transition-shadow">
-                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-6 text-2xl">🔒</div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-3">Privacidad por Diseño</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed">No recolectamos, vendemos ni almacenamos tu información. Todos los cálculos matemáticos se ejecutan de manera anónima y local en tu navegador.</p>
-                </div>
-                <div class="bg-gray-50 rounded-2xl p-8 border border-gray-100 hover:shadow-md transition-shadow">
-                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mb-6 text-2xl">⚖️</div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-3">Base Científica</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed">Nuestros modelos analíticos siguen las directrices del Panel Intergubernamental del Cambio Climático (IPCC) y el Diagnóstico Básico de Residuos (DBGIR 2026).</p>
-                </div>
-            </div>
+    <!-- SCRIPTS DE INTERACCIÓN Y ANIMACIÓN -->
+    <script>
+        // Loader intro
+        window.addEventListener('DOMContentLoaded', () => {
+            const bar = document.getElementById('loader-bar');
+            const curtain = document.getElementById('loader-curtain');
+            const heroTitle = document.getElementById('hero-title');
 
-            <!-- Logos/Dependencias -->
-            <div class="flex flex-wrap justify-center items-center gap-6 sm:gap-10 text-gray-400 font-bold text-lg sm:text-xl uppercase tracking-widest">
-                <span>SEMARNAT</span><span class="hidden sm:inline">•</span>
-                <span>CONAGUA</span><span class="hidden sm:inline">•</span>
-                <span>CFE</span><span class="hidden sm:inline">•</span>
-                <span>CONUEE</span><span class="hidden sm:inline">•</span>
-                <span>IPCC</span>
-            </div>
-        </div>
-    </section>
+            setTimeout(() => { if (bar) bar.style.transform = 'scaleX(1)'; }, 80);
+            setTimeout(() => {
+                if (curtain) curtain.classList.add('slide-up');
+                if (heroTitle) heroTitle.classList.add('revealed');
+            }, 950);
+            setTimeout(() => {
+                if (curtain) curtain.style.display = 'none';
+            }, 1850);
+        });
 
-    <!-- 5. Footer -->
-    <footer class="bg-brand-dark text-gray-400 py-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6 md:gap-0">
-            <div class="text-center md:text-left">
-                <!-- LOGO FOOTER CON ENLACE Y BRILLO -->
-                <a href="index.html" class="inline-block group transition-all duration-300 hover:drop-shadow-[0_0_15px_rgba(5,150,105,0.6)] hover:-translate-y-0.5">
-                    <span class="font-logo font-extrabold text-3xl tracking-tighter text-white group-hover:text-gray-200 transition-colors">Ruta<span class="text-brand-accent group-hover:text-emerald-400 transition-colors">Sustentable</span></span>
-                </a>
-                <p class="text-sm mt-2 text-gray-500">© 2026. Todos los derechos reservados.</p>
-            </div>
-            <div class="flex flex-wrap justify-center gap-6 text-sm font-medium">
-                <a href="legales.html" class="hover:text-white transition">Privacidad</a>
-                <a href="legales.html" class="hover:text-white transition">Términos</a>
-                <a href="mailto:contacto@rutasustentable.com" class="hover:text-brand-accent transition text-white">Contacto</a>
-            </div>
-        </div>
-    </footer>
+        // Parallax suave en el Hero
+        window.addEventListener('scroll', () => {
+            const img = document.getElementById('hero-parallax');
+            if (img && window.scrollY < window.innerHeight) {
+                const shift = (window.scrollY / window.innerHeight) * 12;
+                img.style.transform = `translateY(${shift}%) scale(1.05)`;
+            }
+        }, { passive: true });
 
+        // IntersectionObserver para bloques .inview
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+
+        document.querySelectorAll('.inview').forEach(el => observer.observe(el));
+    </script>
+
+    <script>
+        function toggleMenu() {
+            const overlay = document.getElementById('menu-overlay');
+            const isOpen = !overlay.classList.contains('pointer-events-none');
+            if (isOpen) {
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+            } else {
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+            }
+        }
+    </script>
 </body>
-</html>
 </html>
