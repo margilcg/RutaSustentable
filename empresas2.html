@@ -1,253 +1,530 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cotizador B2B y Guía de Datos | Ruta Sustentable</title>
+    <meta name="theme-color" content="#0b2228">
+    <title>Soluciones B2B y Diagnóstico Corporativo | Ruta Sustentable</title>
+
+    <!-- Google Tag Manager -->
+    <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-NGP2G7JW"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    </script>
+
+    <!-- Fuentes: Onest (Baseline Editorial) + Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f8fafc;
-            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-            background-size: 24px 24px;
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Onest', 'Inter', 'system-ui', 'sans-serif'],
+                        body: ['Inter', 'system-ui', 'sans-serif'],
+                        logo: ['system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Arial', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            deep: '#0b2228',
+                            navy: '#0f2f63',
+                            primary: '#059669',
+                            light: '#34d399',
+                            teal: '#0b6e97',
+                            surface: '#f3f5f4',
+                            ink: '#0a0a0a',
+                            soft: '#64748b',
+                            ghost: '#dce2e5'
+                        }
+                    },
+                    borderRadius: {
+                        'card': '1.5rem',
+                        'card-lg': '2rem',
+                        'pill': '62.5rem'
+                    }
+                }
+            }
         }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Onest', system-ui, sans-serif;
+            background-color: #ffffff;
+            color: #0a0a0a;
+            overflow-x: clip;
+        }
+        input[type="number"]::-webkit-inner-spin-button, 
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        
+        .inview {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .inview.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Loader Rápido Estilo Baseline */
+        #loader-curtain {
+            transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        #loader-curtain.slide-up {
+            transform: translateY(-105%);
+        }
+        #loader-bar {
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        /* Estado Activo para Botones de Sector */
         .sector-btn.active {
-            background-color: #059669;
+            background-color: #0b2228;
             color: #ffffff;
-            border-color: #059669;
-            box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.25);
+            border-color: #0b2228;
+            box-shadow: 0 12px 24px -6px rgba(11, 34, 40, 0.25);
         }
         .sector-btn.active .sector-sub {
-            color: #d1fae5;
+            color: #34d399;
+        }
+        .sector-btn.active .sector-icon-box {
+            background-color: rgba(52, 211, 153, 0.18);
+            border-color: rgba(52, 211, 153, 0.35);
         }
     </style>
 </head>
-<body class="text-slate-800 min-h-screen flex flex-col">
+<body class="antialiased selection:bg-emerald-500 selection:text-white">
 
-    <!-- Navbar Minimalista -->
-    <nav class="bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200 sticky top-0 z-30">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <a href="index.html" class="flex-shrink-0 flex items-center hover:opacity-80 transition">
-                    <span class="font-extrabold text-2xl text-slate-900 tracking-tighter" style="font-family: system-ui, -apple-system, sans-serif;">Ruta<span class="text-emerald-600">Sustentable</span></span>
-                </a>
-                <div class="flex items-center gap-6">
-                    <a href="#guia-sectores" class="hidden sm:inline-block text-sm font-semibold text-slate-600 hover:text-emerald-600 transition">
-                        Guía de Datos por Sector
-                    </a>
-                    <a href="index.html" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition flex items-center gap-2">
-                        ← Volver al inicio
-                    </a>
-                </div>
+    <!-- INTRO LOADER ÁGIL -->
+    <div id="loader-curtain" class="fixed inset-0 z-[200] bg-brand-deep text-white flex flex-col items-center justify-center gap-6">
+        <div class="flex items-center gap-3">
+            <svg class="w-7 h-7 text-brand-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/>
+                <path d="M19.2 5.6a9 9 0 0 1 0 12.8"/>
+            </svg>
+            <span class="font-logo text-xl font-medium uppercase tracking-[0.2em] text-brand-light">Ruta Sustentable</span>
+        </div>
+        <div class="w-44 h-[2px] rounded-full bg-white/20 overflow-hidden">
+            <div id="loader-bar" class="w-full h-full bg-brand-light"></div>
+        </div>
+    </div>
+
+    <!-- FULLSCREEN MENU OVERLAY -->
+    <div id="menu-overlay" class="fixed inset-0 z-[150] bg-brand-deep/95 backdrop-blur-xl text-white opacity-0 pointer-events-none transition-opacity duration-300 flex flex-col justify-between p-6 sm:p-12">
+        <div class="flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5 text-white">
+                <svg class="w-5 h-5 text-brand-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="12" cy="12" r="9"/><path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/><path d="M19.2 5.6a9 9 0 0 1 0 12.8"/>
+                </svg>
+                <span class="text-sm sm:text-base font-medium uppercase tracking-[0.2em]">Ruta Sustentable</span>
+            </a>
+            <button onclick="toggleMenu()" class="w-10 h-10 rounded-pill bg-white/15 hover:bg-white/25 flex items-center justify-center transition-transform duration-300 hover:rotate-90" aria-label="Cerrar menú">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+        </div>
+
+        <nav class="flex flex-col gap-3 my-auto">
+            <a href="index.html" class="text-3xl sm:text-6xl font-medium tracking-tight hover:text-brand-light transition-colors">01. Inicio</a>
+            <a href="#cotizador" onclick="toggleMenu()" class="text-3xl sm:text-6xl font-medium tracking-tight hover:text-brand-light transition-colors">02. Cotizador B2B</a>
+            <a href="#guia-sectores" onclick="toggleMenu()" class="text-3xl sm:text-6xl font-medium tracking-tight text-brand-light hover:text-white transition-colors">03. Guía por Sector</a>
+            <a href="huella-carbono.html" class="text-3xl sm:text-6xl font-medium tracking-tight hover:text-brand-light transition-colors">04. Calculadora Hogar</a>
+            <a href="https://calculadorareciclaje.org/" target="_blank" class="text-3xl sm:text-6xl font-medium tracking-tight hover:text-brand-light transition-colors">05. Calculadora Reciclaje</a>
+        </nav>
+
+        <div class="border-t border-white/15 pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs sm:text-sm text-white/70">
+            <a href="onboarding.html" class="inline-flex items-center gap-2 rounded-pill bg-white text-brand-deep px-6 py-3 font-semibold uppercase tracking-wider hover:bg-brand-light transition-colors">
+                Iniciar Proyecto Corporativo
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <div class="flex gap-6">
+                <a href="mailto:contacto@rutasustentable.com" class="hover:text-white">contacto@rutasustentable.com</a>
+                <a href="legales.html" class="hover:text-white">Privacidad y Términos</a>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <!-- Contenido Principal -->
-    <main class="flex-grow px-4 py-12">
-        <div class="max-w-6xl mx-auto space-y-16">
+    <!-- CONTENEDOR EDITORIAL PRINCIPAL CON INSET -->
+    <main class="p-2 sm:p-3 w-full max-w-[1440px] mx-auto">
 
-            <!-- SECCIÓN 1: COTIZADOR B2B -->
-            <section class="max-w-3xl mx-auto w-full bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden relative">
-                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-emerald-500 to-blue-600"></div>
+        <!-- 1. HERO EDITORIAL + COTIZADOR B2B GLASSMORPHISM INTEGRADO -->
+        <section id="cotizador" class="relative isolate overflow-hidden rounded-card-lg bg-brand-deep text-white px-5 py-6 sm:px-10 sm:py-10 flex flex-col justify-between min-h-[36rem] sm:min-h-[42rem]">
+            <div class="absolute inset-0 -z-10 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=85" alt="Infraestructura corporativa e industrial" class="w-full h-full object-cover opacity-30">
+                <div class="absolute inset-0 bg-gradient-to-b from-[#0b2228]/85 via-[#0f2f63]/60 to-[#0b2228]/95"></div>
+            </div>
+
+            <!-- Header Superior Integrado -->
+            <header class="flex items-center justify-between gap-4 border-b border-white/15 pb-5">
+                <a href="index.html" class="flex items-center gap-2.5 group">
+                    <svg class="w-5 h-5 text-brand-light transition-transform duration-300 group-hover:rotate-45" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <circle cx="12" cy="12" r="9"/><path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/><path d="M19.2 5.6a9 9 0 0 1 0 12.8"/>
+                    </svg>
+                    <span class="font-logo text-xs sm:text-sm font-medium uppercase tracking-[0.2em]">Ruta <span class="text-brand-light">Sustentable</span></span>
+                </a>
+
+                <nav class="hidden lg:flex items-center gap-8 text-xs uppercase tracking-widest text-white/80">
+                    <a href="#guia-sectores" class="hover:text-brand-light transition-colors">Guía de Datos por Sector</a>
+                    <a href="#plantillas" class="hover:text-brand-light transition-colors">Plantillas Opcionales</a>
+                    <a href="#proceso" class="hover:text-brand-light transition-colors">Flujo de Trabajo</a>
+                </nav>
+
+                <div class="flex items-center gap-3">
+                    <a href="index.html" class="inline-flex items-center gap-2 rounded-pill bg-white/10 hover:bg-white/20 border border-white/15 px-4 py-2 text-xs uppercase tracking-wider transition-colors">
+                        <span>← Inicio</span>
+                    </a>
+                    <button onclick="toggleMenu()" class="w-10 h-10 rounded-pill bg-white/15 backdrop-blur-md hover:bg-white/25 flex flex-col items-center justify-center gap-[5px] transition-colors" aria-label="Abrir menú">
+                        <span class="w-4 h-[1.5px] bg-white"></span>
+                        <span class="w-4 h-[1.5px] bg-white"></span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Cuerpo del Hero: Titular Editorial (Izquierda) + Cotizador B2B Glass (Derecha) -->
+            <div class="my-auto py-8 lg:py-12 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-end">
                 
-                <div class="p-8 sm:p-12">
-                    <div class="text-center mb-10">
-                        <div class="inline-flex items-center justify-center w-16 h-16 bg-slate-100 text-slate-800 rounded-full mb-6 shadow-sm">
-                            <span class="text-3xl">🏢</span>
-                        </div>
-                        <h1 class="text-3xl sm:text-4xl font-black text-slate-900 mb-4 tracking-tight">Cotizador de Servicios <span class="text-emerald-600">B2B</span></h1>
-                        <p class="text-slate-600 max-w-xl mx-auto">
-                            Tecnología para la eficiencia. Inteligencia humana para la precisión. Cotiza el diagnóstico ambiental de tu empresa en segundos.
-                        </p>
+                <!-- Columna Izquierda: Propuesta de Valor Corporativa -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-brand-light">
+                        <span class="w-2 h-2 rounded-pill bg-brand-light animate-pulse"></span>
+                        <span>GHG PROTOCOL • RENE SEMARNAT • DEFRA 2026 • EPA WARM</span>
                     </div>
 
-                    <!-- Calculadora Dinámica -->
-                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 sm:p-8 mb-6 mx-auto shadow-inner">
-                        <div class="grid grid-cols-1 gap-6 mb-8">
-                            
-                            <!-- Selección de Servicio -->
+                    <h1 class="text-4xl sm:text-6xl lg:text-7xl font-medium uppercase leading-[0.9] tracking-tight">
+                        AUDITORÍA GEI<br><span class="text-brand-light">CORPORATIVA</span>
+                    </h1>
+
+                    <p class="text-sm sm:text-base lg:text-lg text-white/80 max-w-2xl font-body leading-relaxed">
+                        Tecnología para la eficiencia, inteligencia humana para la precisión. Automatizamos la extracción y cálculo de tus Alcances 1, 2 y 3 (incluyendo emisiones WTT y economía circular) con trazabilidad auditable.
+                    </p>
+
+                    <!-- Píldoras de Ventajas Clave -->
+                    <div class="flex flex-wrap gap-2.5 pt-2">
+                        <a href="#guia-sectores" class="inline-flex items-center gap-2 rounded-pill bg-white/10 hover:bg-brand-light hover:text-brand-deep border border-white/20 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider transition-all">
+                            <span>🗂️</span> Explorar Guía de Datos por Sector ↓
+                        </a>
+                        <a href="plantillas/Plantilla_Maestra_General_RutaSustentable.xlsx" download class="inline-flex items-center gap-2 rounded-pill bg-black/30 hover:bg-white/15 border border-white/15 px-4 py-2.5 text-xs font-medium uppercase tracking-wider text-white/90 transition-all">
+                            <span>📥</span> Descargar Plantilla Maestra (.xlsx)
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Tarjeta Glassmorphism del Cotizador B2B -->
+                <div class="lg:col-span-5">
+                    <div class="rounded-card-lg border border-white/20 bg-white/10 backdrop-blur-xl p-6 sm:p-8 shadow-2xl">
+                        <div class="flex items-center justify-between gap-3 pb-4 mb-5 border-b border-white/15">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-9 h-9 rounded-xl bg-brand-light/20 border border-brand-light/30 flex items-center justify-center text-lg">🏢</span>
+                                <div>
+                                    <h2 class="text-sm font-semibold uppercase tracking-wider text-brand-light">Cotizador B2B Instantáneo</h2>
+                                    <p class="text-[11px] text-white/70 font-body">Calcula la inversión de tu diagnóstico</p>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-pill bg-white/10 text-white/80 border border-white/15">
+                                2026
+                            </span>
+                        </div>
+
+                        <div class="space-y-5">
+                            <!-- 1. Selección de Servicio -->
                             <div>
-                                <label class="block text-sm font-bold text-slate-700 mb-2">1. ¿Qué nivel de diagnóstico requieres?</label>
-                                <select id="tipo-servicio" onchange="calcularCotizacion()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-white/80 mb-2">
+                                    1. Nivel de diagnóstico requerido
+                                </label>
+                                <select id="tipo-servicio" onchange="calcularCotizacion()" class="w-full bg-brand-deep/90 border border-white/20 rounded-xl px-4 py-3.5 text-sm text-white font-medium focus:outline-none focus:border-brand-light transition-all cursor-pointer">
                                     <option value="basico">Inventario Básico (Alcance 1 y 2)</option>
                                     <option value="integral">Inventario Integral (Alcance 1, 2 y 3)</option>
-                                    <option value="coa">Cédula de Operación Anual (COA) o Auditoría a Medida</option>
+                                    <option value="coa">Cédula de Operación Anual (COA) o a Medida</option>
                                 </select>
                             </div>
 
-                            <!-- Número de Sucursales -->
+                            <!-- 2. Número de Sucursales con Botones +/- Estilo Baseline -->
                             <div id="contenedor-sucursales">
-                                <label class="block text-sm font-bold text-slate-700 mb-2">2. Número de instalaciones o sucursales a evaluar</label>
-                                <div class="flex items-center">
-                                    <input type="number" id="num-sucursales" oninput="calcularCotizacion()" value="1" min="1" max="50" class="w-24 bg-white border border-slate-300 rounded-xl px-4 py-3 text-slate-700 font-bold text-center focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
-                                    <span class="ml-4 text-sm text-slate-500">Cada instalación extra ajusta el volumen de procesamiento de datos.</span>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-white/80 mb-2">
+                                    2. Instalaciones o sucursales a evaluar
+                                </label>
+                                <div class="flex items-center gap-3">
+                                    <div class="flex items-center rounded-pill bg-black/35 border border-white/20 p-1 w-44 shrink-0">
+                                        <button type="button" onclick="cambiarSucursales(-1)" class="w-10 h-10 rounded-pill bg-white/10 hover:bg-brand-light hover:text-brand-deep text-white font-bold transition-colors text-lg">-</button>
+                                        <input type="number" id="num-sucursales" oninput="calcularCotizacion()" value="1" min="1" max="50" class="w-full text-center bg-transparent font-bold text-white outline-none text-lg">
+                                        <button type="button" onclick="cambiarSucursales(1)" class="w-10 h-10 rounded-pill bg-white/10 hover:bg-brand-light hover:text-brand-deep text-white font-bold transition-colors text-lg">+</button>
+                                    </div>
+                                    <span class="text-xs text-white/70 font-body leading-snug">
+                                        Cada sede extra ajusta el volumen de procesamiento.
+                                    </span>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Resultado de Cotización -->
-                        <div class="border-t border-slate-200 pt-6 mt-2">
-                            <p class="text-sm text-slate-500 font-semibold uppercase tracking-wider mb-1">Inversión Estimada</p>
-                            <div id="precio-display" class="text-4xl font-black text-slate-900 mb-6">
-                                $15,000 MXN <span class="text-base text-slate-500 font-normal">+ IVA</span>
-                            </div>
-                            
-                            <!-- Botón que enviará al Tally Financiero -->
-                            <a href="onboarding.html" id="btn-continuar" class="block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md hover:shadow-lg text-lg">
-                                Aceptar y Comenzar Proyecto
-                            </a>
-                            <p class="text-xs text-center text-slate-400 mt-4">
-                                Soportamos pagos por SPEI (Anticipo) o inicio vía Orden de Compra (OC).
-                            </p>
-                        </div>
-                    </div>
+                            <!-- Resultado de Cotización -->
+                            <div class="border-t border-white/15 pt-5 mt-2">
+                                <p class="text-[11px] text-white/65 font-semibold uppercase tracking-[0.2em] mb-1">Inversión Estimada</p>
+                                <div id="precio-display" class="text-3xl sm:text-4xl font-semibold text-white tracking-tight mb-5">
+                                    $15,000 MXN <span class="text-xs text-brand-light font-normal uppercase tracking-wider">+ IVA</span>
+                                </div>
 
-                    <!-- Enlace ancla hacia la guía de datos -->
-                    <div class="text-center pt-2">
-                        <a href="#guia-sectores" class="inline-flex items-center gap-2 text-sm font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-4 py-2.5 rounded-full transition">
-                            <span>¿No sabes qué datos operativos necesitas reunir? Explora nuestra Guía por Sector</span>
-                            <span>↓</span>
-                        </a>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECCIÓN 2: GUÍA INTERACTIVA DE DATOS Y PLANTILLAS POR SECTOR -->
-            <section id="guia-sectores" class="scroll-mt-20 bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden relative">
-                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-600 to-emerald-500"></div>
-
-                <div class="p-8 sm:p-12">
-                    <!-- Encabezado de la Guía -->
-                    <div class="max-w-3xl mx-auto text-center mb-8">
-                        <span class="inline-block bg-blue-50 text-blue-700 text-xs font-extrabold uppercase tracking-widest px-3.5 py-1.5 rounded-full border border-blue-200 mb-4">
-                            Herramienta de Apoyo Opcional · GHG Protocol / RENE
-                        </span>
-                        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 mb-3 tracking-tight">
-                            Guía de Información Operativa por <span class="text-emerald-600">Sector Industrial</span>
-                        </h2>
-                        <p class="text-slate-600 text-sm sm:text-base">
-                            Selecciona el giro de tu empresa para conocer qué datos físicos se evalúan en cada alcance, a qué departamento solicitárselos y descargar una plantilla base sugerida.
-                        </p>
-                    </div>
-
-                    <!-- Banner de Flexibilidad (No Obligatorio) -->
-                    <div class="bg-amber-50/90 border border-amber-200 rounded-2xl p-4 sm:p-5 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                        <div class="flex items-start gap-3.5">
-                            <span class="text-2xl leading-none mt-0.5">💡</span>
-                            <div class="text-xs sm:text-sm text-amber-900">
-                                <p class="font-bold mb-0.5">¿Tu empresa ya tiene sus propios controles o reportes internos?</p>
-                                <p class="text-amber-800">
-                                    <strong>El uso de nuestras plantillas es 100% opcional.</strong> Nuestro motor de inteligencia artificial procesa tus propios archivos de Excel, CSV o recibos en PDF/imagen (ya sea concentrados en un solo documento o separados por alcance). Esta guía es únicamente un apoyo para quienes prefieren estructurar su información desde cero.
+                                <a href="onboarding.html" id="btn-continuar" class="group w-full inline-flex items-center justify-center gap-3 rounded-pill bg-brand-light hover:bg-white text-brand-deep font-bold uppercase tracking-wider text-xs sm:text-sm py-4 px-6 transition-all shadow-xl">
+                                    <span id="btn-continuar-texto">Aceptar y Comenzar Proyecto</span>
+                                    <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                                </a>
+                                <p class="text-[11px] text-center text-white/60 mt-3 font-body">
+                                    Soportamos pagos vía SPEI (Anticipo) o inicio con Orden de Compra (OC).
                                 </p>
                             </div>
                         </div>
-                        <a href="plantillas/Plantilla_Maestra_General_RutaSustentable.xlsx" download class="flex-shrink-0 inline-flex items-center gap-2 bg-white hover:bg-amber-100 text-amber-900 font-bold text-xs px-4 py-2.5 rounded-xl border border-amber-300 shadow-sm transition">
-                            <span>📥</span>
-                            <span>Plantilla General Multigiro</span>
-                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CONTENEDOR DE MÓDULOS CENTRALES -->
+        <div class="max-w-7xl mx-auto space-y-4 mt-4">
+
+            <!-- MÓDULO #01: GUÍA INTERACTIVA DE DATOS Y PLANTILLAS POR SECTOR -->
+            <section id="guia-sectores" class="scroll-mt-6 rounded-card-lg bg-brand-surface p-5 sm:p-10 border border-slate-200/80 inview">
+                
+                <!-- Cabecera de Módulo Estilo Baseline -->
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-slate-300/80">
+                    <div class="flex items-start sm:items-center gap-4">
+                        <span class="rounded-xl bg-brand-deep text-brand-light px-3.5 py-2 text-lg font-semibold shrink-0">#01</span>
+                        <div>
+                            <div class="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-primary">
+                                <span>Guía Interactiva para Clientes</span>
+                            </div>
+                            <h2 class="text-2xl sm:text-4xl font-medium tracking-tight text-brand-ink">
+                                ¿Qué datos operativos necesita tu sector?
+                            </h2>
+                        </div>
+                    </div>
+                    <span class="px-4 py-1.5 bg-white rounded-pill text-xs font-semibold text-brand-deep border border-slate-200 self-start lg:self-auto">
+                        8 Sectores Industriales • Plantillas Opcionales
+                    </span>
+                </div>
+
+                <!-- Banner de Flexibilidad (No Obligatorio) -->
+                <div id="plantillas" class="mt-6 bg-white border border-slate-200/90 rounded-card p-5 sm:p-6 shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-xl shrink-0">
+                            💡
+                        </div>
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2 mb-1">
+                                <h3 class="text-sm sm:text-base font-semibold text-brand-ink">
+                                    ¿Tu empresa ya tiene sus propios controles o reportes internos?
+                                </h3>
+                                <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-pill bg-emerald-100 text-emerald-800">
+                                    100% Flexible
+                                </span>
+                            </div>
+                            <p class="text-xs sm:text-sm text-brand-soft font-body leading-relaxed max-w-3xl">
+                                <strong>No es obligatorio usar nuestras plantillas.</strong> Si ya tienes tu información en tus propios archivos de Excel, CSV o facturas en PDF/imagen (ya sea todo en un solo archivo o separado por alcance), puedes subirlos directamente en nuestro portal técnico. Esta guía y sus plantillas descargables son únicamente un apoyo para las empresas que desean estructurar sus datos desde cero.
+                            </p>
+                        </div>
+                    </div>
+                    <a href="plantillas/Plantilla_Maestra_General_RutaSustentable.xlsx" download class="shrink-0 inline-flex items-center gap-2.5 rounded-pill bg-brand-deep hover:bg-brand-primary text-white text-xs font-semibold uppercase tracking-wider px-5 py-3.5 transition-all shadow-sm">
+                        <span>📥</span>
+                        <span>Plantilla General Multigiro</span>
+                    </a>
+                </div>
+
+                <!-- Selector de los 8 Sectores -->
+                <div class="mt-8">
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand-soft mb-3">
+                        Selecciona el giro principal de tu organización para desplegar su lista de requerimientos:
+                    </p>
+                    <div id="contenedor-botones-sector" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <!-- Generado dinámicamente por JS -->
+                    </div>
+                </div>
+
+                <!-- Panel Dinámico del Sector Seleccionado -->
+                <div class="mt-6 bg-white rounded-card-lg p-6 sm:p-8 border border-slate-200/90 shadow-sm">
+                    
+                    <!-- Encabezado del Sector Activo + Botón de Descarga -->
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 pb-6 mb-6 border-b border-slate-200">
+                        <div class="flex items-start gap-4">
+                            <div id="sector-icono" class="w-14 h-14 rounded-2xl bg-brand-surface border border-slate-200 flex items-center justify-center text-3xl shrink-0">
+                                🏭
+                            </div>
+                            <div>
+                                <span class="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-primary">Perfil Operativo del Sector</span>
+                                <h3 id="sector-titulo" class="text-2xl sm:text-3xl font-medium tracking-tight text-brand-ink mt-0.5">
+                                    Manufactura e Industria General
+                                </h3>
+                                <p id="sector-enfoque" class="text-xs sm:text-sm text-brand-soft font-body mt-1 max-w-2xl"></p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-3">
+                            <a id="btn-descargar-plantilla" href="#" download class="inline-flex items-center gap-2.5 rounded-pill bg-brand-primary hover:bg-brand-deep text-white font-semibold uppercase tracking-wider text-xs px-6 py-4 transition-all shadow-md">
+                                <span>📊</span>
+                                <span id="texto-btn-plantilla">Descargar Plantilla del Sector (.xlsx)</span>
+                            </a>
+                        </div>
                     </div>
 
-                    <!-- Botones Selectores de Sector -->
-                    <div class="mb-8">
-                        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">1. Selecciona el giro principal de tu organización:</p>
-                        <div id="contenedor-botones-sector" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <!-- Tarjetas de los 3 Alcances -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
+                        
+                        <!-- Alcance 1 -->
+                        <div class="rounded-card bg-brand-surface p-5 sm:p-6 border border-slate-200/80 flex flex-col">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-pill bg-brand-deep text-brand-light">
+                                    Alcance 1 • Directas
+                                </span>
+                                <span class="text-xl">🔥</span>
+                            </div>
+                            <h4 class="text-base font-semibold text-brand-ink mb-3">Combustión Fija, Móvil y Fugas</h4>
+                            <ul id="lista-alcance-1" class="text-xs sm:text-sm text-slate-700 font-body space-y-2.5 list-disc list-inside flex-grow"></ul>
+                        </div>
+
+                        <!-- Alcance 2 -->
+                        <div class="rounded-card bg-brand-surface p-5 sm:p-6 border border-slate-200/80 flex flex-col">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-pill bg-brand-deep text-yellow-300">
+                                    Alcance 2 • Energía
+                                </span>
+                                <span class="text-xl">⚡</span>
+                            </div>
+                            <h4 class="text-base font-semibold text-brand-ink mb-3">Electricidad y Energía Térmica</h4>
+                            <ul id="lista-alcance-2" class="text-xs sm:text-sm text-slate-700 font-body space-y-2.5 list-disc list-inside flex-grow"></ul>
+                        </div>
+
+                        <!-- Alcance 3 y Economía Circular -->
+                        <div class="rounded-card bg-brand-surface p-5 sm:p-6 border border-slate-200/80 flex flex-col">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-pill bg-brand-deep text-sky-300">
+                                    Alcance 3 + Circularidad
+                                </span>
+                                <span class="text-xl">♻️</span>
+                            </div>
+                            <h4 class="text-base font-semibold text-brand-ink mb-3">Cadena de Valor, Viajes y Residuos</h4>
+                            <ul id="lista-alcance-3" class="text-xs sm:text-sm text-slate-700 font-body space-y-2.5 list-disc list-inside flex-grow"></ul>
+                        </div>
+
+                    </div>
+
+                    <!-- Matriz de Documentos Fuente por Departamento -->
+                    <div class="rounded-card bg-brand-deep text-white p-5 sm:p-7">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 mb-5 border-b border-white/15">
+                            <div>
+                                <span class="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-light">Guía Rápida Interna</span>
+                                <h4 class="text-lg sm:text-xl font-medium tracking-tight mt-0.5">
+                                    ¿A qué área de tu empresa pedirle cada documento?
+                                </h4>
+                            </div>
+                            <span class="text-[11px] font-medium text-brand-light bg-white/10 border border-white/15 px-3.5 py-1.5 rounded-pill self-start sm:self-auto">
+                                ✓ Emisiones WTT (Cat. 3) se derivan automáticamente
+                            </span>
+                        </div>
+
+                        <div id="grid-documentos-fuente" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <!-- Generado dinámicamente por JS -->
                         </div>
                     </div>
 
-                    <!-- Tarjeta Dinámica de Detalle del Sector -->
-                    <div id="panel-detalle-sector" class="bg-slate-50 border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-inner">
-                        <!-- Cabecera del Sector Seleccionado -->
-                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 mb-6 border-b border-slate-200">
-                            <div>
-                                <div class="flex items-center gap-3 mb-1">
-                                    <span id="sector-icono" class="text-3xl">🏭</span>
-                                    <h3 id="sector-titulo" class="text-xl sm:text-2xl font-black text-slate-900">Manufactura e Industria General</h3>
-                                </div>
-                                <p id="sector-enfoque" class="text-sm text-slate-600"></p>
-                            </div>
+                </div>
+            </section>
 
-                            <!-- Botones de Acción del Sector -->
-                            <div class="flex flex-wrap items-center gap-3">
-                                <a id="btn-descargar-plantilla" href="#" download class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-sm hover:shadow transition">
-                                    <span>📊</span>
-                                    <span id="texto-btn-plantilla">Descargar Plantilla Sugerida (.xlsx)</span>
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Grid de 3 Alcances -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                            <!-- Alcance 1 -->
-                            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col">
-                                <div class="flex items-center justify-between mb-3">
-                                    <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md bg-rose-50 text-rose-700 border border-rose-200">
-                                        Alcance 1 · Directas
-                                    </span>
-                                    <span class="text-lg">🔥</span>
-                                </div>
-                                <h4 class="font-bold text-slate-900 text-sm mb-2">Combustión en Sitio, Flota y Fugas</h4>
-                                <ul id="lista-alcance-1" class="text-xs sm:text-sm text-slate-600 space-y-2 list-disc list-inside flex-grow"></ul>
-                            </div>
-
-                            <!-- Alcance 2 -->
-                            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col">
-                                <div class="flex items-center justify-between mb-3">
-                                    <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md bg-amber-50 text-amber-700 border border-amber-200">
-                                        Alcance 2 · Energía
-                                    </span>
-                                    <span class="text-lg">⚡</span>
-                                </div>
-                                <h4 class="font-bold text-slate-900 text-sm mb-2">Electricidad y Energía Térmica</h4>
-                                <ul id="lista-alcance-2" class="text-xs sm:text-sm text-slate-600 space-y-2 list-disc list-inside flex-grow"></ul>
-                            </div>
-
-                            <!-- Alcance 3 y Economía Circular -->
-                            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col">
-                                <div class="flex items-center justify-between mb-3">
-                                    <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 border border-blue-200">
-                                        Alcance 3 + Circularidad
-                                    </span>
-                                    <span class="text-lg">♻️</span>
-                                </div>
-                                <h4 class="font-bold text-slate-900 text-sm mb-2">Cadena de Valor, Viajes y Residuos</h4>
-                                <ul id="lista-alcance-3" class="text-xs sm:text-sm text-slate-600 space-y-2 list-disc list-inside flex-grow"></ul>
-                            </div>
-                        </div>
-
-                        <!-- Checklist de Documentos y Áreas Responsables -->
-                        <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-                                <h4 class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center gap-2">
-                                    <span>🗂️</span>
-                                    <span>¿Dónde encontrar esta información dentro de tu empresa?</span>
-                                </h4>
-                                <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-                                    Nota: Emisiones WTT (Cat. 3) se calculan en automático
-                                </span>
-                            </div>
-                            <div id="grid-documentos-fuente" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs sm:text-sm">
-                                <!-- Generado dinámicamente por JS -->
-                            </div>
+            <!-- MÓDULO #02: FLUJO DE TRABAJO CORPORATIVO EN 3 PASOS -->
+            <section id="proceso" class="rounded-card-lg bg-white p-6 sm:p-10 border border-slate-200/80 shadow-sm inview">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-slate-200">
+                    <div class="flex items-center gap-3.5">
+                        <span class="rounded-xl bg-brand-deep text-white px-3.5 py-2 text-lg font-semibold">#02</span>
+                        <div>
+                            <span class="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-soft">Arquitectura Sin Fricción</span>
+                            <h2 class="text-2xl sm:text-3xl font-medium tracking-tight text-brand-ink">
+                                De tus archivos crudos al dictamen ejecutivo
+                            </h2>
                         </div>
                     </div>
+                    <a href="onboarding.html" class="inline-flex items-center gap-2 rounded-pill bg-brand-deep hover:bg-brand-primary text-white text-xs font-semibold uppercase tracking-wider px-5 py-3 transition-colors self-start sm:self-auto">
+                        <span>Iniciar Onboarding</span>
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                    <article class="rounded-card bg-brand-surface p-6 border border-slate-200/70">
+                        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary">Paso 01 • Registro</span>
+                        <h3 class="text-lg font-semibold text-brand-ink mt-2 mb-2">Alta Administrativa y OC</h3>
+                        <p class="text-xs sm:text-sm text-brand-soft font-body leading-relaxed">
+                            Completa tus datos fiscales en nuestro portal de Onboarding para emitir tu factura o registrar tu Orden de Compra (OC) y habilitar tu expediente técnico.
+                        </p>
+                    </article>
+
+                    <article class="rounded-card bg-brand-surface p-6 border border-slate-200/70">
+                        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary">Paso 02 • Carga Libre</span>
+                        <h3 class="text-lg font-semibold text-brand-ink mt-2 mb-2">Recepción de Archivos</h3>
+                        <p class="text-xs sm:text-sm text-brand-soft font-body leading-relaxed">
+                            Sube tus bitácoras propias en Excel/CSV, recibos de CFE/agua en PDF o utiliza la plantilla opcional de tu sector. Nuestro motor procesa miles de filas automáticamente.
+                        </p>
+                    </article>
+
+                    <article class="rounded-card bg-brand-surface p-6 border border-slate-200/70">
+                        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary">Paso 03 • Dictamen</span>
+                        <h3 class="text-lg font-semibold text-brand-ink mt-2 mb-2">Reporte Auditado GEI</h3>
+                        <p class="text-xs sm:text-sm text-brand-soft font-body leading-relaxed">
+                            Recibe tu inventario corporativo desglosado en Alcances 1, 2 y 3, créditos de economía circular, evaluación de umbral RENE (25,000 tCO₂e) y hoja de ruta de descarbonización.
+                        </p>
+                    </article>
                 </div>
             </section>
 
         </div>
+
+        <!-- FOOTER EDITORIAL (ESTILO BASELINE) -->
+        <footer class="rounded-card-lg bg-[#07161a] text-white mt-4 py-12 sm:py-16 px-5 sm:px-10">
+            <div class="max-w-7xl mx-auto">
+                <div class="border-b border-white/15 pb-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6">
+                    <div>
+                        <div class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-white/60">
+                            <span class="w-2 h-2 rounded-pill bg-brand-light"></span>
+                            <span>Consultoría Ambiental B2B</span>
+                        </div>
+                        <p class="mt-3 text-3xl sm:text-5xl font-medium tracking-tight leading-[0.95]">
+                            Comienza hoy tu<br><span class="text-brand-light">diagnóstico corporativo</span>
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <a href="onboarding.html" class="inline-flex items-center gap-2 rounded-pill bg-brand-light text-brand-deep px-6 py-3.5 text-xs sm:text-sm font-semibold uppercase tracking-wider hover:bg-white transition-colors">
+                            <span>Ir al Onboarding</span>
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/60">
+                    <div class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 text-brand-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <circle cx="12" cy="12" r="9"/><path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/><path d="M19.2 5.6a9 9 0 0 1 0 12.8"/>
+                        </svg>
+                        <span class="text-white font-medium">Ruta Sustentable</span>
+                        <span>© 2026 M.C. Jesús Margil Coronado G. Todos los derechos reservados.</span>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-6">
+                        <a href="legales.html" class="hover:text-white transition-colors">Privacidad</a>
+                        <a href="legales.html" class="hover:text-white transition-colors">Términos</a>
+                        <a href="mailto:contacto@rutasustentable.com" class="text-brand-light hover:text-white transition-colors">contacto@rutasustentable.com</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
     </main>
 
-    <!-- Footer simple -->
-    <footer class="bg-white border-t border-slate-200 py-6 mt-12">
-        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400">
-            © 2026 Ruta Sustentable · Consultoría y Tecnología Ambiental B2B · Metodologías alineadas a GHG Protocol, SEMARNAT (RENE), IPCC, EPA WARM v16 y DEFRA 2026.
-        </div>
-    </footer>
-
-    <!-- Script del Cotizador y de la Guía Interactiva -->
+    <!-- SCRIPTS: COTIZADOR B2B + GUÍA INTERACTIVA POR SECTOR + ANIMACIONES -->
     <script>
         // ==========================================
         // 1. LÓGICA DEL COTIZADOR B2B
@@ -257,6 +534,15 @@
             integral: 25000
         };
         const costoPorSucursalExtra = 2500;
+
+        function cambiarSucursales(cambio) {
+            const input = document.getElementById('num-sucursales');
+            let val = (parseInt(input.value) || 1) + cambio;
+            if (val < 1) val = 1;
+            if (val > 50) val = 50;
+            input.value = val;
+            calcularCotizacion();
+        }
 
         function calcularCotizacion() {
             const servicio = document.getElementById('tipo-servicio').value;
@@ -269,24 +555,24 @@
 
             const contenedorSucursales = document.getElementById('contenedor-sucursales');
             const precioDisplay = document.getElementById('precio-display');
-            const btnContinuar = document.getElementById('btn-continuar');
+            const btnContinuarTexto = document.getElementById('btn-continuar-texto');
 
             if (servicio === 'coa') {
                 contenedorSucursales.style.display = 'none';
                 precioDisplay.innerHTML = 'Previa evaluación técnica';
-                btnContinuar.innerHTML = 'Solicitar Cotización a Medida';
+                btnContinuarTexto.textContent = 'Solicitar Cotización a Medida';
             } else {
                 contenedorSucursales.style.display = 'block';
                 let total = precios[servicio] + ((sucursales - 1) * costoPorSucursalExtra);
                 let totalFormateado = total.toLocaleString('es-MX');
                 
-                precioDisplay.innerHTML = '$' + totalFormateado + ' MXN <span class="text-base text-slate-500 font-normal">+ IVA</span>';
-                btnContinuar.innerHTML = 'Aceptar y Comenzar Proyecto';
+                precioDisplay.innerHTML = '$' + totalFormateado + ' MXN <span class="text-xs text-brand-light font-normal uppercase tracking-wider">+ IVA</span>';
+                btnContinuarTexto.textContent = 'Aceptar y Comenzar Proyecto';
             }
         }
 
         // ==========================================
-        // 2. BASE DE DATOS DE SECTORES INDUSTRIALES
+        // 2. BASE DE DATOS DE LOS 8 SECTORES
         // ==========================================
         const datosSectores = {
             manufactura: {
@@ -407,7 +693,7 @@
             hotelero: {
                 icono: "🏨",
                 nombreCorto: "Hotelería",
-                subtituloBtn: "Hoteles, Resorts y Hospitalidad",
+                subtituloBtn: "Hoteles y Hospitalidad",
                 titulo: "Sector Hotelero, Resorts y Hospitalidad",
                 enfoque: "Uso intensivo de energía térmica (calderas y cocinas), climatización (gases refrigerantes), consumo de agua, residuos orgánicos y lavandería.",
                 plantillaUrl: "plantillas/Plantilla_Hoteleria_RutaSustentable.xlsx",
@@ -529,12 +815,12 @@
                 btn.type = 'button';
                 btn.id = 'btn-sector-' + clave;
                 btn.onclick = () => seleccionarSector(clave);
-                btn.className = 'sector-btn text-left p-3.5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-emerald-50/60 hover:border-emerald-300 transition-all flex items-start gap-3';
+                btn.className = 'sector-btn text-left p-3.5 rounded-card border border-slate-200/90 bg-white hover:border-brand-primary transition-all flex items-center gap-3';
                 btn.innerHTML = `
-                    <span class="text-2xl leading-none mt-0.5">${s.icono}</span>
+                    <span class="sector-icon-box w-10 h-10 rounded-xl bg-brand-surface border border-slate-200 flex items-center justify-center text-xl shrink-0 transition-colors">${s.icono}</span>
                     <div class="overflow-hidden">
-                        <p class="font-bold text-xs sm:text-sm truncate">${s.nombreCorto}</p>
-                        <p class="sector-sub text-[11px] text-slate-500 truncate">${s.subtituloBtn}</p>
+                        <p class="font-semibold text-xs sm:text-sm truncate">${s.nombreCorto}</p>
+                        <p class="sector-sub text-[11px] text-brand-soft truncate transition-colors">${s.subtituloBtn}</p>
                     </div>
                 `;
                 contenedorBotones.appendChild(btn);
@@ -547,12 +833,10 @@
             sectorActual = clave;
             const s = datosSectores[clave];
 
-            // Actualizar estado visual de los botones
             document.querySelectorAll('.sector-btn').forEach(b => b.classList.remove('active'));
             const btnActivo = document.getElementById('btn-sector-' + clave);
             if (btnActivo) btnActivo.classList.add('active');
 
-            // Actualizar cabecera y botón de descarga
             document.getElementById('sector-icono').textContent = s.icono;
             document.getElementById('sector-titulo').textContent = s.titulo;
             document.getElementById('sector-enfoque').textContent = s.enfoque;
@@ -561,17 +845,15 @@
             btnPlantilla.href = s.plantillaUrl;
             document.getElementById('texto-btn-plantilla').textContent = `Descargar Plantilla: ${s.nombreCorto} (.xlsx)`;
 
-            // Rellenar listas de Alcances 1, 2 y 3
             rellenarLista('lista-alcance-1', s.alcance1);
             rellenarLista('lista-alcance-2', s.alcance2);
             rellenarLista('lista-alcance-3', s.alcance3);
 
-            // Rellenar tarjetas de Documentos Fuente por departamento
             const gridDocs = document.getElementById('grid-documentos-fuente');
             gridDocs.innerHTML = s.documentos.map(item => `
-                <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-200">
-                    <p class="font-bold text-slate-800 text-xs uppercase tracking-wide text-emerald-700 mb-1">${item.area}</p>
-                    <p class="text-xs text-slate-600 leading-relaxed">${item.doc}</p>
+                <div class="rounded-card bg-white/10 backdrop-blur-md p-4 border border-white/15">
+                    <p class="font-semibold text-brand-light text-xs uppercase tracking-wider mb-1.5">${item.area}</p>
+                    <p class="text-xs text-white/80 font-body leading-relaxed">${item.doc}</p>
                 </div>
             `).join('');
         }
@@ -581,11 +863,34 @@
             ul.innerHTML = items.map(texto => `<li class="leading-relaxed">${texto}</li>`).join('');
         }
 
-        // Inicializar tanto el cotizador como la guía al cargar la página
-        window.onload = function() {
+        // ==========================================
+        // 3. MENU OVERLAY, LOADER Y ANIMACIONES INVIEW
+        // ==========================================
+        function toggleMenu() {
+            const overlay = document.getElementById('menu-overlay');
+            const isOpen = !overlay.classList.contains('pointer-events-none');
+            if (isOpen) {
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+            } else {
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.inview').forEach(el => observer.observe(el));
+
+        window.addEventListener('DOMContentLoaded', () => {
             calcularCotizacion();
             inicializarGuiaSectores();
-        };
+
+            const bar = document.getElementById('loader-bar');
+            const curtain = document.getElementById('loader-curtain');
+            setTimeout(() => { if (bar) bar.style.transform = 'scaleX(1)'; }, 10);
+            setTimeout(() => { if (curtain) curtain.classList.add('slide-up'); }, 350);
+            setTimeout(() => { if (curtain) curtain.style.display = 'none'; }, 850);
+        });
     </script>
 </body>
 </html>
