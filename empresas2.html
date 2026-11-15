@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cotizador B2B | Ruta Sustentable</title>
+    <title>Cotizador B2B y Guía de Datos | Ruta Sustentable</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         body { 
             font-family: 'Inter', sans-serif; 
@@ -13,101 +13,256 @@
             background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
             background-size: 24px 24px;
         }
+        .sector-btn.active {
+            background-color: #059669;
+            color: #ffffff;
+            border-color: #059669;
+            box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.25);
+        }
+        .sector-btn.active .sector-sub {
+            color: #d1fae5;
+        }
     </style>
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col">
 
     <!-- Navbar Minimalista -->
-    <nav class="bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200">
+    <nav class="bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200 sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <a href="index.html" class="flex-shrink-0 flex items-center hover:opacity-80 transition">
                     <span class="font-extrabold text-2xl text-slate-900 tracking-tighter" style="font-family: system-ui, -apple-system, sans-serif;">Ruta<span class="text-emerald-600">Sustentable</span></span>
                 </a>
-                <a href="index.html" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition flex items-center gap-2">
-                    ← Volver al inicio
-                </a>
+                <div class="flex items-center gap-6">
+                    <a href="#guia-sectores" class="hidden sm:inline-block text-sm font-semibold text-slate-600 hover:text-emerald-600 transition">
+                        Guía de Datos por Sector
+                    </a>
+                    <a href="index.html" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition flex items-center gap-2">
+                        ← Volver al inicio
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Contenido Central -->
-    <main class="flex-grow flex items-center justify-center px-4 py-12">
-        <div class="max-w-3xl w-full bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden relative">
-            
-            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-emerald-500 to-blue-600"></div>
-            
-            <div class="p-8 sm:p-12">
-                <div class="text-center mb-10">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-slate-100 text-slate-800 rounded-full mb-6 shadow-sm">
-                        <span class="text-3xl">🏢</span>
-                    </div>
-                    <h1 class="text-3xl font-black text-slate-900 mb-4 tracking-tight">Cotizador de Servicios <span class="text-emerald-600">B2B</span></h1>
-                    <p class="text-slate-600 max-w-xl mx-auto">
-                        Tecnología para la eficiencia. Inteligencia humana para la precisión. Cotiza el diagnóstico ambiental de tu empresa en segundos.
-                    </p>
-                </div>
+    <!-- Contenido Principal -->
+    <main class="flex-grow px-4 py-12">
+        <div class="max-w-6xl mx-auto space-y-16">
 
-                <!-- Calculadora Dinámica -->
-                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 sm:p-8 mb-8 mx-auto shadow-inner">
-                    <div class="grid grid-cols-1 gap-6 mb-8">
-                        
-                        <!-- Selección de Servicio -->
-                        <div>
-                            <label class="block text-sm font-bold text-slate-700 mb-2">1. ¿Qué nivel de diagnóstico requieres?</label>
-                            <select id="tipo-servicio" onchange="calcularCotizacion()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
-                                <option value="basico">Inventario Básico (Alcance 1 y 2)</option>
-                                <option value="integral">Inventario Integral (Alcance 1, 2 y 3)</option>
-                                <option value="coa">Cédula de Operación Anual (COA) o Auditoría a Medida</option>
-                            </select>
+            <!-- SECCIÓN 1: COTIZADOR B2B -->
+            <section class="max-w-3xl mx-auto w-full bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden relative">
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-emerald-500 to-blue-600"></div>
+                
+                <div class="p-8 sm:p-12">
+                    <div class="text-center mb-10">
+                        <div class="inline-flex items-center justify-center w-16 h-16 bg-slate-100 text-slate-800 rounded-full mb-6 shadow-sm">
+                            <span class="text-3xl">🏢</span>
+                        </div>
+                        <h1 class="text-3xl sm:text-4xl font-black text-slate-900 mb-4 tracking-tight">Cotizador de Servicios <span class="text-emerald-600">B2B</span></h1>
+                        <p class="text-slate-600 max-w-xl mx-auto">
+                            Tecnología para la eficiencia. Inteligencia humana para la precisión. Cotiza el diagnóstico ambiental de tu empresa en segundos.
+                        </p>
+                    </div>
+
+                    <!-- Calculadora Dinámica -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 sm:p-8 mb-6 mx-auto shadow-inner">
+                        <div class="grid grid-cols-1 gap-6 mb-8">
+                            
+                            <!-- Selección de Servicio -->
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">1. ¿Qué nivel de diagnóstico requieres?</label>
+                                <select id="tipo-servicio" onchange="calcularCotizacion()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                                    <option value="basico">Inventario Básico (Alcance 1 y 2)</option>
+                                    <option value="integral">Inventario Integral (Alcance 1, 2 y 3)</option>
+                                    <option value="coa">Cédula de Operación Anual (COA) o Auditoría a Medida</option>
+                                </select>
+                            </div>
+
+                            <!-- Número de Sucursales -->
+                            <div id="contenedor-sucursales">
+                                <label class="block text-sm font-bold text-slate-700 mb-2">2. Número de instalaciones o sucursales a evaluar</label>
+                                <div class="flex items-center">
+                                    <input type="number" id="num-sucursales" oninput="calcularCotizacion()" value="1" min="1" max="50" class="w-24 bg-white border border-slate-300 rounded-xl px-4 py-3 text-slate-700 font-bold text-center focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                                    <span class="ml-4 text-sm text-slate-500">Cada instalación extra ajusta el volumen de procesamiento de datos.</span>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Número de Sucursales -->
-                        <div id="contenedor-sucursales">
-                            <label class="block text-sm font-bold text-slate-700 mb-2">2. Número de instalaciones o sucursales a evaluar</label>
-                            <div class="flex items-center">
-                                <input type="number" id="num-sucursales" oninput="calcularCotizacion()" value="1" min="1" max="50" class="w-24 bg-white border border-slate-300 rounded-xl px-4 py-3 text-slate-700 font-bold text-center focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
-                                <span class="ml-4 text-sm text-slate-500">Cada instalación extra ajusta el volumen de procesamiento de datos.</span>
+                        <!-- Resultado de Cotización -->
+                        <div class="border-t border-slate-200 pt-6 mt-2">
+                            <p class="text-sm text-slate-500 font-semibold uppercase tracking-wider mb-1">Inversión Estimada</p>
+                            <div id="precio-display" class="text-4xl font-black text-slate-900 mb-6">
+                                $15,000 MXN <span class="text-base text-slate-500 font-normal">+ IVA</span>
+                            </div>
+                            
+                            <!-- Botón que enviará al Tally Financiero -->
+                            <a href="onboarding.html" id="btn-continuar" class="block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md hover:shadow-lg text-lg">
+                                Aceptar y Comenzar Proyecto
+                            </a>
+                            <p class="text-xs text-center text-slate-400 mt-4">
+                                Soportamos pagos por SPEI (Anticipo) o inicio vía Orden de Compra (OC).
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Enlace ancla hacia la guía de datos -->
+                    <div class="text-center pt-2">
+                        <a href="#guia-sectores" class="inline-flex items-center gap-2 text-sm font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-4 py-2.5 rounded-full transition">
+                            <span>¿No sabes qué datos operativos necesitas reunir? Explora nuestra Guía por Sector</span>
+                            <span>↓</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: GUÍA INTERACTIVA DE DATOS Y PLANTILLAS POR SECTOR -->
+            <section id="guia-sectores" class="scroll-mt-20 bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden relative">
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-600 to-emerald-500"></div>
+
+                <div class="p-8 sm:p-12">
+                    <!-- Encabezado de la Guía -->
+                    <div class="max-w-3xl mx-auto text-center mb-8">
+                        <span class="inline-block bg-blue-50 text-blue-700 text-xs font-extrabold uppercase tracking-widest px-3.5 py-1.5 rounded-full border border-blue-200 mb-4">
+                            Herramienta de Apoyo Opcional · GHG Protocol / RENE
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 mb-3 tracking-tight">
+                            Guía de Información Operativa por <span class="text-emerald-600">Sector Industrial</span>
+                        </h2>
+                        <p class="text-slate-600 text-sm sm:text-base">
+                            Selecciona el giro de tu empresa para conocer qué datos físicos se evalúan en cada alcance, a qué departamento solicitárselos y descargar una plantilla base sugerida.
+                        </p>
+                    </div>
+
+                    <!-- Banner de Flexibilidad (No Obligatorio) -->
+                    <div class="bg-amber-50/90 border border-amber-200 rounded-2xl p-4 sm:p-5 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div class="flex items-start gap-3.5">
+                            <span class="text-2xl leading-none mt-0.5">💡</span>
+                            <div class="text-xs sm:text-sm text-amber-900">
+                                <p class="font-bold mb-0.5">¿Tu empresa ya tiene sus propios controles o reportes internos?</p>
+                                <p class="text-amber-800">
+                                    <strong>El uso de nuestras plantillas es 100% opcional.</strong> Nuestro motor de inteligencia artificial procesa tus propios archivos de Excel, CSV o recibos en PDF/imagen (ya sea concentrados en un solo documento o separados por alcance). Esta guía es únicamente un apoyo para quienes prefieren estructurar su información desde cero.
+                                </p>
+                            </div>
+                        </div>
+                        <a href="plantillas/Plantilla_Maestra_General_RutaSustentable.xlsx" download class="flex-shrink-0 inline-flex items-center gap-2 bg-white hover:bg-amber-100 text-amber-900 font-bold text-xs px-4 py-2.5 rounded-xl border border-amber-300 shadow-sm transition">
+                            <span>📥</span>
+                            <span>Plantilla General Multigiro</span>
+                        </a>
+                    </div>
+
+                    <!-- Botones Selectores de Sector -->
+                    <div class="mb-8">
+                        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">1. Selecciona el giro principal de tu organización:</p>
+                        <div id="contenedor-botones-sector" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <!-- Generado dinámicamente por JS -->
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta Dinámica de Detalle del Sector -->
+                    <div id="panel-detalle-sector" class="bg-slate-50 border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-inner">
+                        <!-- Cabecera del Sector Seleccionado -->
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 mb-6 border-b border-slate-200">
+                            <div>
+                                <div class="flex items-center gap-3 mb-1">
+                                    <span id="sector-icono" class="text-3xl">🏭</span>
+                                    <h3 id="sector-titulo" class="text-xl sm:text-2xl font-black text-slate-900">Manufactura e Industria General</h3>
+                                </div>
+                                <p id="sector-enfoque" class="text-sm text-slate-600"></p>
+                            </div>
+
+                            <!-- Botones de Acción del Sector -->
+                            <div class="flex flex-wrap items-center gap-3">
+                                <a id="btn-descargar-plantilla" href="#" download class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-sm hover:shadow transition">
+                                    <span>📊</span>
+                                    <span id="texto-btn-plantilla">Descargar Plantilla Sugerida (.xlsx)</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Grid de 3 Alcances -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <!-- Alcance 1 -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md bg-rose-50 text-rose-700 border border-rose-200">
+                                        Alcance 1 · Directas
+                                    </span>
+                                    <span class="text-lg">🔥</span>
+                                </div>
+                                <h4 class="font-bold text-slate-900 text-sm mb-2">Combustión en Sitio, Flota y Fugas</h4>
+                                <ul id="lista-alcance-1" class="text-xs sm:text-sm text-slate-600 space-y-2 list-disc list-inside flex-grow"></ul>
+                            </div>
+
+                            <!-- Alcance 2 -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md bg-amber-50 text-amber-700 border border-amber-200">
+                                        Alcance 2 · Energía
+                                    </span>
+                                    <span class="text-lg">⚡</span>
+                                </div>
+                                <h4 class="font-bold text-slate-900 text-sm mb-2">Electricidad y Energía Térmica</h4>
+                                <ul id="lista-alcance-2" class="text-xs sm:text-sm text-slate-600 space-y-2 list-disc list-inside flex-grow"></ul>
+                            </div>
+
+                            <!-- Alcance 3 y Economía Circular -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 border border-blue-200">
+                                        Alcance 3 + Circularidad
+                                    </span>
+                                    <span class="text-lg">♻️</span>
+                                </div>
+                                <h4 class="font-bold text-slate-900 text-sm mb-2">Cadena de Valor, Viajes y Residuos</h4>
+                                <ul id="lista-alcance-3" class="text-xs sm:text-sm text-slate-600 space-y-2 list-disc list-inside flex-grow"></ul>
+                            </div>
+                        </div>
+
+                        <!-- Checklist de Documentos y Áreas Responsables -->
+                        <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                                <h4 class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                                    <span>🗂️</span>
+                                    <span>¿Dónde encontrar esta información dentro de tu empresa?</span>
+                                </h4>
+                                <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                                    Nota: Emisiones WTT (Cat. 3) se calculan en automático
+                                </span>
+                            </div>
+                            <div id="grid-documentos-fuente" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs sm:text-sm">
+                                <!-- Generado dinámicamente por JS -->
                             </div>
                         </div>
                     </div>
-
-                    <!-- Resultado de Cotización -->
-                    <div class="border-t border-slate-200 pt-6 mt-2">
-                        <p class="text-sm text-slate-500 font-semibold uppercase tracking-wider mb-1">Inversión Estimada</p>
-                        <div id="precio-display" class="text-4xl font-black text-slate-900 mb-6">
-                            $15,000 MXN <span class="text-base text-slate-500 font-normal">+ IVA</span>
-                        </div>
-                        
-                        <!-- Botón que enviará al Tally Financiero -->
-                        <a href="onboarding.html" id="btn-continuar" class="block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md hover:shadow-lg text-lg">
-                            Aceptar y Comenzar Proyecto
-                        </a>
-                        <p class="text-xs text-center text-slate-400 mt-4">
-                            Soportamos pagos por SPEI (Anticipo) o inicio vía Orden de Compra (OC).
-                        </p>
-                    </div>
                 </div>
+            </section>
 
-            </div>
         </div>
     </main>
 
-    <!-- Script del Cotizador -->
+    <!-- Footer simple -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400">
+            © 2026 Ruta Sustentable · Consultoría y Tecnología Ambiental B2B · Metodologías alineadas a GHG Protocol, SEMARNAT (RENE), IPCC, EPA WARM v16 y DEFRA 2026.
+        </div>
+    </footer>
+
+    <!-- Script del Cotizador y de la Guía Interactiva -->
     <script>
-        // Configuración de precios
+        // ==========================================
+        // 1. LÓGICA DEL COTIZADOR B2B
+        // ==========================================
         const precios = {
             basico: 15000,
             integral: 25000
         };
-        const costoPorSucursalExtra = 2500; // Puedes ajustar este valor
+        const costoPorSucursalExtra = 2500;
 
         function calcularCotizacion() {
             const servicio = document.getElementById('tipo-servicio').value;
             const sucursalesInput = document.getElementById('num-sucursales');
             let sucursales = parseInt(sucursalesInput.value);
             
-            // Validaciones básicas
             if (isNaN(sucursales) || sucursales < 1) {
                 sucursales = 1;
             }
@@ -117,18 +272,12 @@
             const btnContinuar = document.getElementById('btn-continuar');
 
             if (servicio === 'coa') {
-                // Esconder sucursales si es a medida
                 contenedorSucursales.style.display = 'none';
                 precioDisplay.innerHTML = 'Previa evaluación técnica';
                 btnContinuar.innerHTML = 'Solicitar Cotización a Medida';
             } else {
-                // Mostrar sucursales y calcular
                 contenedorSucursales.style.display = 'block';
-                
-                // Fórmula: Precio Base + (Sucursales Extra * Costo Extra)
                 let total = precios[servicio] + ((sucursales - 1) * costoPorSucursalExtra);
-                
-                // Formatear a moneda
                 let totalFormateado = total.toLocaleString('es-MX');
                 
                 precioDisplay.innerHTML = '$' + totalFormateado + ' MXN <span class="text-base text-slate-500 font-normal">+ IVA</span>';
@@ -136,8 +285,307 @@
             }
         }
 
-        // Ejecutar al cargar para inicializar el precio correcto
-        window.onload = calcularCotizacion;
+        // ==========================================
+        // 2. BASE DE DATOS DE SECTORES INDUSTRIALES
+        // ==========================================
+        const datosSectores = {
+            manufactura: {
+                icono: "🏭",
+                nombreCorto: "Manufactura",
+                subtituloBtn: "Plantas e industria",
+                titulo: "Manufactura e Industria General",
+                enfoque: "Enfoque en combustión estacionaria térmica, montacargas, refrigeración industrial, materias primas y valorización de residuos de planta.",
+                plantillaUrl: "plantillas/Plantilla_Manufactura_RutaSustentable.xlsx",
+                alcance1: [
+                    "Gas Natural, Gas LP o Diésel en calderas, hornos, quemadores y plantas de emergencia (Litros o m³).",
+                    "Combustible en montacargas (Gas LP o Diésel) y flotilla utilitaria propia (Litros o kg).",
+                    "Recargas por fugas de gases refrigerantes en chillers, torres de enfriamiento y climatización (kg por tipo de gas: R-410A, R-22, R-134a)."
+                ],
+                alcance2: [
+                    "Consumo de energía eléctrica de naves industriales, almacenes y oficinas (kWh en recibos CFE o suministrador calificado).",
+                    "Vapor, agua caliente o enfriamiento adquirido a red de parque industrial externo, si aplica (MJ o kWh)."
+                ],
+                alcance3: [
+                    "Insumos y bienes adquiridos (acero, resinas plásticas, cartón, tarimas de madera, agua potable en m³).",
+                    "Fletes tercerizados de entrada y distribución (t-km o km por tipo de camión: rabón, torton, tráiler).",
+                    "Residuos peligrosos (trapos impregnados, aceite quemado, solventes) y RME/RSU indicando destino final (reciclaje, coprocesamiento o relleno sanitario en kg/L).",
+                    "Transporte de personal contratado (autobús) y traslado diario de empleados."
+                ],
+                documentos: [
+                    { area: "Mantenimiento / Planta", doc: "Facturas de Gas Natural/LP, bitácora de diésel en planta de emergencia y órdenes de recarga de refrigerantes." },
+                    { area: "EHS / Medio Ambiente", doc: "Manifiestos SEMARNAT de residuos peligrosos y reportes de recolección de reciclables (cartón, chatarra, tarimas)." },
+                    { area: "Logística / Tráfico", doc: "Relación de viajes de fletes subcontratados (peso transportado y kilómetros recorridos) y monederos de flota." },
+                    { area: "Finanzas / Compras", doc: "Recibos mensuales de CFE (kWh) y recibos de agua potable municipal o industrial (m³)." }
+                ]
+            },
+            automotriz: {
+                icono: "🚗",
+                nombreCorto: "Automotriz",
+                subtituloBtn: "OEM y Autopartes Tier 1/2",
+                titulo: "Sector Automotriz y Autopartes (Tier 1 / Tier 2)",
+                enfoque: "Alta exigencia en trazabilidad de cadena de suministro, hornos de pintura/fundición, logística Just-in-Time y valorización de metales.",
+                plantillaUrl: "plantillas/Plantilla_Automotriz_RutaSustentable.xlsx",
+                alcance1: [
+                    "Gas Natural / Gas LP en hornos de tratamiento térmico, cabinas de pintura, fundición y calderas (m³ o Litros).",
+                    "Diésel / Gas LP en montacargas de almacén y combustible de flota ejecutiva o de patio (Litros).",
+                    "Recargas de refrigerantes en sistemas HVAC de nave y cámaras de pruebas ambientales (kg)."
+                ],
+                alcance2: [
+                    "Consumo eléctrico en alta/media tensión (kWh) de líneas de estampado, inyección, maquinado y ensamble.",
+                    "Certificados de energía renovable (CELs / I-RECs) o contratos PPA en caso de reportar Alcance 2 basado en mercado."
+                ],
+                alcance3: [
+                    "Metales y polímeros comprados (acero, aluminio, cobre, resinas plásticas, componentes electrónicos en kg/t).",
+                    "Logística internacional y nacional: fletes terrestres, marítimos y carga aérea urgente / charters (t-km).",
+                    "Economía circular en planta: chatarra ferrosa, rebaba de aluminio, aceite soluble/hidráulico usado, estopas contaminadas y tarimas (kg/L).",
+                    "Vuelos de negocios de ingeniería/calidad (pax-km), noches de hotel y rutas de transporte de personal."
+                ],
+                documentos: [
+                    { area: "Ingeniería de Planta", doc: "Consumos mensuales de Gas Natural (m³), recibos de energía eléctrica (kWh) y bitácoras de cuartos de máquinas." },
+                    { area: "Comercio Exterior / Tráfico", doc: "Reporte anual de fletes terrestres, marítimos y aéreos (toneladas y distancias de rutas principales)." },
+                    { area: "Seguridad e Higiene (EHS)", doc: "Bitácora de generación de chatarra metálica, aceites usados, solventes y manifiestos de coprocesamiento." },
+                    { area: "Recursos Humanos", doc: "Rutas de autobuses de transporte de personal (km) y reporte de viajes corporativos (vuelos y noches de hotel)." }
+                ]
+            },
+            transporte_terrestre: {
+                icono: "🚛",
+                nombreCorto: "Transporte Terrestre",
+                subtituloBtn: "Flotillas y Carga Pesada",
+                titulo: "Transporte de Carga Terrestre y Logística",
+                enfoque: "Dominado por el consumo de diésel en flota pesada, recargas de refrigerante en cajas refrigeradas (Thermo) y residuos de talleres mecánicos.",
+                plantillaUrl: "plantillas/Plantilla_Transporte_Terrestre_RutaSustentable.xlsx",
+                alcance1: [
+                    "Consumo total de Diésel, Gasolina o Gas Natural Vehicular de tractocamiones, tortons, rabones y vans propias o en arrendamiento financiero (Litros).",
+                    "CRÍTICO EN CADENA FRÍA: Diésel consumido por motores auxiliares Thermo King / Carrier y recargas de gas refrigerante (R-404A, R-452A, R-134a en kg).",
+                    "Combustibles usados en patios de maniobras, grúas, montacargas y generadores (Litros)."
+                ],
+                alcance2: [
+                    "Electricidad consumida en terminales, patios de maniobras, talleres mecánicos, CEDIS y oficinas (kWh).",
+                    "Energía eléctrica destinada a la recarga de vehículos eléctricos o híbridos enchufables de reparto urbano (kWh)."
+                ],
+                alcance3: [
+                    "Emisiones WTT (Pozo a Tanque) por extracción y refinación de los combustibles de toda la flota (calculadas en automático por Ruta Sustentable).",
+                    "Fletes subcontratados con permisionarios u hombres-camión terceros (t-km o km por tipo de unidad).",
+                    "Residuos de taller mecánico propio: aceite lubricante quemado (Litros enviados a re-refinación), llantas de desecho, baterías, chatarra ferrosa y trapos impregnados (kg).",
+                    "Viajes de negocio y traslado diario de operadores y personal administrativo."
+                ],
+                documentos: [
+                    { area: "Control Vehicular / Combustibles", doc: "Estados de cuenta anuales de monederos (Edenred, Efecticard, Ultragas) y despachos de autoconsumo en patio (Litros)." },
+                    { area: "Taller Mecánico / Mantenimiento", doc: "Bitácora de recargas de gas en cajas refrigeradas y manifiestos de recolección de aceite usado, filtros, llantas y chatarra." },
+                    { area: "Operaciones / Tráfico", doc: "Relación de viajes tercerizados con transportistas externos (kilómetros o toneladas-kilómetro)." },
+                    { area: "Administración", doc: "Recibos de CFE y agua potable de patios, bodegas y oficinas administrativas." }
+                ]
+            },
+            transporte_aereo: {
+                icono: "✈️",
+                nombreCorto: "Carga Aérea",
+                subtituloBtn: "Aerolíneas y Forwarders",
+                titulo: "Transporte de Carga Aérea y Freight Forwarders",
+                enfoque: "Diferenciación entre operación de aeronaves propias (Turbosina en Alcance 1) y contratación de capacidad de carga en aerolíneas (Alcance 3).",
+                plantillaUrl: "plantillas/Plantilla_Transporte_Aereo_RutaSustentable.xlsx",
+                alcance1: [
+                    "Combustible de aviación (Turbosina / Jet A-1 en Litros o kg) consumido en aeronaves propias o bajo control operativo.",
+                    "Diésel, Gasolina o Gas LP de equipos de apoyo en tierra (GSE: remolcadores, plantas GPU, montacargas de rampa y camionetas en Litros).",
+                    "Fugas de refrigerantes en cámaras frigoríficas de aduana/almacén aeroportuario (kg)."
+                ],
+                alcance2: [
+                    "Consumo de electricidad en hangares, almacenes fiscalizados, cámaras de refrigeración y oficinas (kWh)."
+                ],
+                alcance3: [
+                    "Fletes aéreos subcontratados (vuelos domésticos, corto alcance e internacionales de largo alcance medidos en toneladas-kilómetro t-km).",
+                    "Fletes marítimos en buque portacontenedores y arrastre terrestre de primera/última milla (t-km).",
+                    "Materiales de embalaje y residuos de almacén: tarimas de madera, playo (film estirable), cartón y flejes plásticos (kg).",
+                    "Estancias en hotel de tripulaciones (noches por país) y vuelos de posicionamiento de personal (pax-km)."
+                ],
+                documentos: [
+                    { area: "Operaciones de Vuelo / Rampa", doc: "Bitácoras de abastecimiento de turbosina (Fuel Slips) y consumo de diésel/gasolina en equipo terrestre GSE." },
+                    { area: "Pricing / Tráfico Internacional", doc: "Reporte de Guías Aéreas (AWB) y conocimientos de embarque con peso (toneladas) y distancia origen-destino (km)." },
+                    { area: "Almacén / Logística Inversa", doc: "Registros de salida de tarimas, plástico de embalaje y residuos sólidos urbanos o de manejo especial (kg)." },
+                    { area: "Finanzas / Viáticos", doc: "Recibos eléctricos de instalaciones aeroportuarias y reporte de noches de hotel de tripulación por país." }
+                ]
+            },
+            hotelero: {
+                icono: "🏨",
+                nombreCorto: "Hotelería",
+                subtituloBtn: "Hoteles, Resorts y Hospitalidad",
+                titulo: "Sector Hotelero, Resorts y Hospitalidad",
+                enfoque: "Uso intensivo de energía térmica (calderas y cocinas), climatización (gases refrigerantes), consumo de agua, residuos orgánicos y lavandería.",
+                plantillaUrl: "plantillas/Plantilla_Hoteleria_RutaSustentable.xlsx",
+                alcance1: [
+                    "Gas LP o Gas Natural en calderas (agua caliente sanitaria y climatización de albercas), hornos de cocina, restaurantes y secadoras de lavandería (Litros, m³ o kg).",
+                    "Diésel consumido en plantas de emergencia (generadores eléctricos) del hotel (Litros).",
+                    "Recargas de gases refrigerantes en equipos de aire acondicionado (minisplits, paquetes, VRF) y cuartos fríos de alimentos (kg por tipo de gas).",
+                    "Combustible de vans de transporte de huéspedes (shuttle aeropuerto-hotel) y vehículos utilitarios (Litros)."
+                ],
+                alcance2: [
+                    "Consumo eléctrico total del inmueble: iluminación, climatización, bombeo hidroneumático y áreas comunes (kWh).",
+                    "Energía térmica externa (vapor, agua caliente o agua helada adquirida a redes distritales, si aplica)."
+                ],
+                alcance3: [
+                    "Consumo de agua potable de red o pipa (m³) y adquisición de insumos operativos (alimentos, bebidas, blancos, amenidades y químicos).",
+                    "Gestión de residuos: orgánicos de cocina/comedor (enviados a composta o relleno sanitario), aceite vegetal quemado, vidrio, PET, aluminio, cartón y basura general (kg/L).",
+                    "Servicios subcontratados fuera del hotel: lavandería industrial externa, transporte tercerizado de huéspedes y recolección de residuos.",
+                    "Desplazamiento diario de colaboradores (transporte de personal del hotel o transporte público) y viajes corporativos."
+                ],
+                documentos: [
+                    { area: "Mantenimiento / Ingeniería", doc: "Facturas de Gas LP/Natural, recibos de CFE y agua (m³), y órdenes de servicio de aire acondicionado y refrigeración." },
+                    { area: "Alimentos y Bebidas / Ama de Llaves", doc: "Bitácoras de recolección de residuos orgánicos, entrega de aceite vegetal usado y pesaje de reciclables (vidrio, PET, cartón)." },
+                    { area: "Compras / Operaciones", doc: "Facturas de lavandería externa (kg de ropa procesada) y consumo de combustible de vans de traslado de huéspedes." },
+                    { area: "Recursos Humanos", doc: "Bitácora de rutas de transporte de colaboradores y plantilla laboral para estimación de traslados." }
+                ]
+            },
+            residuos: {
+                icono: "♻️",
+                nombreCorto: "Residuos y Reciclaje",
+                subtituloBtn: "Recolectores y Acopiadores",
+                titulo: "Gestión de Residuos, Acopio y Reciclaje",
+                enfoque: "Combustible de camiones recolectores y maquinaria de patio, electricidad de trituración/compactación y cuantificación de Emisiones Evitadas.",
+                plantillaUrl: "plantillas/Plantilla_Residuos_RutaSustentable.xlsx",
+                alcance1: [
+                    "Diésel y Gasolina de camiones recolectores (carga trasera, roll-off, cajas secas) y utilitarios (Litros).",
+                    "Diésel y Gas LP en maquinaria pesada de patio: retroexcavadoras, cargadores frontales, grúas polipo y montacargas (Litros).",
+                    "Gases refrigerantes de oficinas o unidades de transporte especiales (kg)."
+                ],
+                alcance2: [
+                    "Consumo eléctrico de prensas compactadoras, molinos trituradores, bandas de separación, básculas e iluminación de planta (kWh)."
+                ],
+                alcance3: [
+                    "Fletes tercerizados para envío de materiales a plantas recicladoras finales, cementeras (coprocesamiento) o rellenos sanitarios (t-km).",
+                    "Residuos propios de taller mecánico (aceite quemado, llantas, estopas) y merma/rechazo enviado a disposición final (kg).",
+                    "CRÉDITOS DE ECONOMÍA CIRCULAR: Toneladas comercializadas/valorizadas de cartón, papel, PET, HDPE, chatarra ferrosa, aluminio, madera y aceite para cuantificar emisiones evitadas."
+                ],
+                documentos: [
+                    { area: "Flotilla y Maquinaria", doc: "Reporte anual de litros de diésel despachados a camiones recolectores, maquinaria amarilla de patio y montacargas." },
+                    { area: "Báscula / Operaciones", doc: "Concentrado anual de boletas de báscula por tipo de material valorizado (kg/t) y rechazos enviados a relleno sanitario." },
+                    { area: "Logística Externa", doc: "Relación de viajes en tráiler subcontratados hacia recicladores finales o plantas de coprocesamiento (t-km)." },
+                    { area: "Administración", doc: "Recibos de CFE de planta de separación/trituración y consumo de agua." }
+                ]
+            },
+            servicios_operativos: {
+                icono: "🛠️",
+                nombreCorto: "Servicios Operativos",
+                subtituloBtn: "Limpieza, Seguridad, Facility",
+                titulo: "Servicios Operativos, Facility Management y Seguridad",
+                enfoque: "Flotillas ligeras de supervisión y cuadrillas, insumos químicos/EPP y alto peso en el desplazamiento diario del personal hacia sedes de clientes.",
+                plantillaUrl: "plantillas/Plantilla_Servicios_Operativos_RutaSustentable.xlsx",
+                alcance1: [
+                    "Gasolina y Diésel de flotilla de supervisión, patrullas, camionetas de cuadrillas técnicas y vans de traslado (Litros).",
+                    "Combustible en maquinaria operativa menor: podadoras, desbrozadoras, hidrolavadoras a gasolina o plantas portátiles (Litros)."
+                ],
+                alcance2: [
+                    "Electricidad consumida en oficinas centrales, centros de capacitación, almacenes de insumos y talleres propios (kWh)."
+                ],
+                alcance3: [
+                    "Desplazamiento diario de empleados (Commuting): traslados de guardias, técnicos o personal de limpieza hacia las instalaciones de clientes en transporte público, auto o motocicleta (pax-km / km).",
+                    "Compra de bienes operativos: productos químicos, consumibles higiénicos, uniformes, calzado de seguridad y herramientas.",
+                    "Residuos generados: envases plásticos vacíos (HDPE) entregados a reciclaje, trapos impregnados y residuos sólidos de oficina (kg).",
+                    "Viajes de negocio de supervisores regionales (vuelos, autobuses foráneos y noches de hotel)."
+                ],
+                documentos: [
+                    { area: "Flotilla / Operaciones", doc: "Estados de cuenta de monederos de gasolina/diésel de vehículos de supervisión, patrullas y maquinaria menor." },
+                    { area: "Recursos Humanos / Nómina", doc: "Distribución de plantilla operativa, modalidad de traslado promedio (autobús, metro, auto) y horas de Home Office administrativo." },
+                    { area: "Almacén / Compras", doc: "Registro de envases plásticos vacíos o cartón enviados a acopio y compras anuales de consumibles principales." },
+                    { area: "Administración", doc: "Recibos de CFE y agua potable de oficinas corporativas y bodegas." }
+                ]
+            },
+            servicios_digitales: {
+                icono: "💻",
+                nombreCorto: "Servicios Digitales y TI",
+                subtituloBtn: "Software, Consultoría, Oficinas",
+                titulo: "Servicios Digitales, TI, Consultoría y Corporativos",
+                enfoque: "Huella concentrada en Alcance 2 (oficinas) y Alcance 3: Teletrabajo (Home Office), viajes de negocios (vuelos y hoteles) y traslados del personal.",
+                plantillaUrl: "plantillas/Plantilla_Servicios_Digitales_RutaSustentable.xlsx",
+                alcance1: [
+                    "Generalmente muy bajo o nulo: Gasolina de vehículos ejecutivos propios (Litros) y diésel de planta de emergencia si el edificio es propio.",
+                    "Recargas de gas refrigerante en minisplits de oficina o cuartos de servidores propios (Site / Data Center on-premise en kg)."
+                ],
+                alcance2: [
+                    "Consumo de energía eléctrica de oficinas corporativas y centros de datos propios (kWh en recibo CFE o prorrateo por m² en edificio compartido)."
+                ],
+                alcance3: [
+                    "CRÍTICO - Teletrabajo / Home Office: Total de horas anuales trabajadas desde casa por la plantilla (en esquema 100% remoto o híbrido) para calcular consumo de equipos y climatización residencial.",
+                    "CRÍTICO - Viajes de negocios: Vuelos nacionales e internacionales (por clase y distancia en pax-km), estancias en hotel (noches por país) y traslados en Uber/Didi/Taxi o tren.",
+                    "Desplazamiento de empleados a la oficina (Commuting en auto particular, transporte público o motocicleta en km / pax-km).",
+                    "Residuos de oficina y electrónicos (e-waste reciclado, papel/cartón, RSU) y consumo de agua potable (m³)."
+                ],
+                documentos: [
+                    { area: "Recursos Humanos / People", doc: "Número de colaboradores en esquema remoto/híbrido (horas anuales de Home Office) y encuesta o estimación de traslado a oficina." },
+                    { area: "Administración / Travel", doc: "Reporte anual de agencia de viajes o viáticos: vuelos realizados (origen-destino o pax-km), noches de hotel por país y recibos de Uber/Taxi." },
+                    { area: "Facility / Oficina", doc: "Recibos de CFE (kWh), agua potable (m³) y bitácora de mantenimiento de aires acondicionados de la oficina." },
+                    { area: "TI / Soporte Técnico", doc: "Manifiestos o certificados de acopio y reciclaje de residuos electrónicos (laptops, monitores, cableado en kg)." }
+                ]
+            }
+        };
+
+        let sectorActual = 'manufactura';
+
+        function inicializarGuiaSectores() {
+            const contenedorBotones = document.getElementById('contenedor-botones-sector');
+            contenedorBotones.innerHTML = '';
+
+            Object.keys(datosSectores).forEach(clave => {
+                const s = datosSectores[clave];
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.id = 'btn-sector-' + clave;
+                btn.onclick = () => seleccionarSector(clave);
+                btn.className = 'sector-btn text-left p-3.5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-emerald-50/60 hover:border-emerald-300 transition-all flex items-start gap-3';
+                btn.innerHTML = `
+                    <span class="text-2xl leading-none mt-0.5">${s.icono}</span>
+                    <div class="overflow-hidden">
+                        <p class="font-bold text-xs sm:text-sm truncate">${s.nombreCorto}</p>
+                        <p class="sector-sub text-[11px] text-slate-500 truncate">${s.subtituloBtn}</p>
+                    </div>
+                `;
+                contenedorBotones.appendChild(btn);
+            });
+
+            seleccionarSector(sectorActual);
+        }
+
+        function seleccionarSector(clave) {
+            sectorActual = clave;
+            const s = datosSectores[clave];
+
+            // Actualizar estado visual de los botones
+            document.querySelectorAll('.sector-btn').forEach(b => b.classList.remove('active'));
+            const btnActivo = document.getElementById('btn-sector-' + clave);
+            if (btnActivo) btnActivo.classList.add('active');
+
+            // Actualizar cabecera y botón de descarga
+            document.getElementById('sector-icono').textContent = s.icono;
+            document.getElementById('sector-titulo').textContent = s.titulo;
+            document.getElementById('sector-enfoque').textContent = s.enfoque;
+
+            const btnPlantilla = document.getElementById('btn-descargar-plantilla');
+            btnPlantilla.href = s.plantillaUrl;
+            document.getElementById('texto-btn-plantilla').textContent = `Descargar Plantilla: ${s.nombreCorto} (.xlsx)`;
+
+            // Rellenar listas de Alcances 1, 2 y 3
+            rellenarLista('lista-alcance-1', s.alcance1);
+            rellenarLista('lista-alcance-2', s.alcance2);
+            rellenarLista('lista-alcance-3', s.alcance3);
+
+            // Rellenar tarjetas de Documentos Fuente por departamento
+            const gridDocs = document.getElementById('grid-documentos-fuente');
+            gridDocs.innerHTML = s.documentos.map(item => `
+                <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-200">
+                    <p class="font-bold text-slate-800 text-xs uppercase tracking-wide text-emerald-700 mb-1">${item.area}</p>
+                    <p class="text-xs text-slate-600 leading-relaxed">${item.doc}</p>
+                </div>
+            `).join('');
+        }
+
+        function rellenarLista(idElemento, items) {
+            const ul = document.getElementById(idElemento);
+            ul.innerHTML = items.map(texto => `<li class="leading-relaxed">${texto}</li>`).join('');
+        }
+
+        // Inicializar tanto el cotizador como la guía al cargar la página
+        window.onload = function() {
+            calcularCotizacion();
+            inicializarGuiaSectores();
+        };
     </script>
 </body>
 </html>
