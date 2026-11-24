@@ -143,13 +143,13 @@
                 <div>
                     <div class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-brand-light mb-3">
                         <span class="w-2 h-2 rounded-pill bg-brand-light"></span>
-                        <span>SEMARNAT • SEN • IMTA • IPCC</span>
+                        <span>SEMARNAT • CONUEE • EPA • IPCC</span>
                     </div>
                     <h1 class="text-4xl sm:text-6xl lg:text-7xl font-medium uppercase leading-[0.9] tracking-tight">
                         MI HUELLA DE<br><span class="text-brand-light">CARBONO</span>
                     </h1>
                     <p class="mt-4 text-sm sm:text-base text-white/75 max-w-xl font-body">
-                        Los consumos del hogar (electricidad, gas y agua) se prorratean automáticamente entre los habitantes para obtener tu huella personal mensual exacta.
+                        Los consumos del hogar (electricidad, gas y agua) se prorratean automáticamente entre los habitantes para obtener tu huella personal mensual. La movilidad y los residuos son individuales y no se dividen.
                     </p>
                 </div>
 
@@ -184,7 +184,7 @@
                         </div>
                     </div>
                     <span class="px-3.5 py-1 bg-white rounded-pill text-xs font-semibold text-emerald-700 border border-slate-200 self-start sm:self-auto">
-                        RENE - SEMARNAT 2015/2026
+                        SEMARNAT • CONUEE • EPA
                     </span>
                 </div>
 
@@ -203,7 +203,7 @@
                         </div>
 
                         <div id="input-cilindro" class="w-full">
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Tamaño del cilindro al mes</label>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Tamaño del cilindro del hogar al mes</label>
                             <select id="gas-kg" class="w-full border border-slate-200 rounded-xl p-3 bg-brand-surface font-medium focus:bg-white focus:border-brand-primary outline-none cursor-pointer">
                                 <option value="0">No uso cilindro</option>
                                 <option value="20">20 kg</option>
@@ -212,11 +212,11 @@
                             </select>
                         </div>
                         <div id="input-estacionario" class="hidden w-full">
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Litros cargados al mes</label>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Litros cargados al mes por tu hogar</label>
                             <input type="number" id="gas-l" placeholder="Ej. 50" class="w-full border border-slate-200 rounded-xl p-3 bg-brand-surface font-medium focus:bg-white focus:border-brand-primary outline-none">
                         </div>
                         <div id="input-natural" class="hidden w-full">
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Consumo en recibo (m³)</label>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Consumo del hogar en el recibo (m³)</label>
                             <input type="number" id="gas-m3" placeholder="Ej. 15" class="w-full border border-slate-200 rounded-xl p-3 bg-brand-surface font-medium focus:bg-white focus:border-brand-primary outline-none">
                         </div>
                     </div>
@@ -249,6 +249,7 @@
                         <div id="input-gasto" class="hidden w-full">
                             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Gasto mensual ($ MXN)</label>
                             <input type="number" id="mov-pesos" placeholder="Ej. 2500" class="w-full border border-slate-200 rounded-xl p-3 bg-brand-surface font-medium focus:bg-white focus:border-brand-primary outline-none">
+                            <p class="text-[11px] text-slate-500 mt-1.5 font-body">Se estima con precios promedio: gasolina $23.70/L y diésel $27.00/L (Profeco, 2026).</p>
                         </div>
                         <div id="input-km" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
                             <div>
@@ -258,8 +259,8 @@
                             <div>
                                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Rendimiento</label>
                                 <select id="mov-rendimiento" class="w-full border border-slate-200 rounded-xl p-3 bg-brand-surface font-medium focus:bg-white focus:border-brand-primary outline-none">
-                                    <option value="15">Compacto / Sedán (15 km/l)</option>
-                                    <option value="9">SUV Mediana (9 km/l)</option>
+                                    <option value="12.57">Compacto / Sedán (12.6 km/l)</option>
+                                    <option value="9.47">SUV / Camioneta (9.5 km/l)</option>
                                     <option value="6">Pick-up pesada (6 km/l)</option>
                                 </select>
                             </div>
@@ -289,7 +290,7 @@
                         </h2>
                     </div>
                     <span class="px-3.5 py-1 bg-white rounded-pill text-xs font-semibold text-amber-700 border border-slate-200 self-start sm:self-auto">
-                        Factor SEN (SEMARNAT)
+                        Factor SEN 2024 (SEMARNAT)
                     </span>
                 </div>
 
@@ -300,12 +301,12 @@
                     </div>
 
                     <div id="input-recibo" class="w-full max-w-md">
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Consumo mensual en kWh (Aparece en tu recibo)</label>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Consumo mensual del hogar en kWh (aparece en tu recibo)</label>
                         <input type="number" id="elec-kwh" placeholder="Ej. 250" class="w-full border border-slate-200 rounded-xl p-3.5 bg-brand-surface font-medium focus:bg-white focus:border-amber-500 outline-none">
                     </div>
 
                     <div id="input-aparatos" class="hidden space-y-4 w-full">
-                        <p class="text-xs sm:text-sm text-brand-soft font-body">Ingresa la cantidad de aparatos que tienes y las horas promedio que se usan al día:</p>
+                        <p class="text-xs sm:text-sm text-brand-soft font-body">Ingresa la cantidad de aparatos de todo tu hogar y las horas promedio que se usan al día. Para el refrigerador usa 8 h (criterio de la CFE) y para los equipos en stand-by, 24 h:</p>
                         <div id="lista-aparatos" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-2 custom-scrollbar"></div>
                     </div>
                 </div>
@@ -332,7 +333,7 @@
                         </h2>
                     </div>
                     <span class="px-3.5 py-1 bg-white rounded-pill text-xs font-semibold text-blue-700 border border-slate-200 self-start sm:self-auto">
-                        DBGIR 2026 / IPCC
+                        DBGIR 2026 • INEGYCEI / IPCC
                     </span>
                 </div>
 
@@ -343,7 +344,7 @@
                             <span class="text-sm sm:text-base font-semibold text-brand-ink">Tengo mi dato exacto de reciclaje</span>
                         </label>
                         <p class="text-xs text-brand-soft mt-1 ml-8 font-body">
-                            Si usaste la <a href="https://calculadorareciclaje.org/" target="_blank" class="font-bold text-brand-navy underline">Calculadora de Reciclaje</a>, ingresa el resultado obtenido.
+                            Si usaste la <a href="https://calculadorareciclaje.org/" target="_blank" class="font-bold text-brand-navy underline">Calculadora de Reciclaje</a>, ingresa el resultado obtenido con tus propios datos.
                         </p>
                         <div id="input-co2-externo" class="hidden ml-8 mt-4 max-w-xs">
                             <label class="block text-[11px] font-bold text-brand-navy mb-1 uppercase tracking-wider">CO₂e evitado (kg)</label>
@@ -353,7 +354,7 @@
 
                     <div id="contenedor-casillas-genericas" class="p-5 sm:p-6 bg-white rounded-card border border-slate-200/80 shadow-sm transition-opacity">
                         <h3 class="text-sm sm:text-base font-semibold text-brand-ink mb-1">¿Separas y entregas estos materiales?</h3>
-                        <p class="text-xs text-brand-soft mb-4 font-body">Aplicaremos los factores de mitigación promedio del DBGIR a tu huella personal.</p>
+                        <p class="text-xs text-brand-soft mb-4 font-body">Aplicaremos los factores de mitigación promedio del DBGIR a tu huella personal. Tu generación de residuos es la misma sin importar cuántas personas vivan en tu hogar.</p>
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                             <label class="flex items-center gap-3 p-3.5 bg-brand-surface border border-slate-200/80 rounded-xl hover:border-brand-primary cursor-pointer transition-all">
@@ -405,7 +406,7 @@
                         </h2>
                     </div>
                     <span class="px-3.5 py-1 bg-white rounded-pill text-xs font-semibold text-cyan-700 border border-slate-200 self-start sm:self-auto">
-                        IMTA Nacional
+                        BID • GIZ/CONUEE × Factor SEN
                     </span>
                 </div>
 
@@ -414,12 +415,12 @@
                         <input type="checkbox" id="chk-agua-opcional" onchange="toggleAgua()" class="w-5 h-5 mt-0.5 text-cyan-600 rounded border-slate-300">
                         <div>
                             <span class="text-sm sm:text-base font-semibold text-brand-ink">Calcular huella hídrica indirecta (Opcional)</span>
-                            <p class="text-xs text-brand-soft mt-0.5 font-body">Si no cuentas con recibo medido en m³, déjalo sin marcar.</p>
+                            <p class="text-xs text-brand-soft mt-0.5 font-body">Si no cuentas con el recibo del hogar medido en m³, déjalo sin marcar.</p>
                         </div>
                     </label>
 
                     <div id="input-agua" class="hidden pt-2 max-w-xs">
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Consumo mensual (m³)</label>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Consumo mensual del hogar (m³)</label>
                         <input type="number" id="agua-m3" placeholder="Ej. 20" class="w-full border border-slate-200 rounded-xl p-3 bg-brand-surface font-medium focus:bg-white focus:border-cyan-500 outline-none">
                     </div>
                 </div>
@@ -522,7 +523,7 @@
                     <div class="md:col-span-2 space-y-2">
                         <h4 class="text-xs font-semibold text-brand-light uppercase tracking-[0.2em]">⚖️ Nota Metodológica y Legal</h4>
                         <p class="text-xs text-white/65 leading-relaxed font-body text-justify">
-                            Esta herramienta estima la huella de carbono domiciliaria utilizando factores de emisión oficiales publicados por la <strong>SEMARNAT, CONUEE, IMTA y metodologías del IPCC vigentes a 2026</strong>. Los resultados arrojados tienen un propósito estrictamente educativo y de concientización ciudadana. Este cálculo no constituye una auditoría oficial de emisiones ni genera reportes con validez legal, técnica o regulatoria para el cumplimiento normativo empresarial.
+                            Esta herramienta estima la huella de carbono domiciliaria utilizando factores de emisión publicados por la <strong>SEMARNAT (DBGIR 2026, Factor SEN 2024, INEGYCEI), CONUEE, EPA, BID y metodologías del IPCC</strong>. Incluye emisiones directas por uso de combustibles y electricidad, el relleno sanitario de tus residuos y la energía para llevar agua potable a tu casa; no incluye emisiones aguas arriba (extracción y transporte de combustibles) ni pérdidas de la red eléctrica. Los resultados arrojados tienen un propósito estrictamente educativo y de concientización ciudadana. Este cálculo no constituye una auditoría oficial de emisiones ni genera reportes con validez legal, técnica o regulatoria para el cumplimiento normativo empresarial.
                         </p>
                     </div>
                     <div class="space-y-2">
@@ -566,24 +567,41 @@
 
     <!-- MOTOR CENTRAL JAVASCRIPT INTACTO -->
     <script>
-        const FACTORES_COMB = { gas_kg: 3.0523, gas_l: 1.6482, gas_m3: 2.1925, gasolina_l: 2.4466, diesel_l: 2.8267 };
-        const PRECIO_GASOLINA = 23.50; 
-        const FACTOR_SEN = 0.4440; 
+        // Factores en kg CO2e (CO2 + CH4 + N2O, GWP AR5 del IPCC). Acuerdo SEMARNAT (DOF 03-sep-2015) x poder calorifico CONUEE 2025.
+        // Gas domestico = fuente fija; gasolina y diesel = fuente movil. Gas LP por kg: factor SEMARNAT por MJ x 47.3 MJ/kg (IPCC 2006).
+        const FACTORES_COMB = { gas_kg: 2.98721, gas_l: 1.64965, gas_m3: 2.19466, gasolina_l: 2.54618, diesel_l: 2.87034 };
+        // Precios promedio nacionales de referencia (Profeco, ago-sep 2026): Magna $23.70/L y diesel $27.00/L. Actualizar cuando cambien.
+        const PRECIO_GASOLINA = 23.70;
+        const PRECIO_DIESEL = 27.00;
+        // Rendimiento de flota en uso (km/l): auto de pasajeros 12.57 y camioneta ligera/SUV 9.47 (EPA Emission Factors Hub 2025: 0.297 y 0.394 kg CO2/milla,
+        // gasolina 8.78 kg CO2/galon). Pick-up pesada 6 km/l: estimacion (sin fuente oficial).
+        const REND_COMPACTO = 12.57, REND_SUV = 9.47, REND_PICKUP = 6;
+        const FACTOR_SEN = 0.4440; // Factor de emision del Sistema Electrico Nacional 2024 (SEMARNAT, 0.444 tCO2e/MWh) 
+        // Potencias (W) de la tabla "Cuanto consume cada aparato?" del Boletin de Prensa CFE-BP-72/23 (CFE, 15-jun-2023): son potencias de placa, indicativas.
+        // Refrigerador: la CFE usa 400 W con 8 h/dia efectivas (192 kWh por bimestre), es decir, el ciclo de trabajo del compresor, no 24 h.
         const APARATOS = [
             { id: 'foco', nombre: 'Foco LED', watts: 10 }, { id: 'tv', nombre: 'Pantalla TV LED', watts: 65 },
-            { id: 'pc', nombre: 'Computadora', watts: 60 }, { id: 'refri', nombre: 'Refrigerador', watts: 400 },
+            { id: 'pc', nombre: 'Computadora', watts: 60 }, { id: 'refri', nombre: 'Refrigerador', watts: 400, nota: 'criterio CFE: ≈ 8 h/día efectivas' },
             { id: 'licuadora', nombre: 'Licuadora', watts: 350 }, { id: 'microondas', nombre: 'Microondas', watts: 1200 },
             { id: 'horno_elec', nombre: 'Horno Eléctrico', watts: 1000 }, { id: 'cafetera', nombre: 'Cafetera', watts: 850 },
-            { id: 'parrilla', nombre: 'Parrilla Eléctrica', watts: 1000 }, { id: 'lavadora', nombre: 'Lavadora', watts: 395 },
+            { id: 'tostador', nombre: 'Tostador de Pan', watts: 760 }, { id: 'parrilla', nombre: 'Parrilla Eléctrica', watts: 1000 },
+            { id: 'lavadora', nombre: 'Lavadora de Ropa', watts: 395 }, { id: 'lavaplatos', nombre: 'Lavavajillas', watts: 1180 },
             { id: 'secadora_ropa', nombre: 'Secadora Ropa', watts: 1270 }, { id: 'plancha', nombre: 'Plancha', watts: 1000 },
             { id: 'aspiradora', nombre: 'Aspiradora', watts: 1500 }, { id: 'secadora_pelo', nombre: 'Secadora Cabello', watts: 1800 },
             { id: 'mini_1', nombre: 'Minisplit (1 Ton)', watts: 1100 }, { id: 'mini_2', nombre: 'Minisplit (2 Ton)', watts: 2200 },
-            { id: 'aire_ven', nombre: 'A/C Ventana (1 Ton)', watts: 1800 }
+            { id: 'aire_ven', nombre: 'A/C Ventana (1 Ton)', watts: 1800 }, { id: 'aire_ven15', nombre: 'A/C Ventana (1.5 Ton)', watts: 2700 },
+            { id: 'aire_ven2', nombre: 'A/C Ventana (2 Ton)', watts: 3600 },
+            { id: 'standby', nombre: 'Equipos en Stand-by', watts: 20, nota: 'aparatos en espera (24 h/día)' }
         ];
-        const GENERACION_DOMESTICA = 0.7460; 
-        const FACTOR_EMISION_RESIDUOS = 0.6048; 
+        // Residuos domiciliarios: 0.746 kg/hab/dia (DBGIR abril 2026, Tabla 9; el total con residuos no domesticos es 1.076 kg/hab/dia).
+        const GENERACION_DOMESTICA = 0.7460;
+        // Relleno sanitario con parametros de Mexico: metodo IPCC 2006 con INEGYCEI 1990-2015 (composicion de RSU, DOC, DOCf 0.5, F 0.5, MCF ponderado 0.72 por tipo de sitio, GWP CH4 28): 0.92172 kgCO2e/kg.
+        const FACTOR_EMISION_RESIDUOS = 0.92172;
+        // Composicion DBGIR 2026, Tabla 14 (% del total): plastico rigido y de pelicula 7.691, carton 6.698, papel 5.364, vidrio 3.972 + 1.717, lata 1.654.
         const PORC_PLASTICO = 0.07691, PORC_CARTON = 0.06698, PORC_PAPEL = 0.05364, PORC_VIDRIO = 0.05689, PORC_METALES = 0.01654;
-        const FACTOR_EMISION_AGUA = 0.4662; 
+        // Agua potable: indice de consumo energetico de Mexico (BID IDB-TN-829, datos GIZ/CONUEE: bombeo municipal + bombeo en vivienda) x factor SEN.
+        const ICE_AGUA_KWH_M3 = 0.46;
+        const FACTOR_EMISION_AGUA = ICE_AGUA_KWH_M3 * FACTOR_SEN; // 0.2042 kgCO2e/m3 
 
         let modoGas = 'cilindro', modoMovilidad = 'litros', modoElec = 'recibo';
         function cambiarHabitantes(cambio) {
@@ -601,7 +619,7 @@
         APARATOS.forEach(app => {
             listaHTML.innerHTML += `
                 <div class="flex items-center justify-between gap-2 bg-brand-surface p-3 rounded-xl border border-slate-200/80">
-                    <div class="text-xs sm:text-sm font-semibold text-brand-ink">${app.nombre} <span class="text-[11px] font-normal text-slate-500 block">${app.watts} W</span></div>
+                    <div class="text-xs sm:text-sm font-semibold text-brand-ink">${app.nombre} <span class="text-[11px] font-normal text-slate-500 block">${app.watts} W${app.nota ? ' · ' + app.nota : ''}</span></div>
                     <div class="flex gap-1.5 w-36 shrink-0">
                         <input type="number" id="qty-${app.id}" placeholder="Cant." class="w-1/2 text-xs font-semibold border border-slate-200 rounded-lg p-2 bg-white text-center outline-none focus:border-amber-500">
                         <input type="number" id="hrs-${app.id}" placeholder="Hrs/día" class="w-1/2 text-xs font-semibold border border-slate-200 rounded-lg p-2 bg-white text-center outline-none focus:border-amber-500">
@@ -696,8 +714,8 @@
             let lts = 0;
             
             if (modoMovilidad === 'litros') lts = parseFloat(document.getElementById('mov-litros').value) || 0;
-            else if (modoMovilidad === 'gasto') lts = (parseFloat(document.getElementById('mov-pesos').value) || 0) / PRECIO_GASOLINA;
-            else if (modoMovilidad === 'km') lts = (parseFloat(document.getElementById('mov-km').value) || 0) / (parseFloat(document.getElementById('mov-rendimiento').value) || 15);
+            else if (modoMovilidad === 'gasto') lts = (parseFloat(document.getElementById('mov-pesos').value) || 0) / (tipoMotor === 'gasolina' ? PRECIO_GASOLINA : PRECIO_DIESEL);
+            else if (modoMovilidad === 'km') lts = (parseFloat(document.getElementById('mov-km').value) || 0) / (parseFloat(document.getElementById('mov-rendimiento').value) || REND_COMPACTO);
             
             totalMov = lts * factorMotor;
             
@@ -728,15 +746,13 @@
         }
 
         function calcularResiduos(returnOnly = false) {
-            let habitantes = parseInt(document.getElementById('global-habitantes').value) || 1;
-            let genBrutaPersonal = 1 * GENERACION_DOMESTICA * 30; 
-            let genRestoCasa = (habitantes > 1) ? (habitantes - 1) * GENERACION_DOMESTICA * 30 : 0;
+            // La generacion de residuos es personal (0.746 kg/dia por habitante): no depende de cuantas personas vivan en el hogar.
+            let genBrutaPersonal = GENERACION_DOMESTICA * 30;
             let total = 0;
 
             if (document.getElementById('chk-usa-calculadora').checked) {
                 let co2Evitado = parseFloat(document.getElementById('val-co2-externo').value) || 0;
-                let emisionesTotalesCasa = ((genBrutaPersonal + genRestoCasa) * FACTOR_EMISION_RESIDUOS);
-                total = (emisionesTotalesCasa - co2Evitado) / habitantes;
+                total = (genBrutaPersonal * FACTOR_EMISION_RESIDUOS) - co2Evitado;
             } else {
                 let desc = 0;
                 if(document.getElementById('chk-plastico').checked) desc += PORC_PLASTICO;
@@ -745,9 +761,7 @@
                 if(document.getElementById('chk-vidrio').checked) desc += PORC_VIDRIO;
                 if(document.getElementById('chk-lata').checked) desc += PORC_METALES;
                 
-                let emisionesUsuario = (genBrutaPersonal - (genBrutaPersonal * desc)) * FACTOR_EMISION_RESIDUOS;
-                let emisionesRestantes = genRestoCasa * FACTOR_EMISION_RESIDUOS;
-                total = (emisionesUsuario + emisionesRestantes) / habitantes;
+                total = (genBrutaPersonal - (genBrutaPersonal * desc)) * FACTOR_EMISION_RESIDUOS;
             }
 
             if(returnOnly) return total;
